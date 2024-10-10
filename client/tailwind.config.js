@@ -3,7 +3,12 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}", // This includes all your React component files
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundColor: {
+        default: "red", // Set your custom color here (e.g., light gray)
+      },
+    },
   },
+
   plugins: [],
 };

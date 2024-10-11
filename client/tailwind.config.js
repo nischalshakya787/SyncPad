@@ -1,14 +1,8 @@
-module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}", // This includes all your React component files
-  ],
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {
-      backgroundColor: {
-        default: "red", // Set your custom color here (e.g., light gray)
-      },
-    },
+    extend: {},
   },
-
   plugins: [],
 };

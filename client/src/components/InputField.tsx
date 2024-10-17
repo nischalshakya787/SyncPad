@@ -9,8 +9,8 @@ const InputField: React.FC<InputFieldProps> = ({ label, type }) => {
   const id = label.toLowerCase().replace(/\s+/g, "-");
 
   return (
-    <div className="mt-10">
-      <label htmlFor={id} className="block mb-2">
+    <div className="mt-6">
+      <label htmlFor={id} className="mb-2 text-[18px]">
         {label}
       </label>
       <input

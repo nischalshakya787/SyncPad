@@ -21,8 +21,8 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { username, password } = req.body;
   try {
+    const { username, password } = req.body;
     const User = await UserModel.findOne({ username });
     const passOK = bcrypt.compareSync(password, User.password);
 
@@ -39,6 +39,7 @@ const login = async (req, res) => {
           });
         }
       );
+      res.status(200).json({ message: "Login Successful" });
     } else {
       res.status(400).json(passOK);
     }

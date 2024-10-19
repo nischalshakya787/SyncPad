@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, InputField } from "../components";
 import { useLocation } from "react-router-dom";
 
@@ -6,6 +6,36 @@ interface AuthProps {}
 
 const Auth: React.FC<AuthProps> = () => {
   const location = useLocation();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+
+  const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+  };
+  const handleSignup = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:3000/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, email, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.log(errorData);
+        return;
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <main className="flex overflow-hidden flex-col justify-center items-center px-20 py-24 text-xl font-semibold bg-gray-100 max-md:px-5">
       <section className="flex flex-col items-center py-20 max-w-full bg-white rounded-lg border-2 border-solid border-black border-opacity-30 w-[900px]">
@@ -36,14 +66,42 @@ const Auth: React.FC<AuthProps> = () => {
           )}
           <form className="w-full">
             {location.pathname === "/login" ? (
-              <InputField label="Email or username" type="text" />
+              <InputField
+                label="Email or username"
+                type="text"
+                value={username}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setUsername(e.target.value)
+                }
+              />
             ) : (
               <>
-                <InputField label="Username" type="text" />
-                <InputField label="Email" type="email" />
+                <InputField
+                  label="Username"
+                  type="text"
+                  value={username}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setUsername(e.target.value)
+                  }
+                />
+                <InputField
+                  label="Email"
+                  type="email"
+                  value={email}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setEmail(e.target.value)
+                  }
+                />
               </>
             )}
-            <InputField label="Password" type="password" />
+            <InputField
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setPassword(e.target.value)
+              }
+            />
             {location.pathname === "/login" && (
               <div className="flex gap-3.5 self-end mt-4 text-base text-black">
                 <img
@@ -57,9 +115,11 @@ const Auth: React.FC<AuthProps> = () => {
                 </a>
               </div>
             )}
-            <Button
-              text={location.pathname === "/login" ? "Sign in" : "Sign up"}
-            />
+            {location.pathname === "/login" ? (
+              <Button text="Sign in" handleClick={handleLogin} />
+            ) : (
+              <Button text="Sign up" handleClick={handleSignup} />
+            )}
           </form>
         </div>
         {location.pathname === "/login" && (

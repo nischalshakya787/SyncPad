@@ -3,9 +3,16 @@ import React from "react";
 interface InputFieldProps {
   label: string;
   type: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // Add onChange prop
 }
 
-const InputField: React.FC<InputFieldProps> = ({ label, type }) => {
+const InputField: React.FC<InputFieldProps> = ({
+  label,
+  type,
+  value,
+  onChange,
+}) => {
   const id = label.toLowerCase().replace(/\s+/g, "-");
 
   return (
@@ -17,6 +24,8 @@ const InputField: React.FC<InputFieldProps> = ({ label, type }) => {
         type={type}
         id={id}
         className="flex shrink-0 self-stretch w-full bg-white rounded-md border border-solid border-black border-opacity-30 h-[53px]"
+        value={value}
+        onChange={onChange}
       />
     </div>
   );

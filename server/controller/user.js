@@ -20,6 +20,35 @@ const register = async (req, res) => {
   }
 };
 
-const login = async (req, res) => {};
+const login = async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const User = await UserModel.findOne({ username });
+    const passOK = bcrypt.compareSync(password, User.password);
 
-export { register, login };
+    if (passOK) {
+      jwt.sign(
+        { username, id: User._id },
+        process.env.JWT_SECRET,
+        (err, token) => {
+          if (err) throw err;
+
+          res.cookie("token", token).json({
+            id: User._id,
+            username,
+          });
+        }
+      );
+    } else {
+      res.status(400).json(passOK);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const logout = async (req, res) => {
+  res.cookie("token", "").json("ok");
+};
+
+export { register, login, logout };

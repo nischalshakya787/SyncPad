@@ -46,6 +46,9 @@ const logout = async (req, res) => {
 
 const profile = async (req, res) => {
   const { token } = req.cookies;
+  if (!token) {
+    return res.status(401).json({ message: "No token, user is not logged in" });
+  }
   jwt.verify(token, process.env.JWT_SECRET, (err, info) => {
     if (err) throw err;
     res.json(info);

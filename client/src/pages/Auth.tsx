@@ -108,7 +108,11 @@ const Auth = () => {
                 value={values.username}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.username && errors.username}
+                error={
+                  touched.username && errors.username
+                    ? errors.username
+                    : undefined
+                }
               />
             ) : (
               <>
@@ -118,7 +122,11 @@ const Auth = () => {
                   value={values.username}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  error={touched.username && errors.username}
+                  error={
+                    touched.username && errors.username
+                      ? errors.username
+                      : undefined
+                  }
                 />
                 <InputField
                   label="Email"
@@ -126,7 +134,9 @@ const Auth = () => {
                   value={values.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  error={touched.email && errors.email}
+                  error={
+                    touched.email && errors.email ? errors.email : undefined
+                  }
                 />
               </>
             )}
@@ -136,7 +146,11 @@ const Auth = () => {
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
-              error={touched.password && errors.password}
+              error={
+                touched.password && errors.password
+                  ? errors.password
+                  : undefined
+              }
             />
             {isLogin && (
               <div className="flex gap-3.5 self-end mt-4 text-base text-black">

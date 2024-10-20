@@ -4,7 +4,9 @@ interface InputFieldProps {
   label: string;
   type: string;
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // Add onChange prop
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
+  error?: string; // Ensure this is only string or undefined
 }
 
 const InputField: React.FC<InputFieldProps> = ({

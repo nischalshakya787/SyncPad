@@ -41,7 +41,7 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  res.cookie("token", "").json("ok");
+  res.clearCookie("token").json("ok");
 };
 
 const profile = async (req, res) => {

@@ -10,18 +10,33 @@ type userProps = {
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<userProps | null>(null);
+  const [profile, setProfile] = useState(true); // State to control fetching
 
   useEffect(() => {
-    fetch("http://localhost:3000/profile", {
-      method: "GET",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    }).then((response) => {
-      response.json().then((userInfo) => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/profile", {
+          method: "GET",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+
+        const userInfo = await response.json();
         setUser(userInfo);
-      });
-    });
-  }, [user]);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    if (profile) {
+      fetchUserData();
+      setProfile(false); // Reset after fetching
+    }
+  }, [profile]); // Depend on shouldFetch
 
   const handleLogOut = async () => {
     await fetch("http://localhost:3000/logout", {
@@ -29,7 +44,10 @@ const Header: React.FC = () => {
       credentials: "include",
     });
     setUser(null);
+    setProfile(true); // Set to true to fetch user data on next render
+    navigate("/login"); // Optional: Redirect to login after logout
   };
+
   const username = user?.username;
   return (
     <header className="flex flex-wrap gap-5 justify-between px-8 py-3.5 w-full bg-gray-100 shadow-sm max-md:px-5 max-md:max-w-full">

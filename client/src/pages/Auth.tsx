@@ -14,21 +14,22 @@ const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isLogin = location.pathname === "/login";
-  const { values, handleChange, handleBlur, touched, errors } = useFormik({
-    initialValues: {
-      username: "",
-      email: "",
-      password: "",
-    },
-    validationSchema: validationSchema(isLogin),
-    onSubmit: (values) => {
-      if (isLogin) {
-        handleLogin(values);
-      } else {
-        handleSignup(values);
-      }
-    },
-  });
+  const { values, handleChange, handleBlur, touched, errors, handleSubmit } =
+    useFormik({
+      initialValues: {
+        username: "",
+        email: "",
+        password: "",
+      },
+      validationSchema: validationSchema(isLogin),
+      onSubmit: (values) => {
+        if (isLogin) {
+          handleLogin(values);
+        } else {
+          handleSignup(values);
+        }
+      },
+    });
 
   const handleLogin = async (values: ValuesProps) => {
     const { username, password } = values;
@@ -100,7 +101,7 @@ const Auth = () => {
               </button>
             </div>
           )}
-          <form className="w-full">
+          <form className="w-full" onSubmit={handleSubmit}>
             {isLogin ? (
               <InputField
                 label="Username"

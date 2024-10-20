@@ -1,33 +1,6 @@
 import React from "react";
 import CreateCard from "./CreateCard";
-
-const createItems = [
-  {
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/b923ade298c7cb4936eb03b412ee37e9722d8da445c224a5237c0a7660060b6e?placeholderIfAbsent=true&apiKey=b5e41414aacf42a3bef6031063a6b7ae",
-    title: "Create New Document",
-  },
-  {
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/b923ade298c7cb4936eb03b412ee37e9722d8da445c224a5237c0a7660060b6e?placeholderIfAbsent=true&apiKey=b5e41414aacf42a3bef6031063a6b7ae",
-    title: "Create New Document",
-  },
-  {
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/b923ade298c7cb4936eb03b412ee37e9722d8da445c224a5237c0a7660060b6e?placeholderIfAbsent=true&apiKey=b5e41414aacf42a3bef6031063a6b7ae",
-    title: "Create New Document",
-  },
-  {
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/b923ade298c7cb4936eb03b412ee37e9722d8da445c224a5237c0a7660060b6e?placeholderIfAbsent=true&apiKey=b5e41414aacf42a3bef6031063a6b7ae",
-    title: "Create New Document",
-  },
-  {
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/2761554201912df3d46ae588dd71d29950a761a735cde23c6ae86e156768dde6?placeholderIfAbsent=true&apiKey=b5e41414aacf42a3bef6031063a6b7ae",
-    title: "Create New Document",
-  },
-];
+import svg from "../assets/b923ade298c7cb4936eb03b412ee37e9722d8da445c224a5237c0a7660060b6e.svg";
 
 const CreateSection: React.FC = () => {
   return (
@@ -37,9 +10,11 @@ const CreateSection: React.FC = () => {
           Start Creating
         </h2>
         <div className="flex flex-wrap gap-10 items-center mt-6 max-md:max-w-full">
-          {createItems.map((item, index) => (
-            <CreateCard key={index} imageSrc={item.image} title={item.title} />
-          ))}
+          <CreateCard imageSrc={svg} title="Create New Document" />
+          <CreateCard imageSrc={svg} title="Create New Document" />
+          <CreateCard imageSrc={svg} title="Create New Document" />
+          <CreateCard imageSrc={svg} title="Create New Document" />
+          <CreateCard imageSrc={svg} title="Create New Document" />
         </div>
       </div>
     </section>

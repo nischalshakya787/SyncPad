@@ -15,24 +15,20 @@ const Auth: React.FC<AuthProps> = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:3000/login", {
+      await fetch("http://localhost:3000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
         body: JSON.stringify({ username, password }),
+      }).then((response) => {
+        response.json().then((data) => {
+          if (data.status) {
+            navigate("/");
+          }
+        });
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.log(errorData);
-        return;
-      }
-      const data = await response.json();
-      if (data.status) {
-        navigate("/");
-      }
     } catch (error) {
       console.log(error);
     }

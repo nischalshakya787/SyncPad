@@ -44,4 +44,12 @@ const logout = async (req, res) => {
   res.cookie("token", "").json("ok");
 };
 
-export { register, login, logout };
+const profile = async (req, res) => {
+  const { token } = req.cookies;
+  jwt.verify(token, process.env.JWT_SECRET, (err, info) => {
+    if (err) throw err;
+    res.json(info);
+  });
+};
+
+export { register, login, logout, profile };

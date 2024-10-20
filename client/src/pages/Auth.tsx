@@ -1,19 +1,37 @@
-import React, { useState } from "react";
 import { Button, InputField } from "../components";
 import { useLocation, useNavigate } from "react-router-dom";
+import key from "../assets/4c358706a1bed3348d3637a964e9b5efa950bbdf6d5ea34a2cf5c78953a839a8.svg";
+import { useFormik } from "formik";
+import { validationSchema } from "../schema";
 
-interface AuthProps {}
+interface ValuesProps {
+  username: string;
+  email: string;
+  password: string;
+}
 
-const Auth: React.FC<AuthProps> = () => {
+const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const isLogin = location.pathname === "/login";
+  const { values, handleChange, handleBlur, touched, errors } = useFormik({
+    initialValues: {
+      username: "",
+      email: "",
+      password: "",
+    },
+    validationSchema: validationSchema(isLogin),
+    onSubmit: (values) => {
+      if (isLogin) {
+        handleLogin(values);
+      } else {
+        handleSignup(values);
+      }
+    },
+  });
 
-  const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
+  const handleLogin = async (values: ValuesProps) => {
+    const { username, password } = values;
     try {
       await fetch("http://localhost:3000/login", {
         method: "POST",
@@ -33,8 +51,8 @@ const Auth: React.FC<AuthProps> = () => {
       console.log(error);
     }
   };
-  const handleSignup = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleSignup = async (values: ValuesProps) => {
+    const { username, email, password } = values;
 
     try {
       const response = await fetch("http://localhost:3000/signup", {
@@ -61,12 +79,10 @@ const Auth: React.FC<AuthProps> = () => {
       <section className="flex flex-col items-center py-20 max-w-full bg-white rounded-lg border-2 border-solid border-black border-opacity-30 w-[900px]">
         <div className="flex flex-col items-start self-stretch px-20 w-full text-gray-800 max-md:px-5 max-md:max-w-full">
           <h1 className="text-4xl font-extrabold max-md:max-w-full">
-            {location.pathname === "/login"
-              ? "Sign in To Your Account"
-              : "Create your account"}
+            {isLogin ? "Sign in To Your Account" : "Create your account"}
           </h1>
           <p className="mt-3.5 text-stone-500">
-            {location.pathname === "/login"
+            {isLogin
               ? "Welcome back! Please enter your details"
               : "join us today and be part of our community"}
           </p>
@@ -76,7 +92,7 @@ const Auth: React.FC<AuthProps> = () => {
               <button className="flex gap-5 px-4 py-2 mt-5 max-w-full whitespace-nowrap bg-white rounded-md border border-solid border-black border-opacity-30 text-stone-500 w-[140px]">
                 <img
                   loading="lazy"
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/23ccafae1aa7dbd2cc177e58cc25202ef4cd374c85b512558b62d76b1285bbe9?placeholderIfAbsent=true&apiKey=b5e41414aacf42a3bef6031063a6b7ae"
+                  src={key}
                   alt=""
                   className="object-contain shrink-0 w-6 aspect-square"
                 />
@@ -85,44 +101,44 @@ const Auth: React.FC<AuthProps> = () => {
             </div>
           )}
           <form className="w-full">
-            {location.pathname === "/login" ? (
+            {isLogin ? (
               <InputField
-                label="Email or username"
+                label="Username"
                 type="text"
-                value={username}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setUsername(e.target.value)
-                }
+                value={values.username}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.username && errors.username}
               />
             ) : (
               <>
                 <InputField
                   label="Username"
                   type="text"
-                  value={username}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setUsername(e.target.value)
-                  }
+                  value={values.username}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.username && errors.username}
                 />
                 <InputField
                   label="Email"
                   type="email"
-                  value={email}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setEmail(e.target.value)
-                  }
+                  value={values.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.email && errors.email}
                 />
               </>
             )}
             <InputField
               label="Password"
               type="password"
-              value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setPassword(e.target.value)
-              }
+              value={values.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={touched.password && errors.password}
             />
-            {location.pathname === "/login" && (
+            {isLogin && (
               <div className="flex gap-3.5 self-end mt-4 text-base text-black">
                 <img
                   loading="lazy"
@@ -135,14 +151,10 @@ const Auth: React.FC<AuthProps> = () => {
                 </a>
               </div>
             )}
-            {location.pathname === "/login" ? (
-              <Button text="Sign in" handleClick={handleLogin} />
-            ) : (
-              <Button text="Sign up" handleClick={handleSignup} />
-            )}
+            <Button text={isLogin ? "Sign in" : "Sign up"} />
           </form>
         </div>
-        {location.pathname === "/login" && (
+        {isLogin && (
           <>
             <p className="mt-8 text-base text-stone-500">Or Sign in with</p>
             <button className="flex gap-5 px-4 py-2 mt-5 max-w-full whitespace-nowrap bg-white rounded-md border border-solid border-black border-opacity-30 text-stone-500 w-[140px]">

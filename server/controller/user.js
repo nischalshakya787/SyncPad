@@ -25,26 +25,15 @@ const login = async (req, res) => {
     const { username, password } = req.body;
     const User = await UserModel.findOne({ username });
     const passOK = bcrypt.compareSync(password, User.password);
-
     if (passOK) {
-      jwt.sign(
+      const token = jwt.sign(
         { username, id: User._id },
-        process.env.JWT_SECRET,
-        {},
-        (err, token) => {
-          if (err) throw err;
-
-          res.cookie("token", "your_jwt_token_here", {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            maxAge: 3600000, // 1 hour
-            sameSite: "Lax",
-          });
-        }
+        process.env.JWT_SECRET
       );
-      res.status(200).json({ message: "Login Successful" });
+      res.cookie("token", token);
+      res.status(200).json({ message: "Login Successful", status: true });
     } else {
-      res.status(400).json(passOK);
+      res.status(400).json({ message: "Login Failed", status: false });
     }
   } catch (error) {
     console.log(error);

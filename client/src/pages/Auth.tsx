@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Button, InputField } from "../components";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface AuthProps {}
 
 const Auth: React.FC<AuthProps> = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -19,6 +20,7 @@ const Auth: React.FC<AuthProps> = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ username, password }),
       });
 
@@ -27,7 +29,10 @@ const Auth: React.FC<AuthProps> = () => {
         console.log(errorData);
         return;
       }
-      console.log(response);
+      const data = await response.json();
+      if (data.status) {
+        navigate("/");
+      }
     } catch (error) {
       console.log(error);
     }

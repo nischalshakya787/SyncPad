@@ -1,6 +1,7 @@
 import React from "react";
 import CreateCard from "./CreateCard";
 import svg from "../assets/b923ade298c7cb4936eb03b412ee37e9722d8da445c224a5237c0a7660060b6e.svg";
+import { Link } from "react-router-dom";
 
 const CreateSection: React.FC = () => {
   return (
@@ -10,7 +11,9 @@ const CreateSection: React.FC = () => {
           Start Creating
         </h2>
         <div className="flex flex-wrap gap-10 items-center mt-6 max-md:max-w-full">
-          <CreateCard imageSrc={svg} title="Create New Document" />
+          <Link to="document/:id">
+            <CreateCard imageSrc={svg} title="Create New Document" />
+          </Link>
           <CreateCard imageSrc={svg} title="Create New Document" />
           <CreateCard imageSrc={svg} title="Create New Document" />
           <CreateCard imageSrc={svg} title="Create New Document" />

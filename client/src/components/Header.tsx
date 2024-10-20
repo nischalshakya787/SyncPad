@@ -36,7 +36,7 @@ const Header: React.FC = () => {
       fetchUserData();
       setProfile(false); // Reset after fetching
     }
-  }, [profile]); // Depend on shouldFetch
+  }, [profile]); // Depend on profilke
 
   const handleLogOut = async () => {
     await fetch("http://localhost:3000/logout", {
@@ -44,8 +44,7 @@ const Header: React.FC = () => {
       credentials: "include",
     });
     setUser(null);
-    setProfile(true); // Set to true to fetch user data on next render
-    navigate("/login"); // Optional: Redirect to login after logout
+    setProfile(true);
   };
 
   const username = user?.username;

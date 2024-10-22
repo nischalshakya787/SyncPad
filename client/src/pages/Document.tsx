@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { formats, modules } from "../constants";
@@ -14,6 +14,7 @@ type userProps = {
 const Document = () => {
   const [value, setValue] = useState<string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
+  const quillRef = useRef<ReactQuill>(null); // Ref for ReactQuill
 
   const [user, setUser] = useState<userProps | null>(null);
 
@@ -57,10 +58,12 @@ const Document = () => {
     source: string,
     editor: any
   ) => {
+    console.log("object");
     if (source === "user") {
       setIsTyping(true);
       socket.emit("document", content);
     }
+    console.log(delta);
     setValue(content);
     setTimeout(() => {
       setIsTyping(false);
@@ -109,6 +112,7 @@ const Document = () => {
       </div>
       <div className="editor h-full flex align-center justify-center py-3">
         <ReactQuill
+          ref={quillRef}
           theme="snow"
           value={value}
           onChange={handleChange}

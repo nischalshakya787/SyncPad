@@ -3,10 +3,11 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { formats, modules } from "../constants";
 import { socket } from "../socket";
+import { Delta } from "quill";
 
 const Document = () => {
-  const [value, setValue] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const [value, setValue] = useState<string>("");
+  const [isTyping, setIsTyping] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isTyping) {
@@ -16,7 +17,12 @@ const Document = () => {
     }
   }, [isTyping]);
 
-  const handleChange = (content, delta, source, editor) => {
+  const handleChange = (
+    content: string,
+    delta: Delta,
+    source: string,
+    editor: any
+  ) => {
     console.log("Text without HTML:", editor.getText()); // Text without HTML tags
     setIsTyping(true);
     if (isTyping) {

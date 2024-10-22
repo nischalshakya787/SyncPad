@@ -6,13 +6,28 @@ import { socket } from "../socket";
 
 const Document = () => {
   const [value, setValue] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
-    socket.emit("document", value);
-    socket.on("document", (value) => {
-      setValue(value);
-    });
-  }, [value]);
+    if (!isTyping) {
+      socket.on("document", (value) => {
+        setValue(value);
+      });
+    }
+  }, [isTyping]);
+
+  const handleChange = (content, delta, source, editor) => {
+    console.log("Text without HTML:", editor.getText()); // Text without HTML tags
+    setIsTyping(true);
+    if (isTyping) {
+      socket.emit("document", content);
+    } else {
+      socket.on("document", (value) => {
+        setValue(value);
+      });
+    }
+    setValue(content);
+  };
 
   return (
     <div className="text-editor border  h-screen">
@@ -58,7 +73,7 @@ const Document = () => {
         <ReactQuill
           theme="snow"
           value={value}
-          onChange={setValue}
+          onChange={handleChange}
           modules={modules}
           formats={formats}
           style={{ width: "900px" }}

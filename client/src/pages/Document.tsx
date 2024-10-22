@@ -3,12 +3,9 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { formats, modules } from "../constants";
 import { socket } from "../socket";
-import { useField } from "formik";
 
 const Document = () => {
   const [value, setValue] = useState("");
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     socket.emit("document", value);

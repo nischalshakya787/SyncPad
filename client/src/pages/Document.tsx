@@ -15,7 +15,7 @@ const Document = () => {
         setValue(value);
       });
     }
-  }, [isTyping]);
+  }, [isTyping, socket]);
 
   const handleChange = (
     content: string,
@@ -24,15 +24,18 @@ const Document = () => {
     editor: any
   ) => {
     console.log("Text without HTML:", editor.getText()); // Text without HTML tags
-    setIsTyping(true);
-    if (isTyping) {
+
+    if (source === "user") {
+      setIsTyping(true);
       socket.emit("document", content);
-    } else {
-      socket.on("document", (value) => {
-        setValue(value);
-      });
     }
+
     setValue(content);
+
+    // Reset isTyping after a short delay to allow real-time sync
+    setTimeout(() => {
+      setIsTyping(false);
+    }, 1000); // Adjust delay as needed
   };
 
   return (

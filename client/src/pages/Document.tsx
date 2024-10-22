@@ -5,13 +5,47 @@ import { formats, modules } from "../constants";
 import { socket } from "../socket";
 import { Delta } from "quill";
 
+type userProps = {
+  iat: number;
+  id: string;
+  username: string;
+};
+
 const Document = () => {
   const [value, setValue] = useState<string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
 
+  const [user, setUser] = useState<userProps | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/profile", {
+          method: "GET",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+
+        const userInfo = await response.json();
+        setUser(userInfo);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    if (!user) {
+      // Only fetch data if user is null (prevents unnecessary fetching)
+      fetchUserData();
+    }
+  }, [user]); // Fetch only when `user` is null
+
   useEffect(() => {
     if (!isTyping) {
-      socket.on("document", (value) => {
+      socket.on("document", (value: string) => {
         setValue(value);
       });
     }
@@ -32,7 +66,7 @@ const Document = () => {
       setIsTyping(false);
     }, 1000);
   };
-
+  const username = user?.username ? user?.username : "Username";
   return (
     <div className="text-editor border  h-screen">
       <div className="flex border border-gray-300 p-2">
@@ -70,7 +104,7 @@ const Document = () => {
           <button className="bg-blue-500 text-white rounded-md p-2">
             Add Collab
           </button>
-          <div className="ml-5">Hello, Username</div>
+          <div className="ml-5">Hello, {username}</div>
         </div>
       </div>
       <div className="editor h-full flex align-center justify-center py-3">

@@ -10,7 +10,6 @@ type userProps = {
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<userProps | null>(null);
-  const [profile, setProfile] = useState(true); // State to control fetching
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -32,11 +31,11 @@ const Header: React.FC = () => {
       }
     };
 
-    if (profile) {
+    if (!user) {
+      // Only fetch data if user is null (prevents unnecessary fetching)
       fetchUserData();
-      setProfile(false); // Reset after fetching
     }
-  }, [profile]); // Depend on profilke
+  }, [user]); // Fetch only when `user` is null
 
   const handleLogOut = async () => {
     await fetch("http://localhost:3000/logout", {

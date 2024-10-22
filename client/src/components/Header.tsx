@@ -43,7 +43,6 @@ const Header: React.FC = () => {
       credentials: "include",
     });
     setUser(null);
-    setProfile(true);
   };
 
   const username = user?.username;

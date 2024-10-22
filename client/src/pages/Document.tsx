@@ -23,19 +23,14 @@ const Document = () => {
     source: string,
     editor: any
   ) => {
-    console.log("Text without HTML:", editor.getText()); // Text without HTML tags
-
     if (source === "user") {
       setIsTyping(true);
       socket.emit("document", content);
     }
-
     setValue(content);
-
-    // Reset isTyping after a short delay to allow real-time sync
     setTimeout(() => {
       setIsTyping(false);
-    }, 1000); // Adjust delay as needed
+    }, 1000);
   };
 
   return (

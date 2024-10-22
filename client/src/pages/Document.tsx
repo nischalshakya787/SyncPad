@@ -2,10 +2,29 @@ import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { formats, modules } from "../constants";
+import { socket } from "../socket";
 
 const Document = () => {
   const [value, setValue] = useState("");
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
 
+  useEffect(() => {
+    // Listen for incoming messages
+    socket.on("message", (data) => {
+      setMessages((prevMessages) => [...prevMessages, data]);
+    });
+
+    // Cleanup on component unmount
+    return () => {
+      socket.off("message");
+    };
+  }, []);
+
+  const sendMessage = () => {
+    socket.emit("message", message); // Send message to backend
+    setMessage(""); // Clear input after sending
+  };
   return (
     <div className="text-editor border  h-screen">
       <div className="flex border border-gray-300 p-2">
@@ -47,6 +66,21 @@ const Document = () => {
         </div>
       </div>
       <div className="editor h-full flex align-center justify-center py-3">
+        <div className="App">
+          <h1>Socket.IO Chat</h1>
+          <div>
+            {messages.map((msg, index) => (
+              <p key={index}>{msg}</p>
+            ))}
+          </div>
+          <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Enter message"
+          />
+          <button onClick={sendMessage}>Send</button>
+        </div>
         <ReactQuill
           theme="snow"
           value={value}

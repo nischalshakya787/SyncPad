@@ -4,19 +4,32 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import authRouter from "./routes/user.js";
+import { createServer } from "node:http";
+import { Server } from "socket.io";
 
 dotenv.config();
 const app = express();
-app.use(express.json());
+//creating server
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    //Enabaling the cors with forntend server
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+  },
+});
 app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
-app.use(cookieParser());
+app.use(express.json());
+app.use(cookieParser()); //This allows us to interact with browser cookies
 
+//router which includes login signup logout and getprofile
 app.use(authRouter);
 
 const PORT = 3000;
 
 const startServer = async () => {
   try {
+    //If the following variables are not fgound then it will throw an error
     if (!process.env.MONGO_URL || !process.env.JWT_SECRET) {
       console.error(
         "Environment variables MONGO_URL or JWT_SECRET are missing."
@@ -24,10 +37,25 @@ const startServer = async () => {
       process.exit(1);
     }
 
+    //connection with mongodb
     await mongoose.connect(process.env.MONGO_URL);
     console.log("Connected to DB");
 
-    app.listen(PORT, () => {
+    io.on("connection", (socket) => {
+      console.log("New client connected: ", socket.id);
+
+      // Listen for a message from the client
+      socket.on("message", (data) => {
+        console.log("Message received from client: ", data);
+        // Send message to all connected clients (including the sender)
+        io.emit("message", data);
+      });
+
+      socket.on("disconnect", () => {
+        console.log("Client disconnected: ", socket.id);
+      });
+    });
+    server.listen(PORT, () => {
       console.log(`Server running on: http://localhost:${PORT}/`);
     });
   } catch (error) {

@@ -44,15 +44,8 @@ const startServer = async () => {
     io.on("connection", (socket) => {
       console.log("New client connected: ", socket.id);
 
-      // Listen for a message from the client
-      socket.on("message", (data) => {
-        console.log("Message received from client: ", data);
-        // Send message to all connected clients (including the sender)
-        io.emit("message", data);
-      });
-
-      socket.on("disconnect", () => {
-        console.log("Client disconnected: ", socket.id);
+      socket.on("document", (value) => {
+        socket.broadcast.emit("document", value);
       });
     });
     server.listen(PORT, () => {

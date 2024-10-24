@@ -1,7 +1,7 @@
-import DocumentModel from "../model/Document";
-import UserModel from "../model/User";
+import DocumentModel from "../model/Document.js";
+import UserModel from "../model/User.js";
 
-export const saveDocument = async (req, res) => {
+export const createDocument = async (req, res) => {
   const { title, username } = req.body;
 
   try {

@@ -6,6 +6,10 @@ const DocumentSchema = new mongoose.Schema(
       type: String,
       default: "Untitled Document",
     },
+    value: {
+      type: String,
+      default: "",
+    },
     creator: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User", // Assuming UserModel is defined properly as mongoose.model("User", UserSchema)

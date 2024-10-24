@@ -33,7 +33,7 @@ const login = async (req, res) => {
       res.cookie("token", token);
       res.status(200).json({ message: "Login Successful", status: true });
     } else {
-      res.status(400).json({ message: "Login Failed", status: false });
+      res.status(400).json({ message: "Incorrect Password", status: false });
     }
   } catch (error) {
     console.log(error);

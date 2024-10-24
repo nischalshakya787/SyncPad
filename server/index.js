@@ -12,11 +12,6 @@ dotenv.config();
 const app = express();
 //creating server
 const server = createServer(app);
-app.use(
-  cors({
-    origin: "http://192.168.1.75:5173", // Your frontend's local IP
-  })
-);
 const io = new Server(server, {
   cors: {
     //Enabaling the cors with forntend server

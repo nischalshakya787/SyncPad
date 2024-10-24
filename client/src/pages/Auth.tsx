@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import key from "../assets/4c358706a1bed3348d3637a964e9b5efa950bbdf6d5ea34a2cf5c78953a839a8.svg";
 import { useFormik } from "formik";
 import { validationSchema } from "../schema";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface ValuesProps {
   username: string;
@@ -44,7 +46,11 @@ const Auth = () => {
       }).then((response) => {
         response.json().then((data) => {
           if (data.status) {
-            navigate("/");
+            navigate("/", {
+              state: { isLogin: true, toastMessage: "Login Successful" },
+            });
+          } else {
+            toast.error(data.message);
           }
         });
       });
@@ -77,6 +83,7 @@ const Auth = () => {
 
   return (
     <main className="flex overflow-hidden flex-col justify-center items-center px-20 py-24 text-xl font-semibold bg-gray-100 max-md:px-5">
+      <ToastContainer />
       <section className="flex flex-col items-center py-20 max-w-full bg-white rounded-lg border-2 border-solid border-black border-opacity-30 w-[900px]">
         <div className="flex flex-col items-start self-stretch px-20 w-full text-gray-800 max-md:px-5 max-md:max-w-full">
           <h1 className="text-4xl font-extrabold max-md:max-w-full">

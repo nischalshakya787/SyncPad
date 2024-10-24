@@ -8,11 +8,14 @@ export const createDocument = async (req, res) => {
     const user = await UserModel.findOne(username);
 
     if (user) {
-      await DocumentModel.create({
+      const Document = await DocumentModel.create({
         title,
         creator: user,
       });
-      res.status(200).json({ message: "Document created" });
+
+      res
+        .status(200)
+        .json({ message: "Document created", docsId: Document._id });
     } else {
       res.status(201).json({ message: "User not found. PLease login" });
     }

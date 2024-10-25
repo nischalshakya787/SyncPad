@@ -1,15 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 import CreateCard from "./CreateCard";
 import svg from "../assets/b923ade298c7cb4936eb03b412ee37e9722d8da445c224a5237c0a7660060b6e.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../UserContext";
 
 const CreateSection: React.FC = () => {
   const navigate = useNavigate();
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("Header must be used within a UserContextProvider");
+  }
+
+  const { user } = context;
   const createDocument = async () => {
     try {
       const response = await fetch("http://localhost:3000/document", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: user?.username }),
       });
 
       if (!response.ok) {

@@ -2,14 +2,14 @@ import DocumentModel from "../model/Document.js";
 import UserModel from "../model/User.js";
 
 export const createDocument = async (req, res) => {
-  const { title, username } = req.body;
+  const { username } = req.body;
+  console.log(req.body);
 
   try {
-    const user = await UserModel.findOne(username);
-
+    const user = await UserModel.findOne({ username });
+    console.log(user);
     if (user) {
       const Document = await DocumentModel.create({
-        title,
         creator: user,
       });
 
@@ -19,5 +19,14 @@ export const createDocument = async (req, res) => {
     } else {
       res.status(201).json({ message: "User not found. PLease login" });
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const saveDocument = async (req, res) => {
+  try {
+  } catch (error) {
+    console.log(error);
+  }
 };

@@ -44,8 +44,11 @@ const Document = () => {
       setIsTyping(false);
     }, 1000);
   };
-  const handleSave = () => {
+  const handleSave = async () => {
     try {
+      const response = await fetch(`http://localhost:3000/document/${docId}`, {
+        method: "POST",
+      });
       console.log(docId);
     } catch (error) {
       console.log(error);

@@ -1,9 +1,9 @@
+import mongoose from "mongoose";
 import DocumentModel from "../model/Document.js";
 import UserModel from "../model/User.js";
 
 export const createDocument = async (req, res) => {
   const { username } = req.body;
-  console.log(req.body);
 
   try {
     const user = await UserModel.findOne({ username });
@@ -44,5 +44,17 @@ export const saveDocument = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error updating document" });
+  }
+};
+
+export const fetchAllDocuments = async (req, res) => {
+  const { id } = req.query;
+  console.log(id);
+
+  try {
+    const creator = mongoose.Types.ObjectId.createFromHexString(id);
+    console.log(creator);
+  } catch (error) {
+    console.log(error);
   }
 };

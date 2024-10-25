@@ -9,11 +9,11 @@ import { useParams } from "react-router-dom";
 
 const Document = () => {
   const [value, setValue] = useState<string>("");
-  const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [isTyping, setIsTyping] = useState<boolean>(false); //to track if the user is typing or not
   const quillRef = useRef<ReactQuill>(null); // Ref for ReactQuill
-  const { id: docId } = useParams<{ id: string }>();
+  const { id: docId } = useParams<{ id: string }>(); //to fetch the id from /document/:id
 
-  const context = useContext(UserContext);
+  const context = useContext(UserContext); //to get the logged in user
   if (!context) {
     throw new Error("Header must be used within a UserContextProvider");
   }
@@ -23,6 +23,7 @@ const Document = () => {
   useEffect(() => {
     if (!isTyping) {
       socket.on("document", (value: string) => {
+        //this is for the user who is not typing
         setValue(value);
       });
     }
@@ -34,22 +35,29 @@ const Document = () => {
     source: string,
     editor: any
   ) => {
-    console.log("object");
     if (source === "user") {
       setIsTyping(true);
-      socket.emit("document", content);
+      socket.emit("document", content); //emitting the typed content to the server
     }
     setValue(content);
+    //to make isTyping false after 1sec
     setTimeout(() => {
       setIsTyping(false);
     }, 1000);
   };
+
   const handleSave = async () => {
     try {
+      console.log(value);
       const response = await fetch(`http://localhost:3000/document/${docId}`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ value }),
       });
-      console.log(docId);
+      const data = await response.json();
+      console.log(data.message);
     } catch (error) {
       console.log(error);
     }

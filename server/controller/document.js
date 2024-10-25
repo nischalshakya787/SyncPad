@@ -7,7 +7,7 @@ export const createDocument = async (req, res) => {
 
   try {
     const user = await UserModel.findOne({ username });
-    console.log(user);
+    //If user found then this code block will run
     if (user) {
       const Document = await DocumentModel.create({
         creator: user,
@@ -17,7 +17,7 @@ export const createDocument = async (req, res) => {
         .status(200)
         .json({ message: "Document created", docsId: Document._id });
     } else {
-      res.status(201).json({ message: "User not found. PLease login" });
+      res.status(201).json({ message: "User not found. PLease login" }); // user not found
     }
   } catch (error) {
     console.log(error);
@@ -25,14 +25,19 @@ export const createDocument = async (req, res) => {
 };
 
 export const saveDocument = async (req, res) => {
+  //This is to retreve the id from /document/:id
   const docId = req.params.id;
+  //value contains the html body
   const { value } = req.body;
+
   try {
+    //this finds document by id and updates only its value
     const updatedDocument = await DocumentModel.findByIdAndUpdate(docId, {
       value,
     });
-
+    console.log(updatedDocument);
     if (!updatedDocument) {
+      //docs with this id not found
       return res.status(404).json({ message: "Document not found" });
     }
     res.status(200).json({ message: "Document Updated Successfully" });

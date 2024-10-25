@@ -53,7 +53,12 @@ export const fetchAllDocuments = async (req, res) => {
 
   try {
     const creator = mongoose.Types.ObjectId.createFromHexString(id);
-    console.log(creator);
+    if (creator) {
+      const document = await DocumentModel.find({ creator: creator });
+      return res.status(200).json(document);
+    } else {
+      return res.status(404).json({ message: "User not found" });
+    }
   } catch (error) {
     console.log(error);
   }

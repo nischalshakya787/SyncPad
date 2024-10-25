@@ -54,7 +54,7 @@ const Home = () => {
         )}
       </header>
       <CreateSection />
-      {user && <RecentDocumentsSection user={user} />}
+      <RecentDocumentsSection id={user?.id} />
     </main>
   );
 };

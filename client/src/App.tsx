@@ -32,7 +32,7 @@ function AppRoutes() {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch user data");
+          setUser(null);
         }
 
         const userInfo = await response.json();
@@ -46,7 +46,6 @@ function AppRoutes() {
       fetchUserData();
     }
   }, [user, setUser]);
-
   return (
     <Routes>
       <Route path="/" element={<Home />} />

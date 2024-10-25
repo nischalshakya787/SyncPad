@@ -1,34 +1,46 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import DocumentCard from "./DocumentCard";
 
-const recentDocuments = [
-  { title: "Name of the docs", date: "Sep 22, 2024" },
-  { title: "Name of the docs", date: "Sep 22, 2024" },
-  { title: "Name of the docs", date: "Sep 22, 2024" },
-  { title: "Name of the docs", date: "Sep 22, 2024" },
-];
-interface UserProps {
-  iat: number;
-  id: string;
-  username: string;
-}
 interface RecentDocsProps {
-  user: UserProps;
+  id: string | undefined;
 }
-const RecentDocumentsSection: React.FC<RecentDocsProps> = ({ user }) => {
+interface Document {
+  _id: string;
+  title: string;
+  value: string;
+  creator: string;
+  collab: string[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+const RecentDocumentsSection: React.FC<RecentDocsProps> = ({ id }) => {
+  const [documents, setDocuments] = useState<Document[]>([]);
+  console.log(documents);
+
   useEffect(() => {
-    const fetchDocuments = async () => {
-      const response = await fetch(
-        `http://localhost:3000/document/fetch?id=${user?.id}`,
-        {
-          method: "GET",
+    if (id) {
+      const fetchDocuments = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:3000/document/fetch?id=${id}`,
+            {
+              method: "GET",
+            }
+          );
+
+          const data = await response.json();
+          setDocuments(data || []); // Ensure data is an array
+        } catch (error) {
+          console.error("Error fetching documents:", error);
         }
-      );
-      const data = await response.json();
-      console.log(data);
-    };
-    fetchDocuments();
-  });
+      };
+
+      fetchDocuments();
+    }
+  }, [id]); // Only run this effect when `id` changes
+
   return (
     <section className="flex flex-col items-center px-20 pt-10 pb-20 mt-14 w-full bg-gray-100 max-md:px-5 max-md:mt-10 max-md:max-w-full">
       <div className="flex flex-col w-full max-w-[1226px] max-md:max-w-full">
@@ -36,9 +48,17 @@ const RecentDocumentsSection: React.FC<RecentDocsProps> = ({ user }) => {
           Recent Documents
         </h2>
         <div className="flex flex-wrap gap-10 items-center mt-6 max-md:max-w-full">
-          {recentDocuments.map((doc, index) => (
-            <DocumentCard key={index} title={doc.title} date={doc.date} />
-          ))}
+          {documents.length > 0 ? (
+            documents.map((doc, index) => (
+              <DocumentCard
+                key={index}
+                title={doc.title}
+                date={doc.createdAt.split("T")[0]}
+              />
+            ))
+          ) : (
+            <p>No recent documents found.</p>
+          )}
         </div>
       </div>
     </section>

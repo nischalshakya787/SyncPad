@@ -28,6 +28,20 @@ const Document = () => {
       });
     }
   }, [isTyping, socket]);
+  useEffect(() => {
+    const fetchDocument = async () => {
+      const response = await fetch(
+        `http://localhost:3000/document?id=${docId}`,
+        {
+          method: "GET",
+        }
+      );
+
+      const data = await response.json();
+      setValue(data.value);
+    };
+    fetchDocument();
+  }, []);
 
   const handleChange = (
     content: string,

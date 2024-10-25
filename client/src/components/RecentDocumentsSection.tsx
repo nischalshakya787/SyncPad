@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DocumentCard from "./DocumentCard";
+import { Link } from "react-router-dom";
 
 interface RecentDocsProps {
   id: string | undefined;
@@ -17,7 +18,6 @@ interface Document {
 
 const RecentDocumentsSection: React.FC<RecentDocsProps> = ({ id }) => {
   const [documents, setDocuments] = useState<Document[]>([]);
-  console.log(documents);
 
   useEffect(() => {
     if (id) {
@@ -50,11 +50,13 @@ const RecentDocumentsSection: React.FC<RecentDocsProps> = ({ id }) => {
         <div className="flex flex-wrap gap-10 items-center mt-6 max-md:max-w-full">
           {documents.length > 0 ? (
             documents.map((doc, index) => (
-              <DocumentCard
-                key={index}
-                title={doc.title}
-                date={doc.createdAt.split("T")[0]}
-              />
+              <Link to={`/document/${doc._id}`} key={doc._id}>
+                <DocumentCard
+                  key={index}
+                  title={doc.title}
+                  date={doc.createdAt.split("T")[0]}
+                />
+              </Link>
             ))
           ) : (
             <p>No recent documents found.</p>

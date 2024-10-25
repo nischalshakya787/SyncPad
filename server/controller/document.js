@@ -49,7 +49,6 @@ export const saveDocument = async (req, res) => {
 
 export const fetchAllDocuments = async (req, res) => {
   const { id } = req.query;
-  console.log(id);
 
   try {
     const creator = mongoose.Types.ObjectId.createFromHexString(id);
@@ -59,6 +58,17 @@ export const fetchAllDocuments = async (req, res) => {
     } else {
       return res.status(404).json({ message: "User not found" });
     }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const fetchDocument = async (req, res) => {
+  const { id } = req.query;
+  try {
+    const document = await DocumentModel.findById(id);
+
+    res.status(200).json(document);
   } catch (error) {
     console.log(error);
   }

@@ -25,8 +25,19 @@ export const createDocument = async (req, res) => {
 };
 
 export const saveDocument = async (req, res) => {
+  const docId = req.params.id;
+  const { value } = req.body;
   try {
+    const updatedDocument = await DocumentModel.findByIdAndUpdate(docId, {
+      value,
+    });
+
+    if (!updatedDocument) {
+      return res.status(404).json({ message: "Document not found" });
+    }
+    res.status(200).json({ message: "Document Updated Successfully" });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({ message: "Error updating document" });
   }
 };

@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { formats, modules } from "../constants";
 import { socket } from "../socket";
 import { Delta } from "quill";
+import { UserContext } from "../UserContext";
 
 type userProps = {
   iat: number;
@@ -16,33 +17,12 @@ const Document = () => {
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const quillRef = useRef<ReactQuill>(null); // Ref for ReactQuill
 
-  const [user, setUser] = useState<userProps | null>(null);
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("Header must be used within a UserContextProvider");
+  }
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/profile", {
-          method: "GET",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data");
-        }
-
-        const userInfo = await response.json();
-        setUser(userInfo);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    if (!user) {
-      // Only fetch data if user is null (prevents unnecessary fetching)
-      fetchUserData();
-    }
-  }, [user]); // Fetch only when `user` is null
+  const { user } = context;
 
   useEffect(() => {
     if (!isTyping) {

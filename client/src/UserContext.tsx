@@ -1,9 +1,31 @@
-import { createContext, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useState,
+} from "react";
 
-export const UserContext = createContext({});
+interface UserProps {
+  iat: number;
+  id: string;
+  username: string;
+}
 
-export function UserContextProvider({ children }) {
-  const [user, setUser] = useState(null);
+interface UserContextType {
+  user: UserProps | null;
+  setUser: Dispatch<SetStateAction<UserProps | null>>;
+}
+
+export const UserContext = createContext<UserContextType | undefined>(
+  undefined
+);
+
+interface UserContextProviderProps {
+  children: ReactNode;
+}
+export function UserContextProvider({ children }: UserContextProviderProps) {
+  const [user, setUser] = useState<UserProps | null>(null);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

@@ -1,41 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-
-type userProps = {
-  iat: number;
-  id: string;
-  username: string;
-};
+import { UserContext } from "../UserContext";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<userProps | null>(null);
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("Header must be used within a UserContextProvider");
+  }
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/profile", {
-          method: "GET",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data");
-        }
-
-        const userInfo = await response.json();
-        setUser(userInfo);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    if (!user) {
-      // Only fetch data if user is null (prevents unnecessary fetching)
-      fetchUserData();
-    }
-  }, [user]); // Fetch only when `user` is null
+  const { user, setUser } = context;
 
   const handleLogOut = async () => {
     await fetch("http://localhost:3000/logout", {

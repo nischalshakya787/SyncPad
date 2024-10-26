@@ -73,3 +73,14 @@ export const fetchDocument = async (req, res) => {
     console.log(error);
   }
 };
+
+export const updateName = async (req, res) => {
+  const { id, title } = req.body;
+  try {
+    const document = await DocumentModel.findByIdAndUpdate(id, { title });
+
+    res.status(200).json({ message: "Name updated successfully", document });
+  } catch (error) {
+    console.log(error);
+  }
+};

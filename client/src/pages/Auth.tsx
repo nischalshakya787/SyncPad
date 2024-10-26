@@ -5,12 +5,7 @@ import { useFormik } from "formik";
 import { validationSchema } from "../schema";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-interface ValuesProps {
-  username: string;
-  email: string;
-  password: string;
-}
+import { AuthProps } from "../types/Auth";
 
 const Auth = () => {
   const location = useLocation();
@@ -33,7 +28,7 @@ const Auth = () => {
       },
     });
 
-  const handleLogin = async (values: ValuesProps) => {
+  const handleLogin = async (values: AuthProps) => {
     const { username, password } = values;
     try {
       await fetch("http://localhost:3000/login", {
@@ -58,7 +53,7 @@ const Auth = () => {
       console.log(error);
     }
   };
-  const handleSignup = async (values: ValuesProps) => {
+  const handleSignup = async (values: AuthProps) => {
     const { username, email, password } = values;
 
     try {

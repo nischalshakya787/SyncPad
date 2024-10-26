@@ -1,13 +1,5 @@
 import React from "react";
-
-interface InputFieldProps {
-  label: string;
-  type: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
-  error?: string; // Ensure this is only string or undefined
-}
+import { InputFieldProps } from "../types/Auth";
 
 const InputField: React.FC<InputFieldProps> = ({
   label,

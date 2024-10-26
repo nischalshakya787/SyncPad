@@ -1,9 +1,5 @@
 import React from "react";
-
-interface DocumentCardProps {
-  title: string;
-  date: string;
-}
+import { DocumentCardProps } from "../types/Document";
 
 const DocumentCard: React.FC<DocumentCardProps> = ({ title, date }) => {
   return (

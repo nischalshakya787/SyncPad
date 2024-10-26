@@ -1,19 +1,10 @@
 import React, { useEffect, useState } from "react";
 import DocumentCard from "./DocumentCard";
 import { Link } from "react-router-dom";
+import { Document } from "../types/Document";
 
 interface RecentDocsProps {
   id: string | undefined;
-}
-interface Document {
-  _id: string;
-  title: string;
-  value: string;
-  creator: string;
-  collab: string[];
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
 }
 
 const RecentDocumentsSection: React.FC<RecentDocsProps> = ({ id }) => {

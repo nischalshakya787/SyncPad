@@ -5,12 +5,7 @@ import {
   SetStateAction,
   useState,
 } from "react";
-
-interface UserProps {
-  iat: number;
-  id: string;
-  username: string;
-}
+import { UserProps } from "./types/User";
 
 interface UserContextType {
   user: UserProps | null;

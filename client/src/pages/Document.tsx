@@ -6,6 +6,7 @@ import { socket } from "../socket";
 import { Delta } from "quill";
 import { UserContext } from "../UserContext";
 import { useParams } from "react-router-dom";
+import { User } from "../types/User";
 
 const Document = () => {
   const [value, setValue] = useState<string>("");
@@ -191,7 +192,7 @@ type AddCollabModal = {
 
 const AddCollabModal = ({ setIsModalOpen }: AddCollabModal) => {
   const [email, setEmail] = useState<string>("");
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [box, setBox] = useState<boolean>(false);
   const searchUser = async () => {
     setBox(true);

@@ -9,9 +9,12 @@ import { useParams } from "react-router-dom";
 
 const Document = () => {
   const [value, setValue] = useState<string>("");
+  const [docTitle, setDocTitle] = useState("");
   const [isTyping, setIsTyping] = useState<boolean>(false); //to track if the user is typing or not
   const quillRef = useRef<ReactQuill>(null); // Ref for ReactQuill
   const { id: docId } = useParams<{ id: string }>(); //to fetch the id from /document/:id
+  console.log(docId);
+  const divRef = useRef<HTMLDivElement | null>(null);
 
   const context = useContext(UserContext); //to get the logged in user
   if (!context) {
@@ -38,6 +41,7 @@ const Document = () => {
       );
 
       const data = await response.json();
+      setDocTitle(data.title);
       setValue(data.value);
     };
     fetchDocument();
@@ -62,7 +66,6 @@ const Document = () => {
 
   const handleSave = async () => {
     try {
-      console.log(value);
       const response = await fetch(`http://localhost:3000/document/${docId}`, {
         method: "POST",
         headers: {
@@ -76,6 +79,36 @@ const Document = () => {
       console.log(error);
     }
   };
+  const handleBlur = async () => {
+    if (divRef.current) {
+      const updatedTitle = divRef.current.textContent || "";
+      setDocTitle(updatedTitle); // Update state with the latest title
+
+      // Make an API call with the latest title
+      try {
+        const response = await fetch(
+          "http://localhost:3000/document/update-name",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: docId, title: updatedTitle }), // Use the updated title
+          }
+        );
+
+        // Check if the response is ok
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        console.error("Error updating document title:", error);
+      }
+    }
+  };
   const username = user?.username ? user?.username : "Username";
   return (
     <div className="text-editor border  h-screen">
@@ -87,7 +120,16 @@ const Document = () => {
             </div>
           </div>
           <div className="block ml-3">
-            <div className="text-lg px-3">Untitled Document</div>
+            <div
+              className="text-lg px-3"
+              contentEditable
+              suppressContentEditableWarning
+              ref={divRef}
+              onBlur={handleBlur}
+              onInput={() => null} // Prevents React from interfering with cursor position
+            >
+              {docTitle}
+            </div>
             <div className="menu flex">
               <div className="buttons px-3 cursor-pointer hover:bg-gray-100">
                 File

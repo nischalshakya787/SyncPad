@@ -32,10 +32,10 @@ export const saveDocument = async (req, res) => {
 
   try {
     //this finds document by id and updates only its value
+    console.log("object");
     const updatedDocument = await DocumentModel.findByIdAndUpdate(docId, {
       value,
     });
-    console.log(updatedDocument);
     if (!updatedDocument) {
       //docs with this id not found
       return res.status(404).json({ message: "Document not found" });
@@ -79,7 +79,10 @@ export const updateName = async (req, res) => {
   try {
     const document = await DocumentModel.findByIdAndUpdate(id, { title });
 
-    res.status(200).json({ message: "Name updated successfully", document });
+    if (!document) {
+      return res.status(404).json({ message: "Document not found" });
+    }
+    res.status(200).json({ message: "Name updated successfully" });
   } catch (error) {
     console.log(error);
   }

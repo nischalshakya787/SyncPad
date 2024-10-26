@@ -9,12 +9,12 @@ import { useParams } from "react-router-dom";
 
 const Document = () => {
   const [value, setValue] = useState<string>("");
-  const [docTitle, setDocTitle] = useState("");
+  const [docTitle, setDocTitle] = useState<string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false); //to track if the user is typing or not
   const quillRef = useRef<ReactQuill>(null); // Ref for ReactQuill
   const { id: docId } = useParams<{ id: string }>(); //to fetch the id from /document/:id
-  console.log(docId);
   const divRef = useRef<HTMLDivElement | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const context = useContext(UserContext); //to get the logged in user
   if (!context) {
@@ -154,7 +154,10 @@ const Document = () => {
           >
             Save
           </button>
-          <button className="bg-blue-500 text-white rounded-md p-2">
+          <button
+            className="bg-blue-500 text-white rounded-md p-2"
+            onClick={() => setIsModalOpen(true)}
+          >
             Add Collab
           </button>
           <div className="ml-5">Hello, {username}</div>
@@ -171,6 +174,7 @@ const Document = () => {
           style={{ width: "900px" }}
         />
       </div>
+      {isModalOpen && <AddCollabModal setIsModalOpen={setIsModalOpen} />}
     </div>
   );
 };
@@ -178,6 +182,67 @@ const Document = () => {
 const MenuComponent: React.FC<{ name: String }> = ({ name }) => {
   return (
     <div className="buttons px-3 cursor-pointer hover:bg-gray-100">{name}</div>
+  );
+};
+
+type AddCollabModal = {
+  setIsModalOpen: (value: boolean) => void;
+};
+
+const AddCollabModal = ({ setIsModalOpen }: AddCollabModal) => {
+  const [email, setEmail] = useState<string>("");
+  const [user, setUser] = useState(null);
+  const searchUser = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/user?email=${email}`);
+      if (!response.ok) {
+        throw Error("Server error");
+      }
+      const data = await response.json();
+
+      if (data.user) {
+        setUser(data.user);
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(user);
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center backdrop-blur-md">
+      <div className="w-1/2 bg-slate-100 p-6 rounded-md">
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-lg font-semibold">Add Collab</p>
+          <button
+            className="text-sm px-4 py-2 bg-slate-600 text-white rounded-md"
+            onClick={() => setIsModalOpen(false)}
+          >
+            Close
+          </button>
+        </div>
+        <div className="flex flex-col">
+          <label htmlFor=""> User Email: </label>
+          <input
+            type="text"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+            placeholder="Enter the User's Email"
+            className="mb-4 px-4 py-2 bg-slate-200 rounded-md"
+          />
+
+          <button
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+            onClick={searchUser}
+          >
+            Search
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

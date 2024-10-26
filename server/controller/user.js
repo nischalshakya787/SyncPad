@@ -23,7 +23,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const User = await UserModel.findOne({ username });
+    const User = await UserModel.find({ username });
     const passOK = bcrypt.compareSync(password, User.password);
     if (passOK) {
       const token = jwt.sign(
@@ -55,4 +55,18 @@ const profile = async (req, res) => {
   });
 };
 
-export { register, login, logout, profile };
+const getUser = async (req, res) => {
+  const { email } = req.query;
+  try {
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(201).json({ message: "User not found" });
+    }
+    console.log(user);
+    res.status(200).json({ message: "User found", user });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { register, login, logout, profile, getUser };

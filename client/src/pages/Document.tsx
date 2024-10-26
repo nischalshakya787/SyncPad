@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { formats, modules } from "../constants";
@@ -31,6 +31,8 @@ const Document = () => {
       });
     }
   }, [isTyping, socket]);
+
+  //To reload the saved value of a document
   useEffect(() => {
     const fetchDocument = async () => {
       const response = await fetch(
@@ -47,6 +49,7 @@ const Document = () => {
     fetchDocument();
   }, []);
 
+  //When we type in the canvas this function will execute and emits the updated value to the server and server will emit the changes to the collabs
   const handleChange = (
     content: string,
     delta: Delta,
@@ -64,6 +67,7 @@ const Document = () => {
     }, 1000);
   };
 
+  //To save the document
   const handleSave = async () => {
     try {
       const response = await fetch(`http://localhost:3000/document/${docId}`, {
@@ -79,6 +83,8 @@ const Document = () => {
       console.log(error);
     }
   };
+
+  //For updating the name of the docs. When we are updating the name of the docs and when user clicks away from the div this will execute
   const handleBlur = async () => {
     if (divRef.current) {
       const updatedTitle = divRef.current.textContent || "";
@@ -109,6 +115,7 @@ const Document = () => {
       }
     }
   };
+
   const username = user?.username ? user?.username : "Username";
   return (
     <div className="text-editor border  h-screen">
@@ -131,24 +138,12 @@ const Document = () => {
               {docTitle}
             </div>
             <div className="menu flex">
-              <div className="buttons px-3 cursor-pointer hover:bg-gray-100">
-                File
-              </div>
-              <div className="buttons px-3 cursor-pointer hover:bg-gray-100">
-                Edit
-              </div>
-              <div className="buttons px-3 cursor-pointer hover:bg-gray-100">
-                View
-              </div>
-              <div className="buttons px-3 cursor-pointer hover:bg-gray-100">
-                Insert
-              </div>
-              <div className="buttons px-3 cursor-pointer hover:bg-gray-100">
-                Format
-              </div>
-              <div className="buttons px-3 cursor-pointer hover:bg-gray-100">
-                Tools
-              </div>
+              <MenuComponent name="File" />
+              <MenuComponent name="Edit" />
+              <MenuComponent name="View" />
+              <MenuComponent name="Insert" />
+              <MenuComponent name="Format" />
+              <MenuComponent name="Tools" />
             </div>
           </div>
         </div>
@@ -177,6 +172,12 @@ const Document = () => {
         />
       </div>
     </div>
+  );
+};
+
+const MenuComponent: React.FC<{ name: String }> = ({ name }) => {
+  return (
+    <div className="buttons px-3 cursor-pointer hover:bg-gray-100">{name}</div>
   );
 };
 

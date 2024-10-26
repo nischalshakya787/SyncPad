@@ -192,7 +192,9 @@ type AddCollabModal = {
 const AddCollabModal = ({ setIsModalOpen }: AddCollabModal) => {
   const [email, setEmail] = useState<string>("");
   const [user, setUser] = useState(null);
+  const [box, setBox] = useState<boolean>(false);
   const searchUser = async () => {
+    setBox(true);
     try {
       const response = await fetch(`http://localhost:3000/user?email=${email}`);
       if (!response.ok) {
@@ -209,7 +211,11 @@ const AddCollabModal = ({ setIsModalOpen }: AddCollabModal) => {
       console.log(error);
     }
   };
-  console.log(user);
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+    setBox(false);
+  };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center backdrop-blur-md">
       <div className="w-1/2 bg-slate-100 p-6 rounded-md">
@@ -217,7 +223,7 @@ const AddCollabModal = ({ setIsModalOpen }: AddCollabModal) => {
           <p className="text-lg font-semibold">Add Collab</p>
           <button
             className="text-sm px-4 py-2 bg-slate-600 text-white rounded-md"
-            onClick={() => setIsModalOpen(false)}
+            onClick={handleClose}
           >
             Close
           </button>
@@ -233,7 +239,11 @@ const AddCollabModal = ({ setIsModalOpen }: AddCollabModal) => {
             placeholder="Enter the User's Email"
             className="mb-4 px-4 py-2 bg-slate-200 rounded-md"
           />
-
+          {box && (
+            <div className="search-result">
+              {user ? <span>Found</span> : <span>Not Found</span>}
+            </div>
+          )}
           <button
             className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
             onClick={searchUser}

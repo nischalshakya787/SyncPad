@@ -241,7 +241,18 @@ const AddCollabModal = ({ setIsModalOpen }: AddCollabModal) => {
           />
           {box && (
             <div className="search-result">
-              {user ? <span>Found</span> : <span>Not Found</span>}
+              {user ? (
+                <div className="flex items-center justify-between p-1 border border-gray-300 rounded-lg ">
+                  <span className="text-md ml-3">{user?.username}</span>
+                  <button className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600">
+                    +
+                  </button>
+                </div>
+              ) : (
+                <span className="text-md font-semibold text-red-500 ml-3">
+                  User Not Found!!
+                </span>
+              )}
             </div>
           )}
           <button

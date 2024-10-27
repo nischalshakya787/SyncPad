@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Error } from "mongoose";
 import DocumentModel from "../model/Document.js";
 import UserModel from "../model/User.js";
 
@@ -32,7 +32,6 @@ export const saveDocument = async (req, res) => {
 
   try {
     //this finds document by id and updates only its value
-    console.log("object");
     const updatedDocument = await DocumentModel.findByIdAndUpdate(docId, {
       value,
     });
@@ -89,9 +88,31 @@ export const updateName = async (req, res) => {
   }
 };
 
-// export const addCollab = (req, res) => {
-//   const { userId } = req.body;
-//   try {
-//     const document
-//   } catch (error) {}
-// };
+export const addCollab = async (req, res) => {
+  const { userId, docId } = req.body;
+  try {
+    const user = mongoose.Types.ObjectId.createFromHexString(userId);
+    if (user) {
+      const document = await DocumentModel.findByIdAndUpdate(
+        docId,
+        {
+          $addToSet: { collab: user },
+        },
+        { new: true }
+      );
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      res
+        .status(200)
+        .json({ message: "Collaborator added successfully", document });
+    }
+  } catch (error) {
+    console.error("Error adding collaborator:", error);
+    res.status(500).json({
+      message: "An error occurred while adding collaborator",
+      error: error.message,
+    });
+  }
+};

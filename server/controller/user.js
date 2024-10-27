@@ -23,11 +23,20 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const User = await UserModel.find({ username });
-    const passOK = bcrypt.compareSync(password, User.password);
+
+    // Use findOne to get a single user document
+    const user = await UserModel.findOne({ username });
+
+    // Check if user exists
+    if (!user) {
+      return res.status(404).json({ message: "User not found", status: false });
+    }
+
+    // Compare passwords
+    const passOK = bcrypt.compareSync(password, user.password);
     if (passOK) {
       const token = jwt.sign(
-        { username, id: User._id },
+        { username, id: user._id },
         process.env.JWT_SECRET
       );
       res.cookie("token", token);
@@ -36,7 +45,8 @@ const login = async (req, res) => {
       res.status(400).json({ message: "Incorrect Password", status: false });
     }
   } catch (error) {
-    console.log(error);
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 

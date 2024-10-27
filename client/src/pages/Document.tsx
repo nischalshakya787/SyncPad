@@ -10,7 +10,7 @@ import { User } from "../types/User";
 
 const Document = () => {
   const [value, setValue] = useState<string>("");
-  const [docTitle, setDocTitle] = useState<string>("");
+  const [document, setDocument] = useState<any>({});
   const [isTyping, setIsTyping] = useState<boolean>(false); //to track if the user is typing or not
   const quillRef = useRef<ReactQuill>(null); // Ref for ReactQuill
   const { id: docId } = useParams<{ id: string }>(); //to fetch the id from /document/:id
@@ -44,7 +44,7 @@ const Document = () => {
       );
 
       const data = await response.json();
-      setDocTitle(data.title);
+      setDocument(data);
       setValue(data.value);
     };
     fetchDocument();
@@ -89,7 +89,7 @@ const Document = () => {
   const handleBlur = async () => {
     if (divRef.current) {
       const updatedTitle = divRef.current.textContent || "";
-      setDocTitle(updatedTitle); // Update state with the latest title
+      setDocument({ ...document, title: updatedTitle });
 
       // Make an API call with the latest title
       try {
@@ -136,7 +136,7 @@ const Document = () => {
               onBlur={handleBlur}
               onInput={() => null} // Prevents React from interfering with cursor position
             >
-              {docTitle}
+              {document.title}
             </div>
             <div className="menu flex">
               <MenuComponent name="File" />
@@ -175,7 +175,9 @@ const Document = () => {
           style={{ width: "900px" }}
         />
       </div>
-      {isModalOpen && <AddCollabModal setIsModalOpen={setIsModalOpen} />}
+      {isModalOpen && (
+        <AddCollabModal setIsModalOpen={setIsModalOpen} docId={document._id} />
+      )}
     </div>
   );
 };
@@ -188,12 +190,14 @@ const MenuComponent: React.FC<{ name: String }> = ({ name }) => {
 
 type AddCollabModal = {
   setIsModalOpen: (value: boolean) => void;
+  docId: string;
 };
 
-const AddCollabModal = ({ setIsModalOpen }: AddCollabModal) => {
+const AddCollabModal = ({ setIsModalOpen, docId }: AddCollabModal) => {
   const [email, setEmail] = useState<string>("");
   const [user, setUser] = useState<User | null>(null);
   const [box, setBox] = useState<boolean>(false);
+  const [isAdded, setIsAdded] = useState<boolean>(false);
   const searchUser = async () => {
     setBox(true);
     try {
@@ -216,6 +220,23 @@ const AddCollabModal = ({ setIsModalOpen }: AddCollabModal) => {
   const handleClose = () => {
     setIsModalOpen(false);
     setBox(false);
+  };
+
+  const addCollab = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/document/add-collab`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId: user?._id, docId: docId }),
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {}
   };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center backdrop-blur-md">
@@ -245,7 +266,10 @@ const AddCollabModal = ({ setIsModalOpen }: AddCollabModal) => {
               {user ? (
                 <div className="flex items-center justify-between p-1 border border-gray-300 rounded-lg ">
                   <span className="text-md ml-3">{user?.username}</span>
-                  <button className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600">
+                  <button
+                    className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600"
+                    onClick={() => (!isAdded ? addCollab() : null)}
+                  >
                     +
                   </button>
                 </div>

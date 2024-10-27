@@ -76,6 +76,7 @@ export const fetchDocument = async (req, res) => {
 
 export const updateName = async (req, res) => {
   const { id, title } = req.body;
+  console.log(req.body);
   try {
     const document = await DocumentModel.findByIdAndUpdate(id, { title });
 
@@ -87,3 +88,10 @@ export const updateName = async (req, res) => {
     console.log(error);
   }
 };
+
+// export const addCollab = (req, res) => {
+//   const { userId } = req.body;
+//   try {
+//     const document
+//   } catch (error) {}
+// };

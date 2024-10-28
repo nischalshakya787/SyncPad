@@ -201,16 +201,19 @@ const AddCollabModal = ({ setIsModalOpen, docId }: AddCollabModal) => {
   const searchUser = async () => {
     setBox(true);
     try {
-      const response = await fetch(`http://localhost:3000/user?email=${email}`);
+      const response = await fetch(
+        `http://localhost:3000/user?email=${email}&docId=${docId}`
+      );
       if (!response.ok) {
         throw Error("Server error");
       }
       const data = await response.json();
-
       if (data.user) {
         setUser(data.user);
+        setIsAdded(data.isCollab); // Set `isAdded` based on `isCollab`
       } else {
         setUser(null);
+        setIsAdded(false);
       }
     } catch (error) {
       console.log(error);
@@ -235,9 +238,13 @@ const AddCollabModal = ({ setIsModalOpen, docId }: AddCollabModal) => {
         }
       );
       const data = await response.json();
+      setIsAdded(true);
       console.log(data);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
+  console.log(user);
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center backdrop-blur-md">
       <div className="w-1/2 bg-slate-100 p-6 rounded-md">
@@ -267,10 +274,14 @@ const AddCollabModal = ({ setIsModalOpen, docId }: AddCollabModal) => {
                 <div className="flex items-center justify-between p-1 border border-gray-300 rounded-lg ">
                   <span className="text-md ml-3">{user?.username}</span>
                   <button
-                    className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600"
+                    className={`${
+                      !isAdded ? "bg-blue-500" : "bg-green-500"
+                    } text-white font-semibold py-2 px-4 rounded ${
+                      !isAdded ? "hover:bg-blue-600" : "hover:bg-green-600"
+                    }`}
                     onClick={() => (!isAdded ? addCollab() : null)}
                   >
-                    +
+                    {!isAdded ? "+" : "o"}
                   </button>
                 </div>
               ) : (

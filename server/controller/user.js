@@ -1,6 +1,7 @@
 import UserModel from "../model/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import DocumentModel from "../model/Document.js";
 
 const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -66,14 +67,29 @@ const profile = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const { email } = req.query;
+  const { email, docId } = req.query;
+  console.log(docId);
   try {
+    const document = await DocumentModel.findById(docId);
+    console.log(document);
+    if (!document) {
+      return res.status(404).json({ message: "Document not found" });
+    }
     const user = await UserModel.findOne({ email });
     if (!user) {
       return res.status(201).json({ message: "User not found" });
     }
-    console.log(user);
-    res.status(200).json({ message: "User found", user });
+    const isCollaborator = document.collab.includes(user._id);
+
+    if (isCollaborator) {
+      return res.status(200).json({
+        message: "User is already a collaborator",
+        user,
+        isCollab: true,
+      });
+    }
+
+    res.status(200).json({ message: "User found", user, isCollab: false });
   } catch (error) {
     console.log(error);
   }

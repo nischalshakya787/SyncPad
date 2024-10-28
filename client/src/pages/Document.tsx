@@ -195,11 +195,11 @@ type AddCollabModal = {
 
 const AddCollabModal = ({ setIsModalOpen, docId }: AddCollabModal) => {
   const [email, setEmail] = useState<string>("");
-  const [user, setUser] = useState<User | null>(null);
-  const [box, setBox] = useState<boolean>(false);
-  const [isAdded, setIsAdded] = useState<boolean>(false);
+  const [user, setUser] = useState<User | null>(null); //To track the user
+  const [box, setBox] = useState<boolean>(false); //To show the result box only at the beginning
+  const [isAdded, setIsAdded] = useState<boolean>(false); //To check if the returned user is a already in collab or not
+
   const searchUser = async () => {
-    setBox(true);
     try {
       const response = await fetch(
         `http://localhost:3000/user?email=${email}&docId=${docId}`
@@ -207,10 +207,11 @@ const AddCollabModal = ({ setIsModalOpen, docId }: AddCollabModal) => {
       if (!response.ok) {
         throw Error("Server error");
       }
+      setBox(true);
       const data = await response.json();
       if (data.user) {
         setUser(data.user);
-        setIsAdded(data.isCollab); // Set `isAdded` based on `isCollab`
+        setIsAdded(data.isCollab); // isCollab: true/false
       } else {
         setUser(null);
         setIsAdded(false);
@@ -244,7 +245,7 @@ const AddCollabModal = ({ setIsModalOpen, docId }: AddCollabModal) => {
       console.log(error);
     }
   };
-  console.log(user);
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center backdrop-blur-md">
       <div className="w-1/2 bg-slate-100 p-6 rounded-md">

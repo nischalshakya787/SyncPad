@@ -31,24 +31,22 @@ const Auth = () => {
   const handleLogin = async (values: AuthProps) => {
     const { username, password } = values;
     try {
-      await fetch("http://localhost:3000/login", {
+      const response = await fetch("http://localhost:3000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
         body: JSON.stringify({ username, password }),
-      }).then((response) => {
-        response.json().then((data) => {
-          if (data.status) {
-            navigate("/", {
-              state: { isLogin: true, toastMessage: "Login Successful" },
-            });
-          } else {
-            toast.error(data.message);
-          }
-        });
       });
+      const data = await response.json();
+      if (data.status) {
+        navigate("/", {
+          state: { isLogin: true, toastMessage: "Login Successful" },
+        });
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
       console.log(error);
     }

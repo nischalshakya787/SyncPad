@@ -36,12 +36,18 @@ const login = async (req, res) => {
     // Compare passwords
     const passOK = bcrypt.compareSync(password, user.password);
     if (passOK) {
-      const token = jwt.sign(
+      const jwtToken = jwt.sign(
         { username, id: user._id },
         process.env.JWT_SECRET
       );
-      res.cookie("token", token);
-      res.status(200).json({ message: "Login Successful", status: true });
+      res.cookie("token", jwtToken);
+      res
+        .status(200)
+        .json({
+          message: "Login Successful",
+          status: true,
+          user: { username: user.username, id: user._id },
+        });
     } else {
       res.status(400).json({ message: "Incorrect Password", status: false });
     }
@@ -62,7 +68,7 @@ const profile = async (req, res) => {
   }
   jwt.verify(token, process.env.JWT_SECRET, (err, info) => {
     if (err) throw err;
-    res.json(info);
+    res.json({ user: info });
   });
 };
 

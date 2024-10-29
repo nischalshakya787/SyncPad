@@ -35,8 +35,8 @@ function AppRoutes() {
           setUser(null);
         }
 
-        const userInfo = await response.json();
-        setUser(userInfo);
+        const data = await response.json();
+        setUser(data.user);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -46,6 +46,7 @@ function AppRoutes() {
       fetchUserData();
     }
   }, [user, setUser]);
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />

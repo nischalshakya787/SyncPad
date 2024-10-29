@@ -14,6 +14,7 @@ const RecentDocumentsSection: React.FC<RecentDocsProps> = ({ user }) => {
   useEffect(() => {
     const fetchDocuments = async () => {
       if (user) {
+        //Only fetches if user is logged in
         try {
           const response = await fetch(
             `http://localhost:3000/document/fetch?id=${user?.id}`,
@@ -29,12 +30,12 @@ const RecentDocumentsSection: React.FC<RecentDocsProps> = ({ user }) => {
           console.error("Error fetching documents:", error);
         }
       } else {
-        setDocuments([]);
+        setDocuments([]); //If not logged
       }
     };
 
     fetchDocuments();
-  }, [user]); // Only run this effect when `id` changes
+  }, [user]); // Only run this effect when `user` changes
 
   return (
     <section className="flex flex-col items-center px-20 pt-10 pb-20 mt-14 w-full bg-gray-100 max-md:px-5 max-md:mt-10 max-md:max-w-full">

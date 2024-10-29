@@ -8,6 +8,7 @@ import { UserContext } from "../UserContext";
 import { useParams } from "react-router-dom";
 import { User } from "../types/User";
 import NotFound from "../components/NotFound";
+import Loader from "../components/Loader";
 
 const Document = () => {
   const [value, setValue] = useState<string>("");
@@ -137,7 +138,7 @@ const Document = () => {
   };
   const username = user?.username ? user?.username : "Username";
   if (isLoading) {
-    return <h1>Loading</h1>;
+    return <Loader />;
   }
   if (!isAuthenticated) {
     //If user is not a creator or not a collabarator of a document it will redirect to this page

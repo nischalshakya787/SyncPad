@@ -22,7 +22,7 @@ const RecentDocumentsSection: React.FC<RecentDocsProps> = ({ id }) => {
           );
 
           const data = await response.json();
-          setDocuments(data || []); // Ensure data is an array
+          setDocuments(data.document || []); // Ensure data is an array
         } catch (error) {
           console.error("Error fetching documents:", error);
         }

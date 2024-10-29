@@ -50,10 +50,14 @@ export const fetchAllDocuments = async (req, res) => {
   const { id } = req.query;
 
   try {
-    const creator = mongoose.Types.ObjectId.createFromHexString(id);
-    if (creator) {
-      const document = await DocumentModel.find({ creator: creator });
-      return res.status(200).json(document);
+    const user = mongoose.Types.ObjectId.createFromHexString(id);
+    if (user) {
+      const document = await DocumentModel.find({ creator: user });
+      const collabDocs = await DocumentModel.find({
+        collab: { $in: [user] },
+      });
+      const combinedDocument = [...document, ...collabDocs];
+      return res.status(200).json({ document: combinedDocument });
     } else {
       return res.status(404).json({ message: "User not found" });
     }

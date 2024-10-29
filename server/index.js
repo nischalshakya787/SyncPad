@@ -44,10 +44,16 @@ const startServer = async () => {
     console.log("Connected to DB");
 
     io.on("connection", (socket) => {
-      console.log("New client connected: ", socket.id);
+      socket.on("joinDocument", (docId) => {
+        socket.join(docId);
+      });
 
-      socket.on("document", (value) => {
-        socket.broadcast.emit("document", value);
+      socket.on("document", (docId, value) => {
+        socket.to(docId).emit("document", value);
+      });
+      // Handle when a user leaves a document room
+      socket.on("leaveDocument", (docId) => {
+        socket.leave(docId);
       });
     });
     server.listen(PORT, () => {

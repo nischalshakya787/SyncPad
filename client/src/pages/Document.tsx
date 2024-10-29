@@ -25,13 +25,18 @@ const Document = () => {
   const { user } = context;
 
   useEffect(() => {
+    socket.emit("joinDocument", docId); //Connecting the users to particular docuyment or room
     if (!isTyping) {
       socket.on("document", (value: string) => {
         //this is for the user who is not typing
         setValue(value);
       });
     }
-  }, [isTyping, socket]);
+    return () => {
+      socket.emit("leaveDocument", docId);
+      socket.off("document");
+    };
+  }, [isTyping, socket, docId]);
 
   //To reload the saved value of a document
   useEffect(() => {
@@ -59,7 +64,7 @@ const Document = () => {
   ) => {
     if (source === "user") {
       setIsTyping(true);
-      socket.emit("document", content); //emitting the typed content to the server
+      socket.emit("document", docId, content); //emitting the typed content to the server
     }
     setValue(content);
     //to make isTyping false after 1sec

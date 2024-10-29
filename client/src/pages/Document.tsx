@@ -18,6 +18,7 @@ const Document = () => {
   const divRef = useRef<HTMLDivElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const context = useContext(UserContext); //to get the logged in user
   if (!context) {
@@ -43,27 +44,34 @@ const Document = () => {
   //To reload the saved value of a document
   useEffect(() => {
     const fetchDocument = async () => {
-      const response = await fetch(
-        `http://localhost:3000/document?docId=${docId}&userId=${user?.id}`,
-        {
-          method: "GET",
-        }
-      );
+      if (user) {
+        try {
+          const response = await fetch(
+            `http://localhost:3000/document?docId=${docId}&userId=${user.id}`,
+            {
+              method: "GET",
+            }
+          );
 
-      const data = await response.json();
-      if (data.notAuthenticated) {
-        setIsAuthenticated(false);
-      } else {
-        setIsAuthenticated(true);
-        setDocument(data);
-        setValue(data.value);
+          const data = await response.json();
+          if (data.notAuthenticated) {
+            setIsAuthenticated(false);
+          } else {
+            setIsAuthenticated(true);
+            setDocument(data);
+            setValue(data.value);
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsLoading(false);
+        }
       }
     };
-    if (user) {
-      fetchDocument();
-    }
-  }, []);
 
+    fetchDocument();
+  }, [user, docId]); // Add user and docId as dependencies
+  console.log(isAuthenticated);
   //When we type in the canvas this function will execute and emits the updated value to the server and server will emit the changes to the collabs
   const handleChange = (
     content: string,
@@ -122,19 +130,20 @@ const Document = () => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-
-        const data = await response.json();
-        console.log(data);
       } catch (error) {
         console.error("Error updating document title:", error);
       }
     }
   };
+  const username = user?.username ? user?.username : "Username";
+  if (isLoading) {
+    return <h1>Loading</h1>;
+  }
   if (!isAuthenticated) {
     //If user is not a creator or not a collabarator of a document it will redirect to this page
     return <NotFound />;
   }
-  const username = user?.username ? user?.username : "Username";
+
   return (
     <div className="text-editor border  h-screen">
       <div className="flex border border-gray-300 p-2">

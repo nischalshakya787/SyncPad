@@ -72,9 +72,9 @@ export const fetchAllDocuments = async (req, res) => {
 
 //To fetch only single Document
 export const fetchDocument = async (req, res) => {
-  const { id } = req.query;
+  const { docId } = req.query;
   try {
-    const document = await DocumentModel.findById(id);
+    const document = await DocumentModel.findById(docId);
 
     res.status(200).json(document);
   } catch (error) {
@@ -127,27 +127,27 @@ export const addCollab = async (req, res) => {
   }
 };
 
-export const checkDocument = async (req, res) => {
-  const { userId, docId } = req.body;
+//Middleware to check if the user can access the document or not
+export const checkDocument = async (req, res, next) => {
+  const { docId, userId } = req.query;
   try {
     const user = mongoose.Types.ObjectId.createFromHexString(userId);
     const document = await DocumentModel.findById(docId);
     if (document) {
-      const isCreator = user === document.creator;
+      const isCreator = document.creator.equals(user);
       const isCollab = document.collab.some((id) => id.equals(user));
-      console.log(isCreator);
-      console.log(isCollab);
       if (isCreator || isCollab) {
-        return res
-          .status(200)
-          .json({ message: "User can access this Document", status: true });
+        next();
       } else {
-        return res
-          .status(404)
-          .json({ message: "User cannot access this Document", status: false });
+        return res.status(404).json({
+          message: "User cannot access this Document",
+          notAuthenticated: true,
+        });
       }
     } else {
-      return res.status(404).json({ message: "Document Not Found!!" });
+      return res
+        .status(404)
+        .json({ message: "Document Not Found!!", notAuthenticated: true });
     }
   } catch (error) {}
 };

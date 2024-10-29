@@ -7,6 +7,7 @@ import { Delta } from "quill";
 import { UserContext } from "../UserContext";
 import { useParams } from "react-router-dom";
 import { User } from "../types/User";
+import NotFound from "../components/NotFound";
 
 const Document = () => {
   const [value, setValue] = useState<string>("");
@@ -16,6 +17,7 @@ const Document = () => {
   const { id: docId } = useParams<{ id: string }>(); //to fetch the id from /document/:id
   const divRef = useRef<HTMLDivElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const context = useContext(UserContext); //to get the logged in user
   if (!context) {
@@ -42,17 +44,24 @@ const Document = () => {
   useEffect(() => {
     const fetchDocument = async () => {
       const response = await fetch(
-        `http://localhost:3000/document?id=${docId}`,
+        `http://localhost:3000/document?docId=${docId}&userId=${user?.id}`,
         {
           method: "GET",
         }
       );
 
       const data = await response.json();
-      setDocument(data);
-      setValue(data.value);
+      if (data.notAuthenticated) {
+        setIsAuthenticated(false);
+      } else {
+        setIsAuthenticated(true);
+        setDocument(data);
+        setValue(data.value);
+      }
     };
-    fetchDocument();
+    if (user) {
+      fetchDocument();
+    }
   }, []);
 
   //When we type in the canvas this function will execute and emits the updated value to the server and server will emit the changes to the collabs
@@ -121,7 +130,10 @@ const Document = () => {
       }
     }
   };
-
+  if (!isAuthenticated) {
+    //If user is not a creator or not a collabarator of a document it will redirect to this page
+    return <NotFound />;
+  }
   const username = user?.username ? user?.username : "Username";
   return (
     <div className="text-editor border  h-screen">

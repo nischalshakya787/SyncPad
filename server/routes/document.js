@@ -1,6 +1,7 @@
 import express from "express";
 import {
   addCollab,
+  checkDocument,
   createDocument,
   fetchAllDocuments,
   fetchDocument,
@@ -10,7 +11,10 @@ import {
 
 const docsRouter = express.Router();
 
-docsRouter.route("/document").post(createDocument).get(fetchDocument);
+docsRouter
+  .route("/document")
+  .post(createDocument)
+  .get(checkDocument, fetchDocument);
 docsRouter.route("/document/update-name").post(updateName); // Renamed route for clarity
 docsRouter.route("/document/add-collab").post(addCollab);
 docsRouter.route("/document/:id").post(saveDocument);

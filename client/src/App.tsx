@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Home, Auth, Document } from "./pages";
 import { UserContext, UserContextProvider } from "./UserContext";
 import { useContext, useEffect } from "react";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -52,7 +53,14 @@ function AppRoutes() {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Auth />} />
       <Route path="/signup" element={<Auth />} />
-      <Route path="/document/:id" element={<Document />} />
+      <Route
+        path="/document/:id"
+        element={
+          <ProtectedRoute>
+            <Document />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

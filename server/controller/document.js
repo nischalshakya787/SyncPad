@@ -126,3 +126,28 @@ export const addCollab = async (req, res) => {
     });
   }
 };
+
+export const checkDocument = async (req, res) => {
+  const { userId, docId } = req.body;
+  try {
+    const user = mongoose.Types.ObjectId.createFromHexString(userId);
+    const document = await DocumentModel.findById(docId);
+    if (document) {
+      const isCreator = user === document.creator;
+      const isCollab = document.collab.some((id) => id.equals(user));
+      console.log(isCreator);
+      console.log(isCollab);
+      if (isCreator || isCollab) {
+        return res
+          .status(200)
+          .json({ message: "User can access this Document", status: true });
+      } else {
+        return res
+          .status(404)
+          .json({ message: "User cannot access this Document", status: false });
+      }
+    } else {
+      return res.status(404).json({ message: "Document Not Found!!" });
+    }
+  } catch (error) {}
+};

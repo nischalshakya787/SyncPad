@@ -36,18 +36,17 @@ const login = async (req, res) => {
     // Compare passwords
     const passOK = bcrypt.compareSync(password, user.password);
     if (passOK) {
+      //Creating a jwtToken
       const jwtToken = jwt.sign(
         { username, id: user._id },
         process.env.JWT_SECRET
       );
-      res.cookie("token", jwtToken);
-      res
-        .status(200)
-        .json({
-          message: "Login Successful",
-          status: true,
-          user: { username: user.username, id: user._id },
-        });
+      res.cookie("token", jwtToken); //initializing the token in frontend side
+      res.status(200).json({
+        message: "Login Successful",
+        status: true,
+        user: { username: user.username, id: user._id },
+      });
     } else {
       res.status(400).json({ message: "Incorrect Password", status: false });
     }

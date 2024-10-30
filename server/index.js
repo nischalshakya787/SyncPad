@@ -7,6 +7,7 @@ import authRouter from "./routes/user.js";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import docsRouter from "./routes/document.js";
+import notificationRouter from "./routes/notification.js";
 
 dotenv.config();
 const app = express();
@@ -26,6 +27,7 @@ app.use(cookieParser()); //This allows us to interact with browser cookies
 //router which includes login signup logout and getprofile
 app.use(authRouter);
 app.use(docsRouter);
+app.use(notificationRouter);
 
 const PORT = 3000;
 

@@ -1,11 +1,14 @@
 import { toast, ToastContainer } from "react-toastify";
 import { CreateSection, RecentDocumentsSection } from "../components";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
+import { IoIosNotifications } from "react-icons/io";
 
 const Home = () => {
   const location = useLocation();
+  const [showMessage, setShowMessage] = useState<boolean>(false);
+
   useEffect(() => {
     if (location.state?.toastMessage) {
       toast.success(location.state.toastMessage);
@@ -36,12 +39,22 @@ const Home = () => {
           LOGO
         </div>
         {username ? (
-          <button
-            className="px-6 py-4 text-base font-bold text-white bg-red-500 rounded-lg max-md:px-5"
-            onClick={handleLogOut}
-          >
-            Log out
-          </button>
+          <div className="flex items-center">
+            <div className="relative message text-[30px] mx-6 cursor-pointer rounded-full p-1 hover:bg-gray-200">
+              <IoIosNotifications />
+
+              {/* Notification count badge */}
+              <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                5
+              </span>
+            </div>
+            <button
+              className="px-6 py-4 text-base font-bold text-white bg-red-500 rounded-lg max-md:px-5"
+              onClick={handleLogOut}
+            >
+              Log out
+            </button>
+          </div>
         ) : (
           <button
             className="px-6 py-4 text-base font-bold text-white bg-blue-500 rounded-lg max-md:px-5"

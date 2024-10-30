@@ -4,8 +4,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import { IoIosNotifications } from "react-icons/io";
-import { TiTick } from "react-icons/ti";
-import { TbXboxX } from "react-icons/tb";
 
 const Home = () => {
   const location = useLocation();

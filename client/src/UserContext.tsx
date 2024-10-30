@@ -30,6 +30,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   const [notification, setNotification] = useState<string[]>([]);
 
   useEffect(() => {
+    const saveNotification = () => {};
     if (userId) {
       socket.emit("joinRoom", userId);
       socket.on("collabNotification", (message: string) => {

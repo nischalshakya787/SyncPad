@@ -13,8 +13,9 @@ const NotificationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
+      default: "pending",
     },
-    docId: {
+    doc: {
       type: mongoose.Schema.Types.ObjectId,
     },
   },

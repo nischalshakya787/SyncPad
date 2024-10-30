@@ -4,6 +4,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import { IoIosNotifications } from "react-icons/io";
+import { TiTick } from "react-icons/ti";
+import { TbXboxX } from "react-icons/tb";
 
 const Home = () => {
   const location = useLocation();
@@ -62,19 +64,29 @@ const Home = () => {
 
             {/* Notification dropdown menu */}
             {showNotification && (
-              <div className="absolute right-0 mt-[180px] w-[500px] bg-white border border-gray-200 rounded-lg shadow-lg">
+              <div className="absolute right-0 top-[55px] w-[400px] bg-white border border-gray-200 rounded-lg shadow-lg transform translate-y-0">
                 <div className="p-4 text-lg font-bold border-b">
                   Notifications
                 </div>
                 <ul className="max-h-60 overflow-y-auto">
                   {notification.length > 0 ? (
                     notification.map((notification, index) => (
-                      <li
-                        key={index}
-                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        {notification}
-                      </li>
+                      <div className="flex">
+                        <li
+                          key={index}
+                          className="pl-5 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          {notification}
+                        </li>
+                        <div className="btns flex items-center px-2">
+                          <button className=" mx-1 w-10 flex items-center justify-center rounded text-[18px] bg-green-300  hover:bg-green-400">
+                            ✓
+                          </button>
+                          <button className=" mx-1 w-10 flex items-center justify-center rounded text-[18px] bg-red-300 hover:bg-red-400">
+                            x
+                          </button>
+                        </div>
+                      </div>
                     ))
                   ) : (
                     <li className="px-4 py-2 text-sm text-gray-500">

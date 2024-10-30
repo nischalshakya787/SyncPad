@@ -53,7 +53,7 @@ const startServer = async () => {
       socket.on("sendCollabRequest", (userId, title, owner) => {
         io.to(userId).emit(
           "collabNotification",
-          `${owner} has invited you to collab on '${title}' document`
+          `${owner} has invited you to collab on '${title}' document.`
         );
       });
 

@@ -42,7 +42,7 @@ const Auth = () => {
       const data = await response.json();
       if (data.status) {
         navigate("/", {
-          state: { isLogin: true, toastMessage: "Login Successful" },
+          state: { toastMessage: "Login successful!", from: "login" },
         });
       } else {
         toast.error(data.message);

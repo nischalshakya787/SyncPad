@@ -7,12 +7,13 @@ import { IoIosNotifications } from "react-icons/io";
 
 const Home = () => {
   const location = useLocation();
-  const [showMessage, setShowMessage] = useState<boolean>(false);
-
+  const [showNotification, setShowNotification] = useState<boolean>(false);
+  console.log(showNotification);
   useEffect(() => {
-    if (location.state?.toastMessage) {
+    if (location.state?.toastMessage && location.state?.from === "login") {
       toast.success(location.state.toastMessage);
     }
+    navigate(location.pathname, { replace: true });
   }, [location.state]);
 
   const context = useContext(UserContext);
@@ -28,7 +29,11 @@ const Home = () => {
     });
     setUser(null);
   };
-
+  const notifications = [
+    "New message from John",
+    "Your report is ready",
+    "Server maintenance tomorrow",
+  ];
   const { user, setUser } = context;
   const username = user?.username;
   return (
@@ -39,15 +44,43 @@ const Home = () => {
           LOGO
         </div>
         {username ? (
-          <div className="flex items-center">
-            <div className="relative message text-[30px] mx-6 cursor-pointer rounded-full p-1 hover:bg-gray-200">
+          <div className="relative flex items-center">
+            <div
+              className="relative message text-[30px] mx-6 cursor-pointer rounded-full p-1 hover:bg-gray-200"
+              onClick={() => setShowNotification(!showNotification)}
+            >
               <IoIosNotifications />
 
               {/* Notification count badge */}
               <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                5
+                {notifications.length}
               </span>
             </div>
+
+            {/* Notification dropdown menu */}
+            {showNotification && (
+              <div className="absolute right-0 mt-[230px] w-64 bg-white border border-gray-200 rounded-lg shadow-lg">
+                <div className="p-4 text-lg font-bold border-b">
+                  Notifications
+                </div>
+                <ul className="max-h-60 overflow-y-auto">
+                  {notifications.length > 0 ? (
+                    notifications.map((notification, index) => (
+                      <li
+                        key={index}
+                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        {notification}
+                      </li>
+                    ))
+                  ) : (
+                    <li className="px-4 py-2 text-sm text-gray-500">
+                      No new notifications
+                    </li>
+                  )}
+                </ul>
+              </div>
+            )}
             <button
               className="px-6 py-4 text-base font-bold text-white bg-red-500 rounded-lg max-md:px-5"
               onClick={handleLogOut}

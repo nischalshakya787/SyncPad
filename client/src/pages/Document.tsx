@@ -253,24 +253,25 @@ const AddCollabModal = ({ setIsModalOpen, docId }: AddCollabModal) => {
     setBox(false);
   };
 
-  const addCollab = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/document/add-collab`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userId: user?._id, docId: docId }),
-        }
-      );
-      const data = await response.json();
-      setIsAdded(true);
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
+  const sendCollabRequest = async () => {
+    socket.emit("sendCollabRequest", user?._id, docId);
+    // try {
+    //   const response = await fetch(
+    //     `http://localhost:3000/document/add-collab`,
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify({ userId: user?._id, docId: docId }),
+    //     }
+    //   );
+    //   const data = await response.json();
+    //   setIsAdded(true);
+    //   console.log(data);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   return (
@@ -307,7 +308,7 @@ const AddCollabModal = ({ setIsModalOpen, docId }: AddCollabModal) => {
                     } text-white font-semibold py-2 px-4 rounded ${
                       !isAdded ? "hover:bg-blue-600" : "hover:bg-green-600"
                     }`}
-                    onClick={() => (!isAdded ? addCollab() : null)}
+                    onClick={() => (!isAdded ? sendCollabRequest() : null)}
                   >
                     {!isAdded ? "+" : "o"}
                   </button>

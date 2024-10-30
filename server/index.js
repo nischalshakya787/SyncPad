@@ -47,6 +47,12 @@ const startServer = async () => {
       socket.on("joinDocument", (docId) => {
         socket.join(docId);
       });
+      socket.on("joinRoom", (userId) => {
+        socket.join(userId);
+      });
+      socket.on("sendCollabRequest", (userId, docId) => {
+        io.to(userId).emit("collabNotification", docId);
+      });
 
       socket.on("document", (docId, value) => {
         socket.to(docId).emit("document", value);

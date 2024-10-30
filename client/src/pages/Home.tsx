@@ -4,11 +4,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import { IoIosNotifications } from "react-icons/io";
+import { socket } from "../socket";
 
 const Home = () => {
   const location = useLocation();
   const [showNotification, setShowNotification] = useState<boolean>(false);
-  console.log(showNotification);
+
   useEffect(() => {
     if (location.state?.toastMessage && location.state?.from === "login") {
       toast.success(location.state.toastMessage);

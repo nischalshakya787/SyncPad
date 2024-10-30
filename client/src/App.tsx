@@ -20,7 +20,7 @@ function AppRoutes() {
     throw new Error("AppRoutes must be used within a UserContextProvider");
   }
 
-  const { user, setUser } = context;
+  const { user, setUser, setUserId } = context;
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -33,10 +33,12 @@ function AppRoutes() {
 
         if (!response.ok) {
           setUser(null);
+          setUserId(null);
         }
 
         const data = await response.json();
         setUser(data.user);
+        setUserId(data.user.id);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -46,7 +48,6 @@ function AppRoutes() {
       fetchUserData();
     }
   }, [user, setUser]);
-
   return (
     <Routes>
       <Route path="/" element={<Home />} />

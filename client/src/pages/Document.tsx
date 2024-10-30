@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import { User } from "../types/User";
 import NotFound from "../components/NotFound";
 import Loader from "../components/Loader";
+import type { Document } from "../types/Document";
 
 const Document = () => {
   const [value, setValue] = useState<string>("");
@@ -203,7 +204,11 @@ const Document = () => {
         />
       </div>
       {isModalOpen && (
-        <AddCollabModal setIsModalOpen={setIsModalOpen} docId={document._id} />
+        <AddCollabModal
+          setIsModalOpen={setIsModalOpen}
+          document={document}
+          owner={user?.username}
+        />
       )}
     </div>
   );
@@ -217,10 +222,15 @@ const MenuComponent: React.FC<{ name: String }> = ({ name }) => {
 
 type AddCollabModal = {
   setIsModalOpen: (value: boolean) => void;
-  docId: string;
+  document: Document;
+  owner: string | undefined;
 };
 
-const AddCollabModal = ({ setIsModalOpen, docId }: AddCollabModal) => {
+const AddCollabModal = ({
+  setIsModalOpen,
+  document,
+  owner,
+}: AddCollabModal) => {
   const [email, setEmail] = useState<string>("");
   const [user, setUser] = useState<User | null>(null); //To track the user
   const [box, setBox] = useState<boolean>(false); //To show the result box only at the beginning
@@ -229,7 +239,7 @@ const AddCollabModal = ({ setIsModalOpen, docId }: AddCollabModal) => {
   const searchUser = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/user?email=${email}&docId=${docId}`
+        `http://localhost:3000/user?email=${email}&docId=${document._id}`
       );
       if (!response.ok) {
         throw Error("Server error");
@@ -254,7 +264,7 @@ const AddCollabModal = ({ setIsModalOpen, docId }: AddCollabModal) => {
   };
 
   const sendCollabRequest = async () => {
-    socket.emit("sendCollabRequest", user?._id, docId);
+    socket.emit("sendCollabRequest", user?._id, document.title, owner);
     // try {
     //   const response = await fetch(
     //     `http://localhost:3000/document/add-collab`,

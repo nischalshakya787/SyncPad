@@ -73,7 +73,6 @@ const profile = async (req, res) => {
 
 const getUser = async (req, res) => {
   const { email, docId } = req.query;
-  console.log(docId);
   try {
     const document = await DocumentModel.findById(docId);
     console.log(document);

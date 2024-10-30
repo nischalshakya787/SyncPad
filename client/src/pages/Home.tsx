@@ -4,11 +4,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import { IoIosNotifications } from "react-icons/io";
-import { socket } from "../socket";
 
 const Home = () => {
   const location = useLocation();
   const [showNotification, setShowNotification] = useState<boolean>(false);
+
+  const content = useContext(UserContext);
+
+  if (!content) {
+    throw new Error("AppRoutes must be used within a UserContextProvider");
+  }
+
+  const { notification } = content;
 
   useEffect(() => {
     if (location.state?.toastMessage && location.state?.from === "login") {
@@ -30,11 +37,6 @@ const Home = () => {
     });
     setUser(null);
   };
-  const notifications = [
-    "New message from John",
-    "Your report is ready",
-    "Server maintenance tomorrow",
-  ];
   const { user, setUser } = context;
   const username = user?.username;
   return (
@@ -54,19 +56,19 @@ const Home = () => {
 
               {/* Notification count badge */}
               <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                {notifications.length}
+                {notification.length}
               </span>
             </div>
 
             {/* Notification dropdown menu */}
             {showNotification && (
-              <div className="absolute right-0 mt-[230px] w-64 bg-white border border-gray-200 rounded-lg shadow-lg">
+              <div className="absolute right-0 mt-[180px] w-[500px] bg-white border border-gray-200 rounded-lg shadow-lg">
                 <div className="p-4 text-lg font-bold border-b">
                   Notifications
                 </div>
                 <ul className="max-h-60 overflow-y-auto">
-                  {notifications.length > 0 ? (
-                    notifications.map((notification, index) => (
+                  {notification.length > 0 ? (
+                    notification.map((notification, index) => (
                       <li
                         key={index}
                         className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

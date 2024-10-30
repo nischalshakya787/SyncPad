@@ -50,8 +50,11 @@ const startServer = async () => {
       socket.on("joinRoom", (userId) => {
         socket.join(userId);
       });
-      socket.on("sendCollabRequest", (userId, docId) => {
-        io.to(userId).emit("collabNotification", docId);
+      socket.on("sendCollabRequest", (userId, title, owner) => {
+        io.to(userId).emit(
+          "collabNotification",
+          `${owner} has invited you to collab on '${title}' document`
+        );
       });
 
       socket.on("document", (docId, value) => {

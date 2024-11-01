@@ -47,18 +47,19 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         console.log("Error fetching notifications:", error);
       }
     };
-
+    //Ensure the function is only called when user is logged in
     if (userId) {
       fetchNotification();
     }
   }, [userId]);
 
+  //Fetches user data when the context is first used
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await fetch("http://localhost:3000/auth/profile", {
           method: "GET",
-          credentials: "include",
+          credentials: "include", //Includes cookiee
           headers: { "Content-Type": "application/json" },
         });
 
@@ -74,7 +75,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         console.error("Error fetching user data:", error);
       }
     };
-
+    //Fetches only when user is not logged in
     if (!user) {
       fetchUserData();
     }
@@ -86,6 +87,8 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
     recieverId: string;
     docId: string;
   }
+
+  //Function to save a newly delivered notification
   const saveNotification = async ({
     message,
     senderId,
@@ -101,7 +104,9 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
           body: JSON.stringify({ senderId, recieverId, message, docId }),
         }
       );
+
       if (response.ok) {
+        //This will return saved document and updates the state for notification for real time
         const savedNotification = await response.json();
         setNotification((prev) => [...prev, savedNotification]);
       }
@@ -109,9 +114,13 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
       console.log(error);
     }
   };
+
+  //To handle socket connection and listens for nrew collaboration notifications
   useEffect(() => {
     if (userId) {
-      socket.emit("joinRoom", userId);
+      socket.emit("joinRoom", userId); //Join the user's socket rooom
+
+      //When recieving response from backend "collabNotification" it immediately invokes the saveNotifaction
       socket.on(
         "collabNotification",
         (
@@ -124,6 +133,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         }
       );
 
+      // Cleanup socket listener on component unmount
       return () => {
         socket.off("collabNotification"); // Cleanup listener on unmount
       };

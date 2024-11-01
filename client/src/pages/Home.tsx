@@ -74,7 +74,7 @@ const Home = () => {
                           key={index}
                           className="pl-5 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         >
-                          {notification}
+                          {notification.message}
                         </li>
                         <div className="btns flex items-center px-2">
                           <button className=" mx-1 w-10 flex items-center justify-center rounded text-[18px] bg-green-300  hover:bg-green-400">

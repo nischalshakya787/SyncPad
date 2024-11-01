@@ -31,9 +31,7 @@ export const saveNotification = async (req, res) => {
     if (!notification) {
       return res.status(400).json({ message: "failed to save notification" });
     }
-    res
-      .status(200)
-      .json({ message: "Notification saved successfully", notification });
+    res.status(200).json({ notification });
   } catch (error) {
     return res.status(400).json(error);
   }
@@ -66,11 +64,14 @@ export const fetchNotification = async (req, res) => {
     }
     const reciever = mongoose.Types.ObjectId.createFromHexString(userId);
     const notification = await NotificationModel.find({ reciever });
-    if (!notification) {
-      return res.status(201).json({ message: "Notification not Found!!" });
+
+    if (notification.length === 0) {
+      return res.status(404).json({ message: "No Notifications yet!" });
     }
     res.status(200).json({ notification });
   } catch (error) {
-    return res.status(400).json(error);
+    return res
+      .status(500)
+      .json({ error: "Server error", details: error.message });
   }
 };

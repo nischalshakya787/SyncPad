@@ -24,7 +24,6 @@ app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 app.use(express.json());
 app.use(cookieParser()); //This allows us to interact with browser cookies
 
-//router which includes login signup logout and getprofile
 app.use("/auth/", authRouter);
 app.use("/docs/", docsRouter);
 app.use("/notifications/", notificationRouter);
@@ -46,23 +45,25 @@ const startServer = async () => {
     console.log("Connected to DB");
 
     io.on("connection", (socket) => {
+      //To join a particular document
       socket.on("joinDocument", (docId) => {
         socket.join(docId);
       });
+      //To join a room for notification
       socket.on("joinRoom", (userId) => {
         socket.join(userId);
       });
+      //To send the collab request to the user
       socket.on("sendCollabRequest", (userId, document, sender) => {
-        console.log(userId);
         io.to(userId).emit(
           "collabNotification",
           `${sender.username} has invited you to collab on '${document.title}' document.`,
           sender.id,
-          userId,
+          userId, //userId is reciver's Id
           document._id
         );
       });
-
+      //To handle the changes in the document
       socket.on("document", (docId, value) => {
         socket.to(docId).emit("document", value);
       });

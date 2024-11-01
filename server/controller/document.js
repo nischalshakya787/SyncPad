@@ -53,6 +53,9 @@ export const fetchAllDocuments = async (req, res) => {
   const { id } = req.query;
 
   try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid User Id" });
+    }
     const user = mongoose.Types.ObjectId.createFromHexString(id); //Type casting the string id into ObjectID
     if (user) {
       const document = await DocumentModel.find({ creator: user }); // To fetch the document created by the user
@@ -101,6 +104,9 @@ export const updateName = async (req, res) => {
 export const addCollab = async (req, res) => {
   const { userId, docId } = req.body;
   try {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid User Id" });
+    }
     const user = mongoose.Types.ObjectId.createFromHexString(userId);
     if (user) {
       const document = await DocumentModel.findByIdAndUpdate(
@@ -131,6 +137,9 @@ export const addCollab = async (req, res) => {
 export const checkDocument = async (req, res, next) => {
   const { docId, userId } = req.query;
   try {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid User Id" });
+    }
     const user = mongoose.Types.ObjectId.createFromHexString(userId);
     const document = await DocumentModel.findById(docId);
     if (document) {

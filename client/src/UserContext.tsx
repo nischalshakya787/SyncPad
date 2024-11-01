@@ -58,34 +58,39 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
 
   interface saveNotificationProps {
     message: string;
-    sender: string;
-    reciever: string;
+    senderId: string;
+    recieverId: string;
     docId: string;
   }
+  const saveNotification = async ({
+    message,
+    senderId,
+    recieverId,
+    docId,
+  }: saveNotificationProps) => {
+    try {
+      await fetch("http://localhost:3000/notifications/save-notification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ senderId, recieverId, message, docId }),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
-    const saveNotification = async ({
-      message,
-      sender,
-      reciever,
-      docId,
-    }: saveNotificationProps) => {
-      try {
-        await fetch("http://localhost:3000/notifications/save-notification", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sender, reciever, message, docId }),
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
     if (userId) {
       socket.emit("joinRoom", userId);
       socket.on(
         "collabNotification",
-        (message: string, sender: string, reciever: string, docId: string) => {
+        (
+          message: string,
+          senderId: string,
+          recieverId: string,
+          docId: string
+        ) => {
           setNotification((prevNotification) => [...prevNotification, message]);
-          saveNotification({ message, sender, reciever, docId });
+          saveNotification({ message, senderId, recieverId, docId });
         }
       );
 
@@ -93,7 +98,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         socket.off("collabNotification"); // Cleanup listener on unmount
       };
     }
-  }, [userId]);
+  }, [userId, socket]);
 
   return (
     <UserContext.Provider

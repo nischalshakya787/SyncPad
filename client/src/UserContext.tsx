@@ -30,12 +30,64 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   const [notification, setNotification] = useState<string[]>([]);
 
   useEffect(() => {
-    const saveNotification = () => {};
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/auth/profile", {
+          method: "GET",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (!response.ok) {
+          setUser(null);
+          setUserId(null);
+        }
+
+        const data = await response.json();
+        setUser(data.user);
+        setUserId(data.user.id);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    if (!user) {
+      fetchUserData();
+    }
+  }, [user, setUser]);
+
+  interface saveNotificationProps {
+    message: string;
+    sender: string;
+    reciever: string;
+    docId: string;
+  }
+  useEffect(() => {
+    const saveNotification = async ({
+      message,
+      sender,
+      reciever,
+      docId,
+    }: saveNotificationProps) => {
+      try {
+        await fetch("http://localhost:3000/notifications/save-notification", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sender, reciever, message, docId }),
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
     if (userId) {
       socket.emit("joinRoom", userId);
-      socket.on("collabNotification", (message: string) => {
-        setNotification((prevNotification) => [...prevNotification, message]);
-      });
+      socket.on(
+        "collabNotification",
+        (message: string, sender: string, reciever: string, docId: string) => {
+          setNotification((prevNotification) => [...prevNotification, message]);
+          saveNotification({ message, sender, reciever, docId });
+        }
+      );
 
       return () => {
         socket.off("collabNotification"); // Cleanup listener on unmount

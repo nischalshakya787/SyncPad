@@ -6,7 +6,7 @@ import { socket } from "../socket";
 import { Delta } from "quill";
 import { UserContext } from "../UserContext";
 import { useParams } from "react-router-dom";
-import { User } from "../types/User";
+import { User, UserProps } from "../types/User";
 import NotFound from "../components/NotFound";
 import Loader from "../components/Loader";
 import type { Document } from "../types/Document";
@@ -49,7 +49,7 @@ const Document = () => {
       if (user) {
         try {
           const response = await fetch(
-            `http://localhost:3000/document?docId=${docId}&userId=${user.id}`,
+            `http://localhost:3000/docs/document?docId=${docId}&userId=${user.id}`,
             {
               method: "GET",
             }
@@ -95,13 +95,16 @@ const Document = () => {
   //To save the document
   const handleSave = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/document/${docId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ value }),
-      });
+      const response = await fetch(
+        `http://localhost:3000/docs/document/${docId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ value }),
+        }
+      );
       const data = await response.json();
       console.log(data.message);
     } catch (error) {
@@ -118,7 +121,7 @@ const Document = () => {
       // Make an API call with the latest title
       try {
         const response = await fetch(
-          "http://localhost:3000/document/update-name",
+          "http://localhost:3000/docs/document/update-name",
           {
             method: "POST",
             headers: {
@@ -207,7 +210,7 @@ const Document = () => {
         <AddCollabModal
           setIsModalOpen={setIsModalOpen}
           document={document}
-          owner={user?.username}
+          sender={user}
         />
       )}
     </div>
@@ -223,23 +226,23 @@ const MenuComponent: React.FC<{ name: String }> = ({ name }) => {
 type AddCollabModal = {
   setIsModalOpen: (value: boolean) => void;
   document: Document;
-  owner: string | undefined;
+  sender: UserProps | null;
 };
 
 const AddCollabModal = ({
   setIsModalOpen,
   document,
-  owner,
+  sender,
 }: AddCollabModal) => {
   const [email, setEmail] = useState<string>("");
-  const [user, setUser] = useState<User | null>(null); //To track the user
+  const [user, setUser] = useState<User | null>(null); //To the searched user
   const [box, setBox] = useState<boolean>(false); //To show the result box only at the beginning
   const [isAdded, setIsAdded] = useState<boolean>(false); //To check if the returned user is a already in collab or not
 
   const searchUser = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/user?email=${email}&docId=${document._id}`
+        `http://localhost:3000/auth/user?email=${email}&docId=${document._id}`
       );
       if (!response.ok) {
         throw Error("Server error");
@@ -264,7 +267,7 @@ const AddCollabModal = ({
   };
 
   const sendCollabRequest = async () => {
-    socket.emit("sendCollabRequest", user?._id, document.title, owner);
+    socket.emit("sendCollabRequest", user?._id, document, sender);
     // try {
     //   const response = await fetch(
     //     `http://localhost:3000/document/add-collab`,

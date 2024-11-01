@@ -17,7 +17,7 @@ const RecentDocumentsSection: React.FC<RecentDocsProps> = ({ user }) => {
         //Only fetches if user is logged in
         try {
           const response = await fetch(
-            `http://localhost:3000/document/fetch?id=${user?.id}`,
+            `http://localhost:3000/docs/document/fetch?id=${user?.id}`,
             {
               method: "GET",
             }

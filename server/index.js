@@ -25,9 +25,9 @@ app.use(express.json());
 app.use(cookieParser()); //This allows us to interact with browser cookies
 
 //router which includes login signup logout and getprofile
-app.use(authRouter);
-app.use(docsRouter);
-app.use(notificationRouter);
+app.use("/auth/", authRouter);
+app.use("/docs/", docsRouter);
+app.use("/notifications/", notificationRouter);
 
 const PORT = 3000;
 
@@ -52,10 +52,13 @@ const startServer = async () => {
       socket.on("joinRoom", (userId) => {
         socket.join(userId);
       });
-      socket.on("sendCollabRequest", (userId, title, owner) => {
+      socket.on("sendCollabRequest", (userId, document, sender) => {
         io.to(userId).emit(
           "collabNotification",
-          `${owner} has invited you to collab on '${title}' document.`
+          `${sender.username} has invited you to collab on '${document.title}' document.`,
+          sender.id,
+          userId,
+          document._id
         );
       });
 

@@ -14,7 +14,7 @@ const CreateSection: React.FC = () => {
   const { user } = context;
   const createDocument = async () => {
     try {
-      const response = await fetch("http://localhost:3000/document", {
+      const response = await fetch("http://localhost:3000/docs/document", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: user?.username }),

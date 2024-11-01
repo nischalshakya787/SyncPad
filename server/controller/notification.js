@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import NotificationModel from "../model/Notification";
+import NotificationModel from "../model/Notification.js";
 
 //To save the notification
 export const saveNotification = async (req, res) => {

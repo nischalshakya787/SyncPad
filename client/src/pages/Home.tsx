@@ -15,7 +15,7 @@ const Home = () => {
     throw new Error("AppRoutes must be used within a UserContextProvider");
   }
 
-  const { notification } = content;
+  const { notifications } = content;
 
   useEffect(() => {
     if (location.state?.toastMessage && location.state?.from === "login") {
@@ -57,7 +57,25 @@ const Home = () => {
       console.log(error);
     }
   };
-  const handleReject = async () => {};
+  const handleReject = async (notificationId: string) => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/notifications/update-status",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: notificationId, status: "rejected" }),
+        }
+      );
+      if (!response.ok) {
+        throw Error("Failed to updated status");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const { user, setUser } = context;
   const username = user?.username;
   return (
@@ -77,7 +95,7 @@ const Home = () => {
 
               {/* Notification count badge */}
               <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                {notification.length}
+                {notifications.length}
               </span>
             </div>
 
@@ -88,8 +106,8 @@ const Home = () => {
                   Notifications
                 </div>
                 <ul className="max-h-60 overflow-y-auto">
-                  {notification.length > 0 ? (
-                    notification.map((notification, index) => (
+                  {notifications.length > 0 ? (
+                    notifications.map((notification, index) => (
                       <div className="flex">
                         <li
                           key={index}
@@ -100,13 +118,13 @@ const Home = () => {
                         <div className="btns flex items-center px-2">
                           <button
                             className=" mx-1 w-10 flex items-center justify-center rounded text-[18px] bg-green-300  hover:bg-green-400"
-                            onClick={handleAccept(notification._id)}
+                            onClick={() => handleAccept(notification._id)}
                           >
                             ✓
                           </button>
                           <button
                             className=" mx-1 w-10 flex items-center justify-center rounded text-[18px] bg-red-300 hover:bg-red-400"
-                            onClick={handleReject}
+                            onClick={() => handleReject(notification._id)}
                           >
                             x
                           </button>

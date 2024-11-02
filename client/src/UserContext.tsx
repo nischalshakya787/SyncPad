@@ -15,7 +15,7 @@ interface UserContextType {
   setUser: Dispatch<SetStateAction<UserProps | null>>;
   userId: string | null;
   setUserId: Dispatch<SetStateAction<string | null>>;
-  notification: Notification[];
+  notifications: Notification[];
 }
 
 export const UserContext = createContext<UserContextType | undefined>(
@@ -28,7 +28,7 @@ interface UserContextProviderProps {
 export function UserContextProvider({ children }: UserContextProviderProps) {
   const [user, setUser] = useState<UserProps | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [notification, setNotification] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   //Fetches the notification when user loggs in
   useEffect(() => {
@@ -42,7 +42,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         }
         //Will return an array of notifications which a user has recieved
         const data = await response.json();
-        setNotification(data.notification);
+        setNotifications(data.notification);
       } catch (error) {
         console.log("Error fetching notifications:", error);
       }
@@ -108,7 +108,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
       if (response.ok) {
         //This will return saved document and updates the state for notification for real time
         const savedNotification = await response.json();
-        setNotification((prev) => [...prev, savedNotification]);
+        setNotifications((prev) => [...prev, savedNotification]);
       }
     } catch (error) {
       console.log(error);
@@ -142,7 +142,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
 
   return (
     <UserContext.Provider
-      value={{ user, setUser, userId, setUserId, notification }}
+      value={{ user, setUser, userId, setUserId, notifications }}
     >
       {children}
     </UserContext.Provider>

@@ -37,6 +37,27 @@ const Home = () => {
     });
     setUser(null);
   };
+
+  const handleAccept = async (notificationId: string) => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/notifications/update-status",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: notificationId, status: "accepted" }),
+        }
+      );
+      if (!response.ok) {
+        throw Error("Failed to updated status");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleReject = async () => {};
   const { user, setUser } = context;
   const username = user?.username;
   return (
@@ -77,10 +98,16 @@ const Home = () => {
                           {notification.message}
                         </li>
                         <div className="btns flex items-center px-2">
-                          <button className=" mx-1 w-10 flex items-center justify-center rounded text-[18px] bg-green-300  hover:bg-green-400">
+                          <button
+                            className=" mx-1 w-10 flex items-center justify-center rounded text-[18px] bg-green-300  hover:bg-green-400"
+                            onClick={handleAccept(notification._id)}
+                          >
                             ✓
                           </button>
-                          <button className=" mx-1 w-10 flex items-center justify-center rounded text-[18px] bg-red-300 hover:bg-red-400">
+                          <button
+                            className=" mx-1 w-10 flex items-center justify-center rounded text-[18px] bg-red-300 hover:bg-red-400"
+                            onClick={handleReject}
+                          >
                             x
                           </button>
                         </div>

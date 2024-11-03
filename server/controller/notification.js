@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import NotificationModel from "../model/Notification.js";
 import UserModel from "../model/User.js";
+import DocumentModel from "../model/Document.js";
 
 //To save the notification
 export const saveNotification = async (req, res) => {
@@ -37,21 +38,65 @@ export const saveNotification = async (req, res) => {
   }
 };
 
-//Updating the status if the collab request is accepted or rejected
 export const updateStatus = async (req, res) => {
-  const { id, status } = req.body; //status may have accepted or rejected as a value
+  const { id, status } = req.body; // status may have accepted or rejected as a value
   try {
-    const notification = await NotificationModel.findByIdAndUpdate(id, {
-      status: status,
-    });
+    // Find the notification by ID
+    const notification = await NotificationModel.findById(id);
     if (!notification) {
       return res.status(400).json({ message: "Notification not Found!!" });
     }
-    res
-      .status(200)
-      .json({ message: "Notification Updated successfully", notification });
+
+    // Update the status of the notification
+    notification.status = status;
+    await notification.save(); // Save the updated notification
+
+    // If the status is accepted, add the user as a collaborator to the document
+    if (status === "accepted") {
+      const userId = notification.receiver; // Assuming `receiver` is the userId
+      const docId = notification.doc; // `doc` is the document Id (should be ObjectId)
+
+      // Validate the userId
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({ error: "Invalid User Id" });
+      }
+
+      // Validate the docId
+      if (!mongoose.Types.ObjectId.isValid(docId)) {
+        return res.status(400).json({ error: "Invalid Document Id" });
+      }
+      const user = mongoose.Types.ObjectId.createFromHexString(userId);
+      // Add the user to the document's collaborators
+      const document = await DocumentModel.findByIdAndUpdate(
+        docId,
+        {
+          $addToSet: { collab: user }, // Append the user to the collab array
+        },
+        { new: true }
+      );
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+
+      // Respond with success
+      return res.status(200).json({
+        message: "Notification Updated successfully and collaborator added",
+        notification,
+        document,
+      });
+    }
+
+    // Respond for other statuses (e.g., rejected)
+    return res.status(200).json({
+      message: "Notification Updated successfully",
+      notification,
+    });
   } catch (error) {
-    return res.status(400).json(error);
+    console.error("Error updating status:", error);
+    return res.status(500).json({
+      message: "An error occurred while updating status",
+      error: error.message,
+    });
   }
 };
 

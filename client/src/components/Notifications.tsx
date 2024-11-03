@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Notification } from "../types/Notification";
 import { UserContext } from "../UserContext";
 
@@ -7,7 +7,9 @@ interface NotificationsProps {
 }
 
 const Notifications: React.FC<NotificationsProps> = ({ notifications }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const notification = useContext(UserContext);
+
   if (!notification) {
     throw new Error("AppRoutes must be used within a UserContextProvider");
   }
@@ -16,6 +18,7 @@ const Notifications: React.FC<NotificationsProps> = ({ notifications }) => {
     notificationId: string,
     status: "pending" | "accepted" | "rejected"
   ) => {
+    setIsLoading(true);
     try {
       const response = await fetch(
         "http://localhost:3000/notifications/update-status",
@@ -38,6 +41,7 @@ const Notifications: React.FC<NotificationsProps> = ({ notifications }) => {
             : notification
         )
       );
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -73,6 +77,8 @@ const Notifications: React.FC<NotificationsProps> = ({ notifications }) => {
                 <div className="text-green-500">Accepted</div>
               ) : notification.status === "rejected" ? (
                 <div className="text-red-500">Rejected</div>
+              ) : isLoading ? (
+                <div>Loading</div>
               ) : null}
             </div>
           </div>

@@ -1,30 +1,47 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Notification } from "../types/Notification";
+import { UserContext } from "../UserContext";
 
-const handleStatus = async (notificationId: string, status: string) => {
-  try {
-    const response = await fetch(
-      "http://localhost:3000/notifications/update-status",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: notificationId, status }),
-      }
-    );
-    if (!response.ok) {
-      throw Error("Failed to updated status");
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
 interface NotificationsProps {
   notifications: Notification[];
 }
 
 const Notifications: React.FC<NotificationsProps> = ({ notifications }) => {
+  const notification = useContext(UserContext);
+  if (!notification) {
+    throw new Error("AppRoutes must be used within a UserContextProvider");
+  }
+  const { setNotifications } = notification;
+  const handleStatus = async (
+    notificationId: string,
+    status: "pending" | "accepted" | "rejected"
+  ) => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/notifications/update-status",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: notificationId, status }),
+        }
+      );
+      if (!response.ok) {
+        throw Error("Failed to updated status");
+      }
+      // Update the local state after the status change
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notification) =>
+          notification._id === notificationId
+            ? { ...notification, status }
+            : notification
+        )
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       {notifications.length > 0 ? (

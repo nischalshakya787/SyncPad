@@ -16,6 +16,7 @@ interface UserContextType {
   userId: string | null;
   setUserId: Dispatch<SetStateAction<string | null>>;
   notifications: Notification[];
+  setNotifications: Dispatch<SetStateAction<Notification[]>>;
 }
 
 export const UserContext = createContext<UserContextType | undefined>(
@@ -142,7 +143,14 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
 
   return (
     <UserContext.Provider
-      value={{ user, setUser, userId, setUserId, notifications }}
+      value={{
+        user,
+        setUser,
+        userId,
+        setUserId,
+        notifications,
+        setNotifications,
+      }}
     >
       {children}
     </UserContext.Provider>

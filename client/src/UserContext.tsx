@@ -108,7 +108,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
       if (response.ok) {
         //This will return saved document and updates the state for notification for real time
         const savedNotification = await response.json();
-        setNotifications((prev) => [...prev, savedNotification]);
+        setNotifications((prev) => [...prev, savedNotification.notification]);
       }
     } catch (error) {
       console.log(error);

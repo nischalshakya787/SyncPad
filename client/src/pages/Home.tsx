@@ -1,5 +1,9 @@
 import { toast, ToastContainer } from "react-toastify";
-import { CreateSection, RecentDocumentsSection } from "../components";
+import {
+  CreateSection,
+  Notifications,
+  RecentDocumentsSection,
+} from "../components";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
@@ -38,44 +42,6 @@ const Home = () => {
     setUser(null);
   };
 
-  const handleAccept = async (notificationId: string) => {
-    try {
-      const response = await fetch(
-        "http://localhost:3000/notifications/update-status",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ id: notificationId, status: "accepted" }),
-        }
-      );
-      if (!response.ok) {
-        throw Error("Failed to updated status");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const handleReject = async (notificationId: string) => {
-    try {
-      const response = await fetch(
-        "http://localhost:3000/notifications/update-status",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ id: notificationId, status: "rejected" }),
-        }
-      );
-      if (!response.ok) {
-        throw Error("Failed to updated status");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const { user, setUser } = context;
   const username = user?.username;
   return (
@@ -106,36 +72,7 @@ const Home = () => {
                   Notifications
                 </div>
                 <ul className="max-h-60 overflow-y-auto">
-                  {notifications.length > 0 ? (
-                    notifications.map((notification, index) => (
-                      <div className="flex">
-                        <li
-                          key={index}
-                          className="pl-5 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        >
-                          {notification.message}
-                        </li>
-                        <div className="btns flex items-center px-2">
-                          <button
-                            className=" mx-1 w-10 flex items-center justify-center rounded text-[18px] bg-green-300  hover:bg-green-400"
-                            onClick={() => handleAccept(notification._id)}
-                          >
-                            ✓
-                          </button>
-                          <button
-                            className=" mx-1 w-10 flex items-center justify-center rounded text-[18px] bg-red-300 hover:bg-red-400"
-                            onClick={() => handleReject(notification._id)}
-                          >
-                            x
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <li className="px-4 py-2 text-sm text-gray-500">
-                      No new notifications
-                    </li>
-                  )}
+                  <Notifications notifications={notifications} />
                 </ul>
               </div>
             )}

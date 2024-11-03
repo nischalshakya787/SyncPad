@@ -53,22 +53,11 @@ export const updateStatus = async (req, res) => {
 
     // If the status is accepted, add the user as a collaborator to the document
     if (status === "accepted") {
-      const userId = notification.receiver; // Assuming `receiver` is the userId
+      const user = notification.reciever; // Assuming `receiver` is the userId
       const docId = notification.doc; // `doc` is the document Id (should be ObjectId)
 
-      // Validate the userId
-      if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return res.status(400).json({ error: "Invalid User Id" });
-      }
-
-      // Validate the docId
-      if (!mongoose.Types.ObjectId.isValid(docId)) {
-        return res.status(400).json({ error: "Invalid Document Id" });
-      }
-      const user = mongoose.Types.ObjectId.createFromHexString(userId);
-      // Add the user to the document's collaborators
       const document = await DocumentModel.findByIdAndUpdate(
-        docId,
+        docId.toString(),
         {
           $addToSet: { collab: user }, // Append the user to the collab array
         },

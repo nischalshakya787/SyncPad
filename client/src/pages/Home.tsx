@@ -4,7 +4,7 @@ import {
   Notifications,
   RecentDocumentsSection,
 } from "../components";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import { IoIosNotifications } from "react-icons/io";
@@ -80,6 +80,7 @@ const Home = () => {
                 </ul>
               </div>
             )}
+            <Link to="/profile">Profile</Link>
             <button
               className="px-6 py-4 text-base font-bold text-white bg-red-500 rounded-lg max-md:px-5"
               onClick={handleLogOut}

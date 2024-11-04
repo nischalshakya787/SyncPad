@@ -63,11 +63,11 @@ const Notifications: React.FC<NotificationsProps> = ({
           <div className="flex">
             <li
               key={index}
-              className="pl-5 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className={`pl-5 py-2 text-sm text-gray-700 hover:bg-gray-100`}
             >
               {notification.message}
             </li>
-            <div className="btns flex items-center px-2">
+            <div className="flex items-center px-2">
               {notification.status === "pending" &&
               notification.type === "request" ? (
                 <>

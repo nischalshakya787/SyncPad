@@ -67,7 +67,7 @@ const startServer = async () => {
       //To send the response of the collab
       socket.on("sendResponse", (response, username, document) => {
         io.to(response.sender).emit("collabNotification", {
-          type: "request",
+          type: "response",
           message: `${username} has ${response.status} your request on '${document.title}'`,
           senderId: response.reciever,
           recieverId: response.sender,

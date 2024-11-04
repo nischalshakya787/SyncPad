@@ -18,6 +18,7 @@ const Notifications: React.FC<NotificationsProps> = ({
   if (!notification) {
     throw new Error("AppRoutes must be used within a UserContextProvider");
   }
+  console.log(notifications);
   const { setNotifications } = notification;
   const handleStatus = async (
     notificationId: string,

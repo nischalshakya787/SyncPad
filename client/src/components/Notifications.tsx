@@ -67,7 +67,8 @@ const Notifications: React.FC<NotificationsProps> = ({
               {notification.message}
             </li>
             <div className="btns flex items-center px-2">
-              {notification.status === "pending" ? (
+              {notification.status === "pending" &&
+              notification.type === "request" ? (
                 <>
                   <button
                     className=" mx-1 w-10 flex items-center justify-center rounded text-[18px] bg-green-300  hover:bg-green-400"

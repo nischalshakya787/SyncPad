@@ -4,6 +4,7 @@ export type Notification = {
   receiver: string;
   message: string;
   status: "pending" | "accepted" | "rejected";
+  type: "request" | "response";
   doc: string;
   createdAt: string;
   updatedAt: string;

@@ -4,7 +4,7 @@ import DocumentModel from "../model/Document.js";
 
 //To save the notification
 export const saveNotification = async (req, res) => {
-  const { senderId, recieverId, message, docId } = req.body;
+  const { senderId, recieverId, message, docId, type } = req.body;
   console.log(req.body);
   try {
     //Checking if the provided Id is valid or not
@@ -27,6 +27,7 @@ export const saveNotification = async (req, res) => {
       reciever,
       message,
       doc,
+      type,
     });
     if (!notification) {
       return res.status(400).json({ message: "failed to save notification" });

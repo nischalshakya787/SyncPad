@@ -11,7 +11,7 @@ import NotFound from "../components/NotFound";
 import Loader from "../components/Loader";
 import type { Document } from "../types/Document";
 
-const Document = () => {
+const DocumentPage = () => {
   const [value, setValue] = useState<string>("");
   const [document, setDocument] = useState<any>({});
   const [isTyping, setIsTyping] = useState<boolean>(false); //to track if the user is typing or not
@@ -328,4 +328,4 @@ const AddCollabModal = ({
   );
 };
 
-export default Document;
+export default DocumentPage;

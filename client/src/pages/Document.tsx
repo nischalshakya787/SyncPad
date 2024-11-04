@@ -242,7 +242,7 @@ const AddCollabModal = ({
   const searchUser = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/auth/user?email=${email}&docId=${document._id}`
+        `http://localhost:3000/docs/user?email=${email}&docId=${document._id}`
       );
       if (!response.ok) {
         throw Error("Server error");

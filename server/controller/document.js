@@ -160,3 +160,29 @@ export const checkDocument = async (req, res, next) => {
     }
   } catch (error) {}
 };
+export const getUserDocument = async (req, res) => {
+  const { email, docId } = req.query;
+  try {
+    const document = await DocumentModel.findById(docId);
+    if (!document) {
+      return res.status(404).json({ message: "Document not found" });
+    }
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(201).json({ message: "User not found" });
+    }
+    const isCollaborator = document.collab.includes(user._id);
+
+    if (isCollaborator) {
+      return res.status(200).json({
+        message: "User is already a collaborator",
+        user,
+        isCollab: true,
+      });
+    }
+
+    res.status(200).json({ message: "User found", user, isCollab: false });
+  } catch (error) {
+    console.log(error);
+  }
+};

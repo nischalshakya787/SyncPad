@@ -5,6 +5,7 @@ import {
   createDocument,
   fetchAllDocuments,
   fetchDocument,
+  getUserDocument,
   saveDocument,
   updateName,
 } from "../controller/document.js";
@@ -19,5 +20,6 @@ docsRouter.route("/document/update-name").post(updateName); // Renamed route for
 docsRouter.route("/document/add-collab").post(addCollab);
 docsRouter.route("/document/:id").post(saveDocument);
 docsRouter.route("/document/fetch").get(fetchAllDocuments);
+docsRouter.route("/user").get(getUserDocument);
 
 export default docsRouter;

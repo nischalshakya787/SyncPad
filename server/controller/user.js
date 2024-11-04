@@ -1,7 +1,6 @@
 import UserModel from "../model/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import DocumentModel from "../model/Document.js";
 
 const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -51,7 +50,6 @@ const login = async (req, res) => {
       res.status(400).json({ message: "Incorrect Password", status: false });
     }
   } catch (error) {
-    console.error("Login error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -72,30 +70,17 @@ const profile = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const { email, docId } = req.query;
+  const { id } = req.query;
   try {
-    const document = await DocumentModel.findById(docId);
-    console.log(document);
-    if (!document) {
-      return res.status(404).json({ message: "Document not found" });
-    }
-    const user = await UserModel.findOne({ email });
+    const user = await UserModel.findById(id);
+
     if (!user) {
-      return res.status(201).json({ message: "User not found" });
-    }
-    const isCollaborator = document.collab.includes(user._id);
-
-    if (isCollaborator) {
-      return res.status(200).json({
-        message: "User is already a collaborator",
-        user,
-        isCollab: true,
-      });
+      return res.status(404).json({ message: "User not Found" });
     }
 
-    res.status(200).json({ message: "User found", user, isCollab: false });
+    res.status(200).json(user);
   } catch (error) {
-    console.log(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 

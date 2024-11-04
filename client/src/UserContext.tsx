@@ -9,6 +9,7 @@ import {
 import { UserProps } from "./types/User";
 import { socket } from "./socket";
 import { Notification } from "./types/Notification";
+import { Document } from "./types/Document";
 
 interface UserContextType {
   user: UserProps | null;

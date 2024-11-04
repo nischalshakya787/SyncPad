@@ -11,6 +11,9 @@ const NotificationSchema = new mongoose.Schema(
     message: {
       type: String,
     },
+    type: {
+      type: String,
+    },
     status: {
       type: String,
       default: "pending",

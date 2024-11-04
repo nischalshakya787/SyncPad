@@ -52,16 +52,27 @@ const startServer = async () => {
       //To join a room for notification
       socket.on("joinRoom", (userId) => {
         socket.join(userId);
+        console.log(`${userId} has Joined`);
       });
       //To send the collab request to the user
       socket.on("sendCollabRequest", (userId, document, sender) => {
-        io.to(userId).emit(
-          "collabNotification",
-          `${sender.username} has invited you to collab on '${document.title}' document.`,
-          sender.id,
-          userId, //userId is reciver's Id
-          document._id
-        );
+        io.to(userId).emit("collabNotification", {
+          type: "request",
+          message: `${sender.username} has invited you to collab on '${document.title}' document.`,
+          senderId: sender.id,
+          recieverId: userId,
+          docId: document._id,
+        });
+      });
+      //To send the response of the collab
+      socket.on("sendResponse", (response, username, document) => {
+        io.to(response.sender).emit("collabNotification", {
+          type: "request",
+          message: `${username} has ${response.status} your request on '${document.title}'`,
+          senderId: response.reciever,
+          recieverId: response.sender,
+          docId: document._id,
+        });
       });
       //To handle the changes in the document
       socket.on("document", (docId, value) => {

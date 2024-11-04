@@ -268,23 +268,6 @@ const AddCollabModal = ({
 
   const sendCollabRequest = async () => {
     socket.emit("sendCollabRequest", user?._id, document, sender);
-    // try {
-    //   const response = await fetch(
-    //     `http://localhost:3000/document/add-collab`,
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify({ userId: user?._id, docId: docId }),
-    //     }
-    //   );
-    //   const data = await response.json();
-    //   setIsAdded(true);
-    //   console.log(data);
-    // } catch (error) {
-    //   console.log(error);
-    // }
   };
 
   return (

@@ -1,12 +1,17 @@
 import React, { useContext, useState } from "react";
 import { Notification } from "../types/Notification";
 import { UserContext } from "../UserContext";
+import { socket } from "../socket";
 
 interface NotificationsProps {
   notifications: Notification[];
+  username: string;
 }
 
-const Notifications: React.FC<NotificationsProps> = ({ notifications }) => {
+const Notifications: React.FC<NotificationsProps> = ({
+  notifications,
+  username,
+}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const notification = useContext(UserContext);
 
@@ -41,6 +46,10 @@ const Notifications: React.FC<NotificationsProps> = ({ notifications }) => {
             : notification
         )
       );
+      const data = await response.json();
+      console.log(data);
+      //Emit the response so that the sender also knows whether the user has accepted or rejected thier collabRequest
+      socket.emit("sendResponse", data.notification, username, data.document);
       setIsLoading(false);
     } catch (error) {
       console.log(error);

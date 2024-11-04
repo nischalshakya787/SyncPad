@@ -72,7 +72,10 @@ const Home = () => {
                   Notifications
                 </div>
                 <ul className="max-h-60 overflow-y-auto">
-                  <Notifications notifications={notifications} />
+                  <Notifications
+                    notifications={notifications}
+                    username={username}
+                  />
                 </ul>
               </div>
             )}

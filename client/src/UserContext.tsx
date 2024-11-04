@@ -87,6 +87,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
     senderId: string;
     recieverId: string;
     docId: string;
+    type: string;
   }
 
   //Function to save a newly delivered notification
@@ -95,6 +96,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
     senderId,
     recieverId,
     docId,
+    type,
   }: saveNotificationProps) => {
     try {
       const response = await fetch(
@@ -102,7 +104,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ senderId, recieverId, message, docId }),
+          body: JSON.stringify({ senderId, recieverId, message, docId, type }),
         }
       );
 
@@ -124,13 +126,8 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
       //When recieving response from backend "collabNotification" it immediately invokes the saveNotifaction
       socket.on(
         "collabNotification",
-        (
-          message: string,
-          senderId: string,
-          recieverId: string,
-          docId: string
-        ) => {
-          saveNotification({ message, senderId, recieverId, docId });
+        ({ type, message, senderId, recieverId, docId }) => {
+          saveNotification({ message, senderId, recieverId, docId, type });
         }
       );
 

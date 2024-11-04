@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import NotificationModel from "../model/Notification.js";
-import UserModel from "../model/User.js";
 import DocumentModel from "../model/Document.js";
 
 //To save the notification
@@ -43,6 +42,7 @@ export const updateStatus = async (req, res) => {
   try {
     // Find the notification by ID
     const notification = await NotificationModel.findById(id);
+    console.log(notification);
     if (!notification) {
       return res.status(400).json({ message: "Notification not Found!!" });
     }
@@ -76,9 +76,11 @@ export const updateStatus = async (req, res) => {
     }
 
     // Respond for other statuses (e.g., rejected)
+    const document = await DocumentModel.findById(notification.doc);
     return res.status(200).json({
       message: "Notification Updated successfully",
       notification,
+      document,
     });
   } catch (error) {
     console.error("Error updating status:", error);

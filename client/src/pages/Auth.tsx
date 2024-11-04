@@ -6,6 +6,8 @@ import { validationSchema } from "../schema";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthProps } from "../types/Auth";
+import { useContext } from "react";
+import { UserContext } from "../UserContext";
 
 const Auth = () => {
   const location = useLocation();
@@ -27,7 +29,31 @@ const Auth = () => {
         }
       },
     });
+  const userData = useContext(UserContext);
+  if (!userData) {
+    throw Error("Error");
+  }
+  const { setUser, setUserId } = userData;
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/auth/profile", {
+        method: "GET",
+        credentials: "include", //Includes cookiee
+        headers: { "Content-Type": "application/json" },
+      });
 
+      if (!response.ok) {
+        setUser(null);
+        setUserId(null);
+      }
+
+      const data = await response.json();
+      setUser(data.user);
+      setUserId(data.user.id);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
   const handleLogin = async (values: AuthProps) => {
     const { username, password } = values;
     try {
@@ -40,6 +66,7 @@ const Auth = () => {
         body: JSON.stringify({ username, password }),
       });
       const data = await response.json();
+      fetchUserData();
       if (data.status) {
         navigate("/", {
           state: { toastMessage: "Login successful!", from: "login" },

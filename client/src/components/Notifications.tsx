@@ -18,8 +18,8 @@ const Notifications: React.FC<NotificationsProps> = ({
   if (!notification) {
     throw new Error("AppRoutes must be used within a UserContextProvider");
   }
-  console.log(notifications);
-  const { setNotifications } = notification;
+
+  const { setNotifications, setDocuments } = notification;
   const handleStatus = async (
     notificationId: string,
     status: "pending" | "accepted" | "rejected"
@@ -48,7 +48,7 @@ const Notifications: React.FC<NotificationsProps> = ({
         )
       );
       const data = await response.json();
-      console.log(data);
+      setDocuments((prevDocuments) => [...prevDocuments, data.document]);
       //Emit the response so that the sender also knows whether the user has accepted or rejected thier collabRequest
       socket.emit("sendResponse", data.notification, username, data.document);
       setIsLoading(false);

@@ -17,6 +17,8 @@ interface UserContextType {
   setUserId: Dispatch<SetStateAction<string | null>>;
   notifications: Notification[];
   setNotifications: Dispatch<SetStateAction<Notification[]>>;
+  documents: Document[];
+  setDocuments: Dispatch<SetStateAction<Document[]>>;
 }
 
 export const UserContext = createContext<UserContextType | undefined>(
@@ -30,6 +32,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   const [user, setUser] = useState<UserProps | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
 
   //Fetches the notification when user loggs in
   useEffect(() => {
@@ -138,6 +141,31 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
     }
   }, [userId, socket]);
 
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      if (user) {
+        //Only fetches if user is logged in
+        try {
+          const response = await fetch(
+            `http://localhost:3000/docs/document/fetch?id=${user?.id}`,
+            {
+              method: "GET",
+            }
+          );
+
+          const data = await response.json();
+          setDocuments(data.document || []); // Ensure data is an array
+        } catch (error) {
+          console.error("Error fetching documents:", error);
+        }
+      } else {
+        setDocuments([]); //If not logged in
+      }
+    };
+
+    fetchDocuments();
+  }, [user]); // Only run this effect when `user` changes
+
   return (
     <UserContext.Provider
       value={{
@@ -147,6 +175,8 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         setUserId,
         notifications,
         setNotifications,
+        documents,
+        setDocuments,
       }}
     >
       {children}

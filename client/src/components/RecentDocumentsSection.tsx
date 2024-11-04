@@ -1,40 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import DocumentCard from "./DocumentCard";
 import { Link } from "react-router-dom";
-import { Document } from "../types/Document";
 import { UserProps } from "../types/User";
+import { UserContext } from "../UserContext";
 
 interface RecentDocsProps {
   user: UserProps | null;
 }
 
 const RecentDocumentsSection: React.FC<RecentDocsProps> = ({ user }) => {
-  const [documents, setDocuments] = useState<Document[]>([]);
+  const document = useContext(UserContext);
 
-  useEffect(() => {
-    const fetchDocuments = async () => {
-      if (user) {
-        //Only fetches if user is logged in
-        try {
-          const response = await fetch(
-            `http://localhost:3000/docs/document/fetch?id=${user?.id}`,
-            {
-              method: "GET",
-            }
-          );
+  if (!document) {
+    throw new Error("AppRoutes must be used within a UserContextProvider");
+  }
 
-          const data = await response.json();
-          setDocuments(data.document || []); // Ensure data is an array
-        } catch (error) {
-          console.error("Error fetching documents:", error);
-        }
-      } else {
-        setDocuments([]); //If not logged in
-      }
-    };
-
-    fetchDocuments();
-  }, [user]); // Only run this effect when `user` changes
+  const { documents } = document;
 
   return (
     <section className="flex flex-col items-center px-20 pt-10 pb-20 mt-14 w-full bg-gray-100 max-md:px-5 max-md:mt-10 max-md:max-w-full">

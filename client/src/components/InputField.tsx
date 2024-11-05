@@ -12,7 +12,7 @@ const InputField: React.FC<InputFieldProps> = ({
   const id = label.toLowerCase().replace(/\s+/g, "-");
 
   return (
-    <div className="mt-6">
+    <div className="mt-4">
       <label htmlFor={id} className="mb-2 text-[18px]">
         {label}
       </label>

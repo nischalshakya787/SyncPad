@@ -8,6 +8,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import { IoIosNotifications } from "react-icons/io";
+import { FaUser } from "react-icons/fa";
 
 const Home = () => {
   const location = useLocation();
@@ -55,7 +56,7 @@ const Home = () => {
         {username ? (
           <div className="relative flex items-center">
             <div
-              className="relative message text-[30px] mx-6 cursor-pointer rounded-full p-1 hover:bg-gray-200"
+              className="relative message text-[30px] mx-2 cursor-pointer rounded-full p-1 hover:bg-gray-200"
               onClick={() => setShowNotification(!showNotification)}
             >
               <IoIosNotifications />
@@ -80,7 +81,12 @@ const Home = () => {
                 </ul>
               </div>
             )}
-            <Link to="/profile">Profile</Link>
+
+            <Link to="/profile">
+              <div className="profile mx-4">
+                <FaUser size={25} />
+              </div>
+            </Link>
             <button
               className="px-6 py-4 text-base font-bold text-white bg-red-500 rounded-lg max-md:px-5"
               onClick={handleLogOut}

@@ -6,6 +6,7 @@ import profile from "../assets/image/profile.jpg";
 import { useFormik } from "formik";
 import { passwordSchema, profileSchema } from "../schema";
 import { InputField } from "../components";
+import { toast, ToastContainer } from "react-toastify";
 
 const Profile = () => {
   // Placeholder user data
@@ -36,6 +37,7 @@ const Profile = () => {
 
   return (
     <div className="bg-gray-100 min-h-screen p-6 flex justify-center">
+      <ToastContainer />
       <div className="bg-white shadow-md rounded-lg w-full max-w-3xl p-6">
         {/* Header Section */}
         <div className="flex items-center mb-6">
@@ -93,7 +95,7 @@ const Profile = () => {
         </div>
       </div>
       {isModalOpen && (
-        <AccountSetting setIsModalOpen={setIsModalOpen} userId={user?.id} />
+        <AccountSetting setIsModalOpen={setIsModalOpen} userData={userData} />
       )}
     </div>
   );
@@ -101,9 +103,18 @@ const Profile = () => {
 
 type AccountSettingProps = {
   setIsModalOpen: (value: boolean) => void;
-  userId: string | undefined;
+  userData: User | undefined;
 };
-const AccountSetting = ({ setIsModalOpen, userId }: AccountSettingProps) => {
+type valueProps = {
+  email: string | undefined;
+  username: string | undefined;
+  description: string | undefined;
+  password: string;
+  repassword: string;
+  new_password: string;
+};
+
+const AccountSetting = ({ setIsModalOpen, userData }: AccountSettingProps) => {
   const [option, setOption] = useState<string>("profile");
 
   // Select schema based on the option
@@ -113,9 +124,9 @@ const AccountSetting = ({ setIsModalOpen, userId }: AccountSettingProps) => {
   const { values, handleChange, handleBlur, touched, errors, handleSubmit } =
     useFormik({
       initialValues: {
-        email: "",
-        username: "",
-        description: "",
+        email: userData?.email,
+        username: userData?.username,
+        description: userData?.description,
         password: "",
         repassword: "",
         new_password: "",
@@ -130,24 +141,32 @@ const AccountSetting = ({ setIsModalOpen, userId }: AccountSettingProps) => {
         }
       },
     });
-  const handleProfile = async (values) => {
+  const handleProfile = async (values: valueProps) => {
     const { username, email, description } = values;
     try {
-      await fetch(`http://localhost:3000/auth/update-profile/${userId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json", // Set the content type to JSON
-        },
-        body: JSON.stringify({ username, email, description }),
-      });
+      const response = await fetch(
+        `http://localhost:3000/auth/update-profile/${userData?._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json", // Set the content type to JSON
+          },
+          body: JSON.stringify({ username, email, description }),
+        }
+      );
+      if (response.ok) {
+        toast.success("Profile Updated Successfully");
+      } else {
+        toast.error("Failed to Update Profile");
+      }
     } catch (error) {
       console.log(error);
     }
   };
-  const handlePassword = async (values) => {
+  const handlePassword = async (values: valueProps) => {
     const { password, new_password } = values;
     try {
-      await fetch(`http://localhost:3000/auth/password/${userId}`, {
+      await fetch(`http://localhost:3000/auth/password/${userData?._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json", // Set the content type to JSON

@@ -11,4 +11,5 @@ export interface InputFieldProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
   error?: string; // Ensure this is only string or undefined
+  name?: string;
 }

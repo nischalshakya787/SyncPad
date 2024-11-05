@@ -4,7 +4,7 @@ import { User } from "../types/User";
 import { Link } from "react-router-dom";
 import profile from "../assets/image/profile.jpg";
 import { useFormik } from "formik";
-import { validationSchema } from "../schema";
+import { passwordSchema, profileSchema, validationSchema } from "../schema";
 import { InputField } from "../components";
 
 const Profile = () => {
@@ -99,9 +99,13 @@ const Profile = () => {
 type AccountSettingProps = {
   setIsModalOpen: (value: boolean) => void;
 };
-
 const AccountSetting = ({ setIsModalOpen }: AccountSettingProps) => {
   const [option, setOption] = useState<string>("profile");
+
+  // Select schema based on the option
+  const validationSchema =
+    option === "profile" ? profileSchema : passwordSchema;
+
   const { values, handleChange, handleBlur, touched, errors, handleSubmit } =
     useFormik({
       initialValues: {
@@ -111,12 +115,27 @@ const AccountSetting = ({ setIsModalOpen }: AccountSettingProps) => {
         repassword: "",
         new_password: "",
       },
-      validationSchema: validationSchema,
-      onSubmit: (values) => {},
+      validationSchema,
+      onSubmit: (values) => {
+        // Handle form submission based on option
+        if (option === "profile") {
+          handleProfile(values);
+        } else {
+          handlePassword(values);
+        }
+      },
     });
+  const handleProfile = (values) => {
+    const { username, email } = values;
+  };
+  const handlePassword = (values) => {
+    const { new_password } = values;
+  };
+
   const handleClose = () => {
     setIsModalOpen(false);
   };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center backdrop-blur-md">
       <div className="w-1/2 bg-slate-100 p-6 rounded-md">
@@ -133,88 +152,97 @@ const AccountSetting = ({ setIsModalOpen }: AccountSettingProps) => {
           <div className="action flex items-center justify-center gap-10">
             <button
               className="bg-blue-200 p-2 rounded"
-              onClick={() => {
-                setOption("profile");
-              }}
+              onClick={() => setOption("profile")}
             >
               Edit Profile
             </button>
             <button
               className="bg-red-200 p-2 rounded"
-              onClick={() => {
-                setOption("password");
-              }}
+              onClick={() => setOption("password")}
             >
               Change Password
             </button>
           </div>
 
-          {option === "profile" ? (
-            <>
-              <InputField
-                label="Username"
-                type="text"
-                value={values.username}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={
-                  touched.username && errors.username
-                    ? errors.username
-                    : undefined
-                }
-              />
-              <InputField
-                label="Email"
-                type="email"
-                value={values.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.email && errors.email ? errors.email : undefined}
-              />
-            </>
-          ) : (
-            <>
-              <InputField
-                label="Enter your Current Password"
-                type="password"
-                value={values.password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={
-                  touched.password && errors.password
-                    ? errors.password
-                    : undefined
-                }
-              />
-              <InputField
-                label="Please Re-Enter Your Password"
-                type="password"
-                value={values.repassword}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={
-                  touched.repassword && errors.repassword
-                    ? errors.repassword
-                    : undefined
-                }
-              />
-              <InputField
-                label="Enter Your New Password"
-                type="password"
-                value={values.new_password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={
-                  touched.new_password && errors.new_password
-                    ? errors.new_password
-                    : undefined
-                }
-              />
-            </>
-          )}
-          <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md">
-            Save Changes
-          </button>
+          {/* Render inputs based on selected option */}
+          <form onSubmit={handleSubmit}>
+            {option === "profile" ? (
+              <>
+                <InputField
+                  label="Username"
+                  type="text"
+                  name="username" // <-- Add name attribute
+                  value={values.username}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={
+                    touched.username && errors.username
+                      ? errors.username
+                      : undefined
+                  }
+                />
+                <InputField
+                  label="Email"
+                  type="email"
+                  name="email" // <-- Add name attribute
+                  value={values.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={
+                    touched.email && errors.email ? errors.email : undefined
+                  }
+                />
+              </>
+            ) : (
+              <>
+                <InputField
+                  label="Current Password"
+                  type="password"
+                  name="password" // <-- Add name attribute
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={
+                    touched.password && errors.password
+                      ? errors.password
+                      : undefined
+                  }
+                />
+                <InputField
+                  label="Confirm Password"
+                  type="password"
+                  name="repassword" // <-- Add name attribute
+                  value={values.repassword}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={
+                    touched.repassword && errors.repassword
+                      ? errors.repassword
+                      : undefined
+                  }
+                />
+                <InputField
+                  label="New Password"
+                  type="password"
+                  name="new_password" // <-- Add name attribute
+                  value={values.new_password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={
+                    touched.new_password && errors.new_password
+                      ? errors.new_password
+                      : undefined
+                  }
+                />
+              </>
+            )}
+            <button
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+              type="submit"
+            >
+              Save Changes
+            </button>
+          </form>
         </div>
       </div>
     </div>

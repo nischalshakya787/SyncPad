@@ -8,6 +8,7 @@ const InputField: React.FC<InputFieldProps> = ({
   onChange,
   onBlur,
   error,
+  name,
 }) => {
   const id = label.toLowerCase().replace(/\s+/g, "-");
 
@@ -19,6 +20,7 @@ const InputField: React.FC<InputFieldProps> = ({
       <input
         type={type}
         id={id}
+        name={name}
         className={`flex shrink-0 self-stretch w-full bg-white rounded-md border-2 focus:outline-none  px-4 ${
           error ? "border-red-400" : "border-gray-300"
         } h-[53px]`}

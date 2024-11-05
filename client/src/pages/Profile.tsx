@@ -4,7 +4,7 @@ import { User } from "../types/User";
 import { Link } from "react-router-dom";
 import profile from "../assets/image/profile.jpg";
 import { useFormik } from "formik";
-import { passwordSchema, profileSchema, validationSchema } from "../schema";
+import { passwordSchema, profileSchema } from "../schema";
 import { InputField } from "../components";
 
 const Profile = () => {
@@ -48,10 +48,7 @@ const Profile = () => {
             <h1 className="text-2xl font-semibold text-gray-800">
               {userData?.username}
             </h1>
-            {/* <p className="text-gray-600">{userData?.bio}</p> */}
-            <p className="text-gray-600">
-              Passionate about real-time collaboration and coding.
-            </p>
+            <p className="text-gray-600">{userData?.description}</p>
             <p className="text-gray-500 mt-2">{userData?.email}</p>{" "}
           </div>
         </div>
@@ -91,15 +88,18 @@ const Profile = () => {
           </button>
         </div>
       </div>
-      {isModalOpen && <AccountSetting setIsModalOpen={setIsModalOpen} />}
+      {isModalOpen && (
+        <AccountSetting setIsModalOpen={setIsModalOpen} userId={user?.id} />
+      )}
     </div>
   );
 };
 
 type AccountSettingProps = {
   setIsModalOpen: (value: boolean) => void;
+  userId: string | undefined;
 };
-const AccountSetting = ({ setIsModalOpen }: AccountSettingProps) => {
+const AccountSetting = ({ setIsModalOpen, userId }: AccountSettingProps) => {
   const [option, setOption] = useState<string>("profile");
 
   // Select schema based on the option
@@ -111,6 +111,7 @@ const AccountSetting = ({ setIsModalOpen }: AccountSettingProps) => {
       initialValues: {
         email: "",
         username: "",
+        description: "",
         password: "",
         repassword: "",
         new_password: "",
@@ -125,11 +126,33 @@ const AccountSetting = ({ setIsModalOpen }: AccountSettingProps) => {
         }
       },
     });
-  const handleProfile = (values) => {
-    const { username, email } = values;
+  const handleProfile = async (values) => {
+    const { username, email, description } = values;
+    try {
+      await fetch(`http://localhost:3000/auth/update-profile/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json", // Set the content type to JSON
+        },
+        body: JSON.stringify({ username, email, description }),
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const handlePassword = (values) => {
-    const { new_password } = values;
+  const handlePassword = async (values) => {
+    const { password, new_password } = values;
+    try {
+      await fetch(`http://localhost:3000/auth/password/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json", // Set the content type to JSON
+        },
+        body: JSON.stringify({ password, new_password }),
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleClose = () => {
@@ -192,6 +215,22 @@ const AccountSetting = ({ setIsModalOpen }: AccountSettingProps) => {
                     touched.email && errors.email ? errors.email : undefined
                   }
                 />
+                <label className="mt-4 text-gray-700">Description</label>
+                <textarea
+                  name="description"
+                  rows={4}
+                  className={`mt-2 p-2 border rounded-md w-full ${
+                    touched.description && errors.description
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  }`}
+                  value={values.description}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                ></textarea>
+                {touched.description && errors.description && (
+                  <p className="text-red-500 text-sm">{errors.description}</p>
+                )}
               </>
             ) : (
               <>

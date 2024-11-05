@@ -84,4 +84,38 @@ const getUser = async (req, res) => {
   }
 };
 
-export { register, login, logout, profile, getUser };
+const updateProfile = async (req, res) => {
+  const userId = req.params.id;
+  const { email, username, description } = req.body;
+
+  // Check if required fields are provided
+  if (!email || !username || !description) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid User Id" });
+    }
+
+    // Update user profile and return the updated document
+    const user = await UserModel.findByIdAndUpdate(
+      userId,
+      { email, username, description },
+      { new: true } // Return the updated document
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "User Profile Updated Successfully", user });
+  } catch (error) {
+    console.error("Error updating profile:", error); // Log the actual error for debugging
+    res.status(500).json({ message: "Server error", error: error.message }); // Return the error message
+  }
+};
+
+export { register, login, logout, profile, getUser, updateProfile };

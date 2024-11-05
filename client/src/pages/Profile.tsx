@@ -95,7 +95,11 @@ const Profile = () => {
         </div>
       </div>
       {isModalOpen && (
-        <AccountSetting setIsModalOpen={setIsModalOpen} userData={userData} />
+        <AccountSetting
+          setIsModalOpen={setIsModalOpen}
+          userData={userData}
+          setUserData={setUserData}
+        />
       )}
     </div>
   );
@@ -104,6 +108,7 @@ const Profile = () => {
 type AccountSettingProps = {
   setIsModalOpen: (value: boolean) => void;
   userData: User | undefined;
+  setUserData: (value: User) => void;
 };
 type valueProps = {
   email: string | undefined;
@@ -114,7 +119,11 @@ type valueProps = {
   new_password: string;
 };
 
-const AccountSetting = ({ setIsModalOpen, userData }: AccountSettingProps) => {
+const AccountSetting = ({
+  setIsModalOpen,
+  userData,
+  setUserData,
+}: AccountSettingProps) => {
   const [option, setOption] = useState<string>("profile");
 
   // Select schema based on the option
@@ -156,6 +165,9 @@ const AccountSetting = ({ setIsModalOpen, userData }: AccountSettingProps) => {
       );
       if (response.ok) {
         toast.success("Profile Updated Successfully");
+        const data = await response.json();
+        setUserData(data.user);
+        setIsModalOpen(false);
       } else {
         toast.error("Failed to Update Profile");
       }

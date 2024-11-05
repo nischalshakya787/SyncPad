@@ -58,23 +58,27 @@ const Profile = () => {
           <h2 className="text-xl font-semibold text-gray-800 mb-4">
             Recent Documents
           </h2>
-          <ul className="space-y-3">
-            {documents.map((doc) => (
-              <Link to={`/document/${doc._id}`} key={doc._id}>
-                <li
-                  key={doc._id}
-                  className="p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition"
-                >
-                  <h3 className="text-lg font-medium text-blue-700">
-                    {doc.title}
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Last edited: {doc.updatedAt}
-                  </p>
-                </li>
-              </Link>
-            ))}
-          </ul>
+          {documents.length === 0 ? (
+            <p className="mx-2 text-gray-600">No Documents Found.</p>
+          ) : (
+            <ul className="space-y-3">
+              {documents.map((doc) => (
+                <Link to={`/document/${doc._id}`} key={doc._id}>
+                  <li
+                    key={doc._id}
+                    className="p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition"
+                  >
+                    <h3 className="text-lg font-medium text-blue-700">
+                      {doc.title}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Last edited: {doc.updatedAt}
+                    </p>
+                  </li>
+                </Link>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/* Settings Section */}

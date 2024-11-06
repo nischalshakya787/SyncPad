@@ -28,6 +28,9 @@ export const profileSchema = Yup.object({
 export const passwordSchema = Yup.object({
   password: Yup.string().required("Current password is required"),
   new_password: Yup.string()
-    .min(8, "New password must be at least 8 characters")
+    .min(5, "New password must be at least 5 characters")
     .required("New password is required"),
+  repassword: Yup.string()
+    .oneOf([Yup.ref("new_password")], "Passwords must match")
+    .required("Please confirm your password"),
 });

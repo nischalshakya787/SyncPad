@@ -115,6 +115,7 @@ type valueProps = {
   username: string | undefined;
   description: string | undefined;
   password: string;
+  repassword: string;
   new_password: string;
 };
 
@@ -136,6 +137,7 @@ const AccountSetting = ({
         username: userData?.username,
         description: userData?.description,
         password: "",
+        repassword: "",
         new_password: "",
       },
       validationSchema,
@@ -174,18 +176,27 @@ const AccountSetting = ({
     }
   };
   const handlePassword = async (values: valueProps) => {
-    const { password, new_password } = values;
+    const { password, new_password, repassword } = values;
     try {
-      await fetch(
+      const response = await fetch(
         `http://localhost:3000/auth/change-password/${userData?._id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json", // Set the content type to JSON
           },
-          body: JSON.stringify({ password, new_password }),
+          body: JSON.stringify({ password, new_password, repassword }),
         }
       );
+
+      const data = await response.json();
+      console.log(data);
+      if (data.status) {
+        toast.success(data.message);
+        setIsModalOpen(false);
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -293,6 +304,19 @@ const AccountSetting = ({
                   error={
                     touched.new_password && errors.new_password
                       ? errors.new_password
+                      : undefined
+                  }
+                />
+                <InputField
+                  label="Re-enter your password"
+                  type="password"
+                  name="repassword" // <-- Add name attribute
+                  value={values.repassword}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={
+                    touched.repassword && errors.repassword
+                      ? errors.repassword
                       : undefined
                   }
                 />

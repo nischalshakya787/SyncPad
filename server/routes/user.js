@@ -8,6 +8,7 @@ import {
   updateProfile,
   changePassword,
   verifyEmail,
+  forgotPassword,
 } from "../controller/user.js";
 
 const authRouter = express.Router();
@@ -15,6 +16,7 @@ const authRouter = express.Router();
 authRouter.route("/signup").post(register);
 authRouter.route("/login").post(login);
 authRouter.route("/logout").post(logout);
+authRouter.route("/logout").post(forgotPassword);
 authRouter.route("/update-profile/:id").put(updateProfile);
 authRouter.route("/change-password/:id").put(changePassword);
 authRouter.route("/verify-email").get(verifyEmail);

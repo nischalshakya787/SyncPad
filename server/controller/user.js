@@ -222,6 +222,52 @@ const changePassword = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "Email not found" });
+    }
+
+    //Generating a random token
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    user.verificationToken = verificationToken;
+    await user.save();
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "syncpad993@gmail.com",
+        pass: "kieu hzxq xyvs wbie",
+      },
+    });
+
+    const mailOptions = {
+      from: "syncpad993@gmail.com",
+      to: email,
+      subject: "Forgot Your Password",
+      text: `Please change your password by clicking on the following link: 
+      http://localhost:5173/forgot-password?token=${verificationToken}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(201).json({
+      message: "Link sent successfully. Please check your email",
+      status: true,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+const changeForgotPassword = async (req, res) => {
+  try {
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 export {
   register,
   login,
@@ -231,4 +277,6 @@ export {
   updateProfile,
   changePassword,
   verifyEmail,
+  forgotPassword,
+  changeForgotPassword,
 };

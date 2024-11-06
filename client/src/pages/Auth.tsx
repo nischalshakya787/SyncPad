@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { AuthProps } from "../types/Auth";
 import { useContext, useState } from "react";
 import { UserContext } from "../UserContext";
+import Loader from "../components/Loader";
 
 const Auth = () => {
   const location = useLocation();

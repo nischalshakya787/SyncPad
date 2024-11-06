@@ -81,7 +81,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
       }
     };
     //Fetches only when user is not logged in
-    if (!user) {
+    if (user) {
       fetchUserData();
     }
   }, [user, setUser]);

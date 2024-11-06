@@ -33,11 +33,17 @@ const register = async (req, res) => {
       verificationToken,
     });
 
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Failed to create User", status: false });
+    }
+
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
         user: "syncpad993@gmail.com",
-        pass: "syncpad123@",
+        pass: "kieu hzxq xyvs wbie",
       },
     });
 
@@ -46,14 +52,15 @@ const register = async (req, res) => {
       to: email,
       subject: "Verify your Email",
       text: `Please verify your email by clicking on the following link: 
-      http://localhost:5173/auth/verify-email?token=${verificationToken}`,
+      http://localhost:3000/auth/verify-email?token=${verificationToken}`,
     };
 
     await transporter.sendMail(mailOptions);
 
-    res
-      .status(201)
-      .json({ message: "User registered. Verification email sent." });
+    res.status(201).json({
+      message: "User registered. Verification email sent.",
+      status: true,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Server error" });
@@ -61,7 +68,9 @@ const register = async (req, res) => {
 };
 
 const verifyEmail = async (req, res) => {
+  console.log("verifyEmail route hit");
   const { token } = req.query;
+  console.log(token);
   try {
     const user = await UserModel.findOne({ verificationToken: token });
     if (!user) {
@@ -72,7 +81,15 @@ const verifyEmail = async (req, res) => {
     user.verificationToken = null;
     await user.save();
 
-    res.status(200).json({ message: "Email verified successfully" });
+    res.status(200).send(`
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background-color: #f3f4f6; font-family: Arial, sans-serif; color: #333;">
+        <div style="text-align: center; max-width: 500px; background: #ffffff; padding: 40px; border-radius: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+          <h1 style="color: #3b82f6; font-size: 2em; margin-bottom: 10px;">Email Verified Successfully!</h1>
+          <p style="font-size: 1.2em; color: #555; margin-bottom: 20px;">Thank you for verifying your email. Your account is now activated, and you're ready to use all features!</p>
+          <a href="http://localhost:5173/login" style="display: inline-block; padding: 10px 20px; background-color: #3b82f6; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold;">Go to Login</a>
+        </div>
+      </div>
+    `);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -102,7 +119,7 @@ const login = async (req, res) => {
       res.status(200).json({
         message: "Login Successful",
         status: true,
-        user: { username: user.username, id: user._id },
+        user,
       });
     } else {
       res.status(400).json({ message: "Incorrect Password", status: false });

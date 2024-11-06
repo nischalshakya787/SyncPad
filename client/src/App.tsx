@@ -3,6 +3,7 @@ import { Home, Auth, DocumentPage } from "./pages";
 import { UserContext, UserContextProvider } from "./UserContext";
 import { useContext } from "react";
 import Profile from "./pages/Profile";
+import VerifyEmail from "./pages/VerifyEmail";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function AppRoutes() {
       <Route path="/signup" element={<Auth />} />
       <Route path="/document/:id" element={<DocumentPage />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/verifyEmail" element={<VerifyEmail />} />
     </Routes>
   );
 }

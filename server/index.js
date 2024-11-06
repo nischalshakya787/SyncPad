@@ -27,7 +27,6 @@ app.use(cookieParser()); //This allows us to interact with browser cookies
 app.use("/auth/", authRouter);
 app.use("/docs/", docsRouter);
 app.use("/notifications/", notificationRouter);
-
 const PORT = 3000;
 
 const startServer = async () => {

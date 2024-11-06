@@ -1,5 +1,5 @@
 import { Button, InputField } from "../components";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import key from "../assets/4c358706a1bed3348d3637a964e9b5efa950bbdf6d5ea34a2cf5c78953a839a8.svg";
 import { useFormik } from "formik";
 import { validationSchema } from "../schema";
@@ -206,9 +206,7 @@ const Auth = () => {
                     alt=""
                     className="object-contain shrink-0 w-4 aspect-square"
                   />
-                  <a href="#" className="basis-auto">
-                    Forgot Password?
-                  </a>
+                  <Link to="/forgot-password">Forgot Password?</Link>
                 </div>
               )}
               <Button

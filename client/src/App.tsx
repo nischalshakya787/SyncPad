@@ -1,9 +1,14 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { Home, Auth, DocumentPage } from "./pages";
+import {
+  Home,
+  Auth,
+  DocumentPage,
+  ForgotPassword,
+  VerifyEmail,
+  Profile,
+} from "./pages";
 import { UserContext, UserContextProvider } from "./UserContext";
 import { useContext } from "react";
-import Profile from "./pages/Profile";
-import VerifyEmail from "./pages/VerifyEmail";
 
 function App() {
   return (
@@ -30,6 +35,7 @@ function AppRoutes() {
       <Route path="/document/:id" element={<DocumentPage />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/verifyEmail" element={<VerifyEmail />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
     </Routes>
   );
 }

@@ -1,5 +1,4 @@
 import React from "react";
-import Loader from "./Loader";
 import { Bars } from "react-loader-spinner";
 
 interface ButtonProps {

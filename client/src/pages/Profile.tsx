@@ -115,7 +115,6 @@ type valueProps = {
   username: string | undefined;
   description: string | undefined;
   password: string;
-  repassword: string;
   new_password: string;
 };
 
@@ -137,7 +136,6 @@ const AccountSetting = ({
         username: userData?.username,
         description: userData?.description,
         password: "",
-        repassword: "",
         new_password: "",
       },
       validationSchema,
@@ -178,13 +176,16 @@ const AccountSetting = ({
   const handlePassword = async (values: valueProps) => {
     const { password, new_password } = values;
     try {
-      await fetch(`http://localhost:3000/auth/password/${userData?._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json", // Set the content type to JSON
-        },
-        body: JSON.stringify({ password, new_password }),
-      });
+      await fetch(
+        `http://localhost:3000/auth/change-password/${userData?._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json", // Set the content type to JSON
+          },
+          body: JSON.stringify({ password, new_password }),
+        }
+      );
     } catch (error) {
       console.log(error);
     }
@@ -283,19 +284,6 @@ const AccountSetting = ({
                   }
                 />
                 <InputField
-                  label="Confirm Password"
-                  type="password"
-                  name="repassword" // <-- Add name attribute
-                  value={values.repassword}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={
-                    touched.repassword && errors.repassword
-                      ? errors.repassword
-                      : undefined
-                  }
-                />
-                <InputField
                   label="New Password"
                   type="password"
                   name="new_password" // <-- Add name attribute
@@ -314,7 +302,7 @@ const AccountSetting = ({
               className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
               type="submit"
             >
-              Save Changes
+              {option === "profile" ? "Save Changes" : "Change Password"}
             </button>
           </form>
         </div>

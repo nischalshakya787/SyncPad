@@ -41,7 +41,7 @@ const login = async (req, res) => {
         { username, id: user._id },
         process.env.JWT_SECRET
       );
-      res.cookie("token", jwtToken); //initializing the token in frontend side
+      res.cookie("token", jwtToken, { maxAge: 24 * 60 * 60 * 1000 }); //initializing the token in frontend side
       res.status(200).json({
         message: "Login Successful",
         status: true,
@@ -119,4 +119,41 @@ const updateProfile = async (req, res) => {
   }
 };
 
-export { register, login, logout, profile, getUser, updateProfile };
+const changePassword = async (req, res) => {
+  const userId = req.params.id;
+  const { password, new_password } = req.body;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid User Id" });
+    }
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not Found" });
+    }
+    const passOK = bcrypt.compareSync(password, user.password);
+    if (!passOK) {
+      return res
+        .status(400)
+        .json({ message: "Password Incorrect", status: false });
+    }
+    const salt = bcrypt.genSaltSync(10);
+    await UserModel.findByIdAndUpdate(userId, {
+      password: bcrypt.hashSync(new_password, salt),
+    });
+    res
+      .status(200)
+      .json({ message: "Password Changed Successful", status: true });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export {
+  register,
+  login,
+  logout,
+  profile,
+  getUser,
+  updateProfile,
+  changePassword,
+};

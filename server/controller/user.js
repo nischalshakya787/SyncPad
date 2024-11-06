@@ -46,7 +46,7 @@ const register = async (req, res) => {
       to: email,
       subject: "Verify your Email",
       text: `Please verify your email by clicking on the following link: 
-      http://localhost:5173/verify-email?token=${verificationToken}`,
+      http://localhost:5173/auth/verify-email?token=${verificationToken}`,
     };
 
     await transporter.sendMail(mailOptions);
@@ -57,6 +57,24 @@ const register = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Server error" });
+  }
+};
+
+const verifyEmail = async (req, res) => {
+  const { token } = req.query;
+  try {
+    const user = await UserModel.findOne({ verificationToken: token });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired Token" });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = null;
+    await user.save();
+
+    res.status(200).json({ message: "Email verified successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -195,4 +213,5 @@ export {
   getUser,
   updateProfile,
   changePassword,
+  verifyEmail,
 };

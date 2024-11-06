@@ -60,31 +60,32 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
 
   //Fetches user data when the context is first used
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/auth/profile", {
-          method: "GET",
-          credentials: "include", //Includes cookiee
-          headers: { "Content-Type": "application/json" },
-        });
+    // Only fetch user data if it's not already fetched
+    if (!user) {
+      const fetchUserData = async () => {
+        try {
+          const response = await fetch("http://localhost:3000/auth/profile", {
+            method: "GET",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+          });
 
-        if (!response.ok) {
-          setUser(null);
-          setUserId(null);
+          if (!response.ok) {
+            setUser(null);
+            setUserId(null);
+          }
+
+          const data = await response.json();
+          setUser(data.user);
+          setUserId(data.user.id);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
         }
+      };
 
-        const data = await response.json();
-        setUser(data.user);
-        setUserId(data.user.id);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-    //Fetches only when user is not logged in
-    if (user) {
       fetchUserData();
     }
-  }, [user, setUser]);
+  }, []);
 
   interface saveNotificationProps {
     message: string;

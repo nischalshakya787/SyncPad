@@ -248,21 +248,37 @@ const forgotPassword = async (req, res) => {
       to: email,
       subject: "Forgot Your Password",
       text: `Please change your password by clicking on the following link: 
-      http://localhost:5173/forgot-password?token=${verificationToken}`,
+      http://localhost:5173/forgot-password/${verificationToken}`,
     };
 
     await transporter.sendMail(mailOptions);
 
     res.status(201).json({
       message: "Link sent successfully. Please check your email",
-      status: true,
     });
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-const changeForgotPassword = async (req, res) => {
+const resetPassword = async (req, res) => {
+  const token = req.params.token;
+  const { password } = req.body;
   try {
+    const user = await UserModel.findOne({ verificationToken: token });
+
+    if (!user) {
+      return res.status(404).json({ message: "User Not Found" });
+    }
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    res
+      .status(200)
+      .json({ message: "Password changed successfully.", status: true });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -278,5 +294,5 @@ export {
   changePassword,
   verifyEmail,
   forgotPassword,
-  changeForgotPassword,
+  resetPassword,
 };

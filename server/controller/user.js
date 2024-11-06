@@ -2,27 +2,58 @@ import UserModel from "../model/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import crypto from "crypto";
+import nodemailer from "nodemailer";
 
 const register = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(password, salt);
+    //Checking if username already exits or not
     const usernameCheck = await UserModel.findOne({ username });
     if (usernameCheck) {
       return res.status(400).json({ message: "Username already in use" });
     }
+    //Checking if email already exits or not
     const emailCheck = await UserModel.findOne({ email });
     if (emailCheck) {
       return res.status(400).json({ message: "Email already in use" });
     }
-    const User = await UserModel.create({
+
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+
+    //Generatiing a verification token to verify whether the email exists or not
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+
+    const user = await UserModel.create({
       username,
       email,
       password: hashedPassword,
+      verificationToken,
     });
-    res.status(201).json({ message: "User created Successfully" });
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "syncpad993@gmail.com",
+        pass: "syncpad123@",
+      },
+    });
+
+    const mailOptions = {
+      from: "syncpad993@gmail.com",
+      to: email,
+      subject: "Verify your Email",
+      text: `Please verify your email by clicking on the following link: 
+      http://localhost:5173/verify-email?token=${verificationToken}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res
+      .status(201)
+      .json({ message: "User registered. Verification email sent." });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Server error" });

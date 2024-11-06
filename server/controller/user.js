@@ -9,6 +9,14 @@ const register = async (req, res) => {
   try {
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
+    const usernameCheck = await UserModel.findOne({ username });
+    if (usernameCheck) {
+      return res.status(400).json({ message: "Username already in use" });
+    }
+    const emailCheck = await UserModel.findOne({ email });
+    if (emailCheck) {
+      return res.status(400).json({ message: "Email already in use" });
+    }
     const User = await UserModel.create({
       username,
       email,

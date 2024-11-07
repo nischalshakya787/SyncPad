@@ -21,14 +21,20 @@ export const modules = {
 
 export const formats = [
   "header",
+  "font",
+  "size", // Include 'font' here
   "bold",
   "italic",
   "underline",
   "strike",
+  "color",
+  "background",
+  "script",
   "blockquote",
   "list",
   "bullet",
   "indent",
   "link",
   "image",
+  "video",
 ];

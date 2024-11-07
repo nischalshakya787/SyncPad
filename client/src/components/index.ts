@@ -5,3 +5,5 @@ export { default as RecentDocumentsSection } from "./RecentDocumentsSection";
 export { default as InputField } from "./InputField";
 export { default as Button } from "./Button";
 export { default as Notifications } from "./Notifications";
+export { default as Loader } from "./Loader";
+export { default as NotFound } from "./NotFound";

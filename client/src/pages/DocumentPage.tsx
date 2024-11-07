@@ -8,8 +8,7 @@ import { Delta } from "quill";
 import { UserContext } from "../UserContext";
 import { useParams } from "react-router-dom";
 import { User, UserProps } from "../types/User";
-import NotFound from "../components/NotFound";
-import Loader from "../components/Loader";
+import { NotFound, Loader } from "../components";
 import type { Document } from "../types/Document";
 
 const DocumentPage = () => {
@@ -74,7 +73,7 @@ const DocumentPage = () => {
 
     fetchDocument();
   }, [user, docId]); // Add user and docId as dependencies
-  console.log(isAuthenticated);
+
   //When we type in the canvas this function will execute and emits the updated value to the server and server will emit the changes to the collabs
   const handleChange = (
     content: string,
@@ -151,7 +150,7 @@ const DocumentPage = () => {
 
   return (
     <div className="text-editor border  h-screen">
-      <div className="menu flex border border-gray-300 p-2 ">
+      <div className="menu flex p-2 ">
         <div className="w-[80%] flex">
           <div className="flex items-center justify-center">
             <div className="w-[35px] h-[35px] bg-red-600 rounded-[100%]">

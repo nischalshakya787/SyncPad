@@ -18,16 +18,25 @@
   display: flex;
   justify-content: center;
 }
-
-.editor .ql-toolbar.ql-snow {
+.menu {
   display: flex;
   justify-content: center;
   position: sticky;
   top: 0;
+  z-index: 2;
+  background-color: #ffffff;
+}
+.editor .ql-toolbar.ql-snow {
+  margin: 0 20px;
+  border-radius: 100px;
+  display: flex;
+  justify-content: center;
+  position: sticky;
+  top: 68px;
   z-index: 1;
-  background-color: #f3f3f3;
+  background-color: #f1f1f1;
   border: none;
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+  /* box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5); */
 }
 
 @page {

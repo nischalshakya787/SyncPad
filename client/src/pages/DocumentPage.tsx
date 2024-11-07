@@ -10,7 +10,6 @@ import { useParams } from "react-router-dom";
 import { User, UserProps } from "../types/User";
 import { NotFound, Loader } from "../components";
 import type { Document } from "../types/Document";
-import { debounce } from "lodash";
 
 const DocumentPage = () => {
   const [value, setValue] = useState<string>("");
@@ -22,6 +21,7 @@ const DocumentPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const typingTimeoutRef = useRef<null | number>(null);
 
   const context = useContext(UserContext); //to get the logged in user
   if (!context) {
@@ -30,37 +30,26 @@ const DocumentPage = () => {
 
   const { user } = context;
 
-  useEffect(() => {
-    let previousContent = quillRef.current?.value;
-
-    const interval = setInterval(() => {
-      const currentContent = quillRef.current?.value;
-      if (currentContent !== previousContent) {
-        socket.emit("save-document", currentContent);
-        previousContent = currentContent; // Update previous content
-      }
-    }, 4000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [socket, docId]);
+  const saveDocument = (content: string) => {
+    console.log("Kraaa");
+    socket.emit("save-document", docId, content);
+  };
 
   useEffect(() => {
     socket.emit("joinDocument", docId); //Add the document to the room
 
     return () => {
-      socket.emit("leaveDocument");
+      socket.emit("leaveDocument", docId);
     };
   }, []);
 
   useEffect(() => {
-    if (!isTyping) {
-      socket.on("document", (value: string) => {
-        //this is for the user who is not typing
-        setValue(value);
-      });
-    }
+    // if (!isTyping) {
+    socket.on("document", (value: string) => {
+      //this is for the user who is not typing
+      setValue(value);
+    });
+    // }
     return () => {
       socket.off("document");
     };
@@ -104,13 +93,21 @@ const DocumentPage = () => {
     source: string,
     editor: any
   ) => {
-    setIsTyping(true);
     if (source === "user") {
-      socket.emit("document", content); //emitting the typed content to the server
-      // debouncedSave(content);
+      console.log(content);
+      socket.emit("document", docId, content); //emitting the typed content to the server
     }
     setValue(content);
-    //to make isTyping false after 1sec
+    // Clear any existing timeout to reset the inactivity period
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    // Set a new timeout to trigger save after 4 seconds of inactivity
+    typingTimeoutRef.current = window.setTimeout(() => {
+      saveDocument(content); // Send the latest content to server
+    }, 4000);
+    setIsTyping(true);
     setTimeout(() => {
       setIsTyping(false);
     }, 1000);
@@ -266,7 +263,10 @@ const AddCollabModal = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center backdrop-blur-md">
+    <div
+      style={{ zIndex: "3" }}
+      className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center backdrop-blur-md "
+    >
       <div className="w-1/2 bg-slate-100 p-6 rounded-md">
         <div className="flex justify-between items-center mb-4">
           <p className="text-lg font-semibold">Add Collab</p>

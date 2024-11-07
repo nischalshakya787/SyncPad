@@ -48,22 +48,22 @@ const startServer = async () => {
       //To join a particular document
       socket.on("joinDocument", (docId) => {
         socket.join(docId);
-
-        //To handle the changes in the document
-        socket.on("document", (value) => {
-          socket.to(docId).emit("document", value);
-        });
-
-        // Handle when a user leaves a document room
-        socket.on("leaveDocument", () => {
-          socket.leave(docId);
-        });
-
-        //To save the document
-        socket.on("save-document", async (value) => {
-          console.log("nigger");
+      });
+      //To handle the changes in the document
+      socket.on("document", (docId, value) => {
+        socket.to(docId).emit("document", value);
+      });
+      // Handle when a user leaves a document room
+      socket.on("leaveDocument", (docId) => {
+        socket.leave(docId);
+      });
+      socket.on("save-document", async (docId, value) => {
+        try {
           await DocumentModel.findByIdAndUpdate(docId, { value });
-        });
+          console.log("Document saved:", docId);
+        } catch (error) {
+          console.error("Error saving document:", error);
+        }
       });
 
       //To join a room for notification

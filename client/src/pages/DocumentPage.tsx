@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import "../styles.css";
 import { formats, modules } from "../constants";
 import { socket } from "../socket";
 import { Delta } from "quill";
@@ -140,7 +141,6 @@ const DocumentPage = () => {
       }
     }
   };
-  const username = user?.username ? user?.username : "Username";
   if (isLoading) {
     return <Loader />;
   }
@@ -151,8 +151,8 @@ const DocumentPage = () => {
 
   return (
     <div className="text-editor border  h-screen">
-      <div className="flex border border-gray-300 p-2">
-        <div className="w-[75%] flex">
+      <div className="menu flex border border-gray-300 p-2 ">
+        <div className="w-[80%] flex">
           <div className="flex items-center justify-center">
             <div className="w-[35px] h-[35px] bg-red-600 rounded-[100%]">
               Logo
@@ -179,7 +179,7 @@ const DocumentPage = () => {
             </div>
           </div>
         </div>
-        <div className="w-[25%] flex items-center ">
+        <div className="w-[20%] flex items-center justify-end pr-8 gap-3">
           <button
             className="bg-blue-500 text-white rounded-md p-2"
             onClick={handleSave}
@@ -192,10 +192,9 @@ const DocumentPage = () => {
           >
             Add Collab
           </button>
-          <div className="ml-5">Hello, {username}</div>
         </div>
       </div>
-      <div className="editor h-full flex align-center justify-center py-3">
+      <div className="editor">
         <ReactQuill
           ref={quillRef}
           theme="snow"
@@ -203,7 +202,6 @@ const DocumentPage = () => {
           onChange={handleChange}
           modules={modules}
           formats={formats}
-          style={{ width: "900px" }}
         />
       </div>
       {isModalOpen && (

@@ -8,6 +8,7 @@ import { createServer } from "node:http";
 import { Server } from "socket.io";
 import docsRouter from "./routes/document.js";
 import notificationRouter from "./routes/notification.js";
+import DocumentModel from "./model/Document.js";
 
 dotenv.config();
 const app = express();
@@ -47,12 +48,30 @@ const startServer = async () => {
       //To join a particular document
       socket.on("joinDocument", (docId) => {
         socket.join(docId);
+
+        //To handle the changes in the document
+        socket.on("document", (value) => {
+          socket.to(docId).emit("document", value);
+        });
+
+        // Handle when a user leaves a document room
+        socket.on("leaveDocument", () => {
+          socket.leave(docId);
+        });
+
+        //To save the document
+        socket.on("save-document", async (value) => {
+          console.log("nigger");
+          await DocumentModel.findByIdAndUpdate(docId, { value });
+        });
       });
+
       //To join a room for notification
       socket.on("joinRoom", (userId) => {
         socket.join(userId);
         console.log(`${userId} has Joined`);
       });
+
       //To send the collab request to the user
       socket.on("sendCollabRequest", (userId, document, sender) => {
         io.to(userId).emit("collabNotification", {
@@ -72,14 +91,6 @@ const startServer = async () => {
           recieverId: response.sender,
           docId: document._id,
         });
-      });
-      //To handle the changes in the document
-      socket.on("document", (docId, value) => {
-        socket.to(docId).emit("document", value);
-      });
-      // Handle when a user leaves a document room
-      socket.on("leaveDocument", (docId) => {
-        socket.leave(docId);
       });
     });
     server.listen(PORT, () => {

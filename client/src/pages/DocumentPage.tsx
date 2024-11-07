@@ -10,9 +10,11 @@ import { useParams } from "react-router-dom";
 import { User, UserProps } from "../types/User";
 import { NotFound, Loader } from "../components";
 import type { Document } from "../types/Document";
+import { debounce } from "lodash";
 
 const DocumentPage = () => {
   const [value, setValue] = useState<string>("");
+  const [previousContent, setPreviousContent] = useState(value);
   const [document, setDocument] = useState<any>({});
   const [isTyping, setIsTyping] = useState<boolean>(false); //to track if the user is typing or not
   const quillRef = useRef<ReactQuill>(null); // Ref for ReactQuill
@@ -30,7 +32,14 @@ const DocumentPage = () => {
   const { user } = context;
 
   useEffect(() => {
-    socket.emit("joinDocument", docId); //Connecting the users to particular docuyment or room
+    socket.emit("joinDocument", docId); //Add the document to the room
+
+    return () => {
+      socket.emit("leaveDocument");
+    };
+  }, []);
+
+  useEffect(() => {
     if (!isTyping) {
       socket.on("document", (value: string) => {
         //this is for the user who is not typing
@@ -38,10 +47,9 @@ const DocumentPage = () => {
       });
     }
     return () => {
-      socket.emit("leaveDocument", docId);
       socket.off("document");
     };
-  }, [isTyping, socket, docId]);
+  }, [isTyping, socket]);
 
   //To reload the saved value of a document
   useEffect(() => {
@@ -83,7 +91,8 @@ const DocumentPage = () => {
   ) => {
     if (source === "user") {
       setIsTyping(true);
-      socket.emit("document", docId, content); //emitting the typed content to the server
+      socket.emit("document", content); //emitting the typed content to the server
+      debouncedSave(content);
     }
     setValue(content);
     //to make isTyping false after 1sec
@@ -91,26 +100,16 @@ const DocumentPage = () => {
       setIsTyping(false);
     }, 1000);
   };
-
-  //To save the document
-  const handleSave = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/docs/document/${docId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ value }),
-        }
-      );
-      const data = await response.json();
-      console.log(data.message);
-    } catch (error) {
-      console.log(error);
+  console.log(previousContent);
+  const debouncedSave = debounce((content) => {
+    if (content !== previousContent) {
+      // Only save if the content has changed
+      console.log(content);
+      console.log(previousContent);
+      socket.emit("save-document", content); // Save to the DB
+      setPreviousContent(content); // Update the previous content after saving
     }
-  };
+  }, 4000);
 
   //For updating the name of the docs. When we are updating the name of the docs and when user clicks away from the div this will execute
   const handleBlur = async () => {
@@ -179,12 +178,6 @@ const DocumentPage = () => {
           </div>
         </div>
         <div className="w-[20%] flex items-center justify-end pr-8 gap-3">
-          <button
-            className="bg-blue-500 text-white rounded-md p-2"
-            onClick={handleSave}
-          >
-            Save
-          </button>
           <button
             className="bg-blue-500 text-white rounded-md p-2"
             onClick={() => setIsModalOpen(true)}

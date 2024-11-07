@@ -14,7 +14,6 @@ import { debounce } from "lodash";
 
 const DocumentPage = () => {
   const [value, setValue] = useState<string>("");
-  const [previousContent, setPreviousContent] = useState(value);
   const [document, setDocument] = useState<any>({});
   const [isTyping, setIsTyping] = useState<boolean>(false); //to track if the user is typing or not
   const quillRef = useRef<ReactQuill>(null); // Ref for ReactQuill
@@ -30,6 +29,22 @@ const DocumentPage = () => {
   }
 
   const { user } = context;
+
+  useEffect(() => {
+    let previousContent = quillRef.current?.value;
+
+    const interval = setInterval(() => {
+      const currentContent = quillRef.current?.value;
+      if (currentContent !== previousContent) {
+        socket.emit("save-document", currentContent);
+        previousContent = currentContent; // Update previous content
+      }
+    }, 4000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [socket, docId]);
 
   useEffect(() => {
     socket.emit("joinDocument", docId); //Add the document to the room
@@ -89,10 +104,10 @@ const DocumentPage = () => {
     source: string,
     editor: any
   ) => {
+    setIsTyping(true);
     if (source === "user") {
-      setIsTyping(true);
       socket.emit("document", content); //emitting the typed content to the server
-      debouncedSave(content);
+      // debouncedSave(content);
     }
     setValue(content);
     //to make isTyping false after 1sec
@@ -100,16 +115,6 @@ const DocumentPage = () => {
       setIsTyping(false);
     }, 1000);
   };
-  console.log(previousContent);
-  const debouncedSave = debounce((content) => {
-    if (content !== previousContent) {
-      // Only save if the content has changed
-      console.log(content);
-      console.log(previousContent);
-      socket.emit("save-document", content); // Save to the DB
-      setPreviousContent(content); // Update the previous content after saving
-    }
-  }, 4000);
 
   //For updating the name of the docs. When we are updating the name of the docs and when user clicks away from the div this will execute
   const handleBlur = async () => {

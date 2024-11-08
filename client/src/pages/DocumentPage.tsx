@@ -152,7 +152,7 @@ const DocumentPage = () => {
 
   return (
     <div className="text-editor">
-      <div className="menu flex p-2 ">
+      <div className="menu flex p-2 bg-[#f9fbfd]">
         <div className="w-[80%] flex">
           <div className="flex items-center justify-center">
             <div className="w-[35px] h-[35px] bg-red-600 rounded-[100%]">
@@ -189,7 +189,7 @@ const DocumentPage = () => {
           </button>
         </div>
       </div>
-      <div className="editor">
+      <div className="editor bg-[#f9fbfd]">
         <ReactQuill
           ref={quillRef}
           theme="snow"

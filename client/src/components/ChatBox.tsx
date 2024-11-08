@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { MdOutlineMessage, MdClose } from "react-icons/md";
 import { IoSend } from "react-icons/io5";
+import profile from "../assets/image/profile.jpg";
 
 type ChatBoxProps = {
   isChatBox: boolean;
@@ -60,9 +61,14 @@ const ChatBox: React.FC<ChatBoxProps> = ({ isChatBox, setIsChatBox }) => {
   return (
     <div className="fixed bottom-5 flex items-end space-x-4">
       {isChatBox && (
-        <div className="fixed right-[90px] h-[400px] w-80 max-w-full bg-gray-500 rounded-lg shadow-lg flex flex-col">
+        <div className="fixed right-[90px] h-[450px] w-[400px] max-w-full bg-white rounded-lg shadow-lg flex flex-col border border-gray-300">
+          {/* Chat Header */}
+          <div className="py-2 bg-blue-500 rounded-t-lg text-white text-[18px] text-center">
+            Group Chat
+          </div>
+
           {/* Messages Container */}
-          <div className="flex-grow overflow-y-auto mt-4 px-4 py-2">
+          <div className="flex-grow overflow-y-auto px-4 py-2">
             {messages.map((message, index) => (
               <MessageBox
                 key={index}
@@ -74,20 +80,20 @@ const ChatBox: React.FC<ChatBoxProps> = ({ isChatBox, setIsChatBox }) => {
           </div>
 
           {/* Input Section */}
-          <div className="flex items-center justify-between p-4 bg-lighterDark border-t border-customBorder rounded-b-lg">
+          <div className="flex items-center justify-between p-4 bg-gray-100 border-t border-gray-300 rounded-b-lg">
             <div className="w-full flex items-center relative">
               <div className="relative w-full">
                 <textarea
                   id="text-box"
                   value={inputValue}
                   onChange={handleChange}
-                  className="w-full h-12 resize-none border border-customBorder pl-6 py-2 pr-14 rounded-md focus:outline-none bg-lighterDark text-white overflow-hidden"
-                  placeholder="Message Gem-Chat..."
+                  className="w-full h-12 resize-none border border-gray-300 pl-6 py-2 pr-14 rounded-md focus:outline-none bg-white text-gray-800 placeholder-gray-500"
+                  placeholder="Message Here..."
                   style={{ maxHeight: `${maxHeight}px` }}
                 />
                 <button
                   onClick={sendMessage}
-                  className="absolute right-4 bottom-2 px-2 py-1 bg-white text-lighterDark rounded-md hover:bg-gray-300 disabled:bg-disabled"
+                  className="absolute right-2 bottom-3 p-2 border border-blue-500 bg-blue-500 text-white cursor-pointer hover:bg-blue-700 rounded-full"
                   disabled={!inputValue}
                 >
                   <IoSend />
@@ -111,24 +117,36 @@ const ChatBox: React.FC<ChatBoxProps> = ({ isChatBox, setIsChatBox }) => {
   );
 };
 
-const MessageBox = ({ message, sender }) => {
+type MessageBoxProps = {
+  message: string;
+  sender: string;
+};
+
+const MessageBox = ({ message, sender }: MessageBoxProps) => {
+  const username = "Alice";
   return (
     <div className="flex my-5">
       <div className="">
         <div className="role-image rounded-full w-8 h-8 bg-green-600 flex items-center justify-center">
           <img
-            src={""}
+            src={profile}
             alt=""
             className="w-full h-full rounded-full object-cover"
             style={{ imageRendering: "auto" }}
           />
         </div>
       </div>
-      <div className="flex-1 px-5">
+      <div className="flex-1 mx-4">
         <div className="role-name font-semibold">
-          {sender === "user" ? "You" : "GemChat"}
+          {sender === username ? "You" : sender}
         </div>
-        <div className="response m-0 p-0 w-[80%]">{message}</div>
+        <div
+          className={`response m-0 ${
+            sender === username ? "bg-blue-500 text-white" : "bg-[#f0f0f0]"
+          } rounded-lg px-2 py-3`}
+        >
+          {message}
+        </div>
       </div>
     </div>
   );

@@ -8,9 +8,8 @@ import { Delta } from "quill";
 import { UserContext } from "../UserContext";
 import { useParams } from "react-router-dom";
 import { User, UserProps } from "../types/User";
-import { NotFound, Loader } from "../components";
+import { NotFound, Loader, ChatBox } from "../components";
 import type { Document } from "../types/Document";
-import { MdOutlineMessage, MdClose } from "react-icons/md";
 
 const DocumentPage = () => {
   const [value, setValue] = useState<string>("");
@@ -200,25 +199,7 @@ const DocumentPage = () => {
           formats={formats}
         />
       </div>{" "}
-      <div className="fixed bottom-5 right-5 flex items-end space-x-4">
-        {/* Chat Box */}
-        {isChatBox && (
-          <div className="w-80 h-[400px] p-4 bg-gray-500 shadow-lg rounded-lg mr-[70px]">
-            {/* Chat content goes here */}
-            <p className="text-gray-700">This is the chat box content!</p>
-          </div>
-        )}
-
-        {/* Chat Toggle Button */}
-        <div
-          className={`fixed bottom-5 right-5 p-4 shadow-lg cursor-pointer text-[30px] bg-blue-500 text-white rounded-full transition-transform duration-300 ${
-            isChatBox ? "rotate-90 bg-red-500" : ""
-          }`}
-          onClick={() => setIsChatBox(!isChatBox)}
-        >
-          {isChatBox ? <MdClose /> : <MdOutlineMessage />}
-        </div>
-      </div>
+      <ChatBox isChatBox={isChatBox} setIsChatBox={setIsChatBox} />
       {isModalOpen && (
         <AddCollabModal
           setIsModalOpen={setIsModalOpen}

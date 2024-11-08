@@ -10,10 +10,12 @@ import { useParams } from "react-router-dom";
 import { User, UserProps } from "../types/User";
 import { NotFound, Loader } from "../components";
 import type { Document } from "../types/Document";
+import { MdOutlineMessage, MdClose } from "react-icons/md";
 
 const DocumentPage = () => {
   const [value, setValue] = useState<string>("");
   const [document, setDocument] = useState<any>({});
+  const [isChatBox, setIsChatBox] = useState<boolean>(false);
   const [isTyping, setIsTyping] = useState<boolean>(false); //to track if the user is typing or not
   const quillRef = useRef<ReactQuill>(null); // Ref for ReactQuill
   const { id: docId } = useParams<{ id: string }>(); //to fetch the id from /document/:id
@@ -150,7 +152,7 @@ const DocumentPage = () => {
   }
 
   return (
-    <div className="text-editor border  h-screen">
+    <div className="text-editor">
       <div className="menu flex p-2 ">
         <div className="w-[80%] flex">
           <div className="flex items-center justify-center">
@@ -197,6 +199,25 @@ const DocumentPage = () => {
           modules={modules}
           formats={formats}
         />
+      </div>{" "}
+      <div className="fixed bottom-5 right-5 flex items-end space-x-4">
+        {/* Chat Box */}
+        {isChatBox && (
+          <div className="w-80 h-[400px] p-4 bg-gray-500 shadow-lg rounded-lg mr-[70px]">
+            {/* Chat content goes here */}
+            <p className="text-gray-700">This is the chat box content!</p>
+          </div>
+        )}
+
+        {/* Chat Toggle Button */}
+        <div
+          className={`fixed bottom-5 right-5 p-4 shadow-lg cursor-pointer text-[30px] bg-blue-500 text-white rounded-full transition-transform duration-300 ${
+            isChatBox ? "rotate-90 bg-red-500" : ""
+          }`}
+          onClick={() => setIsChatBox(!isChatBox)}
+        >
+          {isChatBox ? <MdClose /> : <MdOutlineMessage />}
+        </div>
       </div>
       {isModalOpen && (
         <AddCollabModal

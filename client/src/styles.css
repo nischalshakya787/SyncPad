@@ -39,6 +39,11 @@
   /* box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5); */
 }
 
+/* In your global CSS or tailwind config */
+.scrollbar-thumb:hover {
+  background-color: #6366f1; /* Purple when hovered */
+}
+
 @page {
   margin: 1in;
 }

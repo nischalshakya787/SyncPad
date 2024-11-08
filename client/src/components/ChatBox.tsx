@@ -68,7 +68,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ isChatBox, setIsChatBox }) => {
           </div>
 
           {/* Messages Container */}
-          <div className="flex-grow overflow-y-auto px-4 py-2">
+          <div className="flex-grow overflow-y-auto px-4 py-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-rounded-md">
             {messages.map((message, index) => (
               <MessageBox
                 key={index}

@@ -233,6 +233,7 @@ const AddCollabModal = ({
   const [box, setBox] = useState<boolean>(false); //To show the result box only at the beginning
   const [isAdded, setIsAdded] = useState<boolean>(false); //To check if the returned user is a already in collab or not
 
+  //Search for user to add collab
   const searchUser = async () => {
     try {
       const response = await fetch(
@@ -255,6 +256,7 @@ const AddCollabModal = ({
     }
   };
 
+  //Closing modal
   const handleClose = () => {
     setIsModalOpen(false);
     setBox(false);

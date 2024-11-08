@@ -32,7 +32,6 @@ const DocumentPage = () => {
   const { user } = context;
 
   const saveDocument = (content: string) => {
-    console.log("Kraaa");
     socket.emit("save-document", docId, content);
   };
 
@@ -199,7 +198,13 @@ const DocumentPage = () => {
           formats={formats}
         />
       </div>{" "}
-      <ChatBox isChatBox={isChatBox} setIsChatBox={setIsChatBox} />
+      <ChatBox
+        isChatBox={isChatBox}
+        setIsChatBox={setIsChatBox}
+        docId={docId}
+        userId={user?.id}
+        username={user?.username}
+      />
       {isModalOpen && (
         <AddCollabModal
           setIsModalOpen={setIsModalOpen}

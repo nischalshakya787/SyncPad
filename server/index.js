@@ -9,6 +9,7 @@ import { Server } from "socket.io";
 import docsRouter from "./routes/document.js";
 import notificationRouter from "./routes/notification.js";
 import DocumentModel from "./model/Document.js";
+import ChatModel from "./model/Chat.js";
 
 dotenv.config();
 const app = express();
@@ -65,6 +66,20 @@ const startServer = async () => {
           console.error("Error saving document:", error);
         }
       });
+      //For group chat in document
+      socket.on(
+        "send-message",
+        ({ docId, senderId, message, username, timestamp }) => {
+          socket
+            .to(docId)
+            .emit("receive-message", {
+              senderId,
+              message,
+              username,
+              timestamp,
+            });
+        }
+      );
 
       //To join a room for notification
       socket.on("joinRoom", (userId) => {

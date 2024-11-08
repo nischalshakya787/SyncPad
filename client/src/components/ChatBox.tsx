@@ -2,49 +2,42 @@ import React, { useEffect, useRef, useState } from "react";
 import { MdOutlineMessage, MdClose } from "react-icons/md";
 import { IoSend } from "react-icons/io5";
 import profile from "../assets/image/profile.jpg";
+import { socket } from "../socket";
 
 type ChatBoxProps = {
   isChatBox: boolean;
   setIsChatBox: React.Dispatch<React.SetStateAction<boolean>>;
+  docId: string | undefined;
+  userId: string | undefined;
+  username: string | undefined;
 };
+type Chat = Array<{
+  senderId: string;
+  message: string;
+  username: string | undefined;
+  timestamp: string;
+}>;
 
-const messages = [
-  { sender: "Alice", message: "Hey there! How's it going?" },
-  { sender: "Bob", message: "Pretty good! Just working on a new project." },
-  { sender: "Alice", message: "Nice! What's the project about?" },
-  {
-    sender: "Bob",
-    message: "It's a real-time chat application using React and Socket.IO.",
-  },
-  {
-    sender: "Alice",
-    message: "That sounds awesome! Can't wait to try it out.",
-  },
-  {
-    sender: "Bob",
-    message: "Thanks! I'll send you the link once it's live.",
-  },
-  { sender: "Alice", message: "Cool, looking forward to it!" },
-  {
-    sender: "Bob",
-    message: "By the way, let me know if you have any feature ideas.",
-  },
-  { sender: "Alice", message: "Sure, I'll think of something!" },
-];
-
-const ChatBox: React.FC<ChatBoxProps> = ({ isChatBox, setIsChatBox }) => {
+const ChatBox: React.FC<ChatBoxProps> = ({
+  isChatBox,
+  setIsChatBox,
+  docId,
+  userId,
+  username,
+}) => {
+  const [chat, setChat] = useState<Chat>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [inputValue, setInputValue] = useState("");
   const maxHeight = 150;
-  const sendMessage = () => {};
 
   useEffect(() => {
     if (isChatBox && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [isChatBox, messages]);
+  }, [isChatBox]);
 
-  const adjustTextareaHeight = (element) => {
+  //To make textarea grow when the length of message increases
+  const adjustTextareaHeight = (element: HTMLTextAreaElement) => {
     const numLines = (element.value.match(/\n/g) || []).length + 1;
     if (numLines > 1) {
       element.style.height = "auto";
@@ -53,9 +46,58 @@ const ChatBox: React.FC<ChatBoxProps> = ({ isChatBox, setIsChatBox }) => {
     }
     element.style.height = `${element.scrollHeight}px`;
   };
-  const handleChange = (event) => {
+
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputValue(event.target.value);
     adjustTextareaHeight(event.target);
+  };
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleMessage = (chat: {
+      senderId: string;
+      message: string;
+      username: string;
+      timestamp: string;
+    }) => {
+      setChat((prevChat) => [
+        ...prevChat,
+        {
+          senderId: chat.senderId,
+          message: chat.message,
+          username: chat.username,
+          timestamp: chat.timestamp,
+        },
+      ]);
+    };
+
+    socket.on("receive-message", handleMessage);
+    // Cleanup listener on component unmount or socket change
+    return () => {
+      socket.off("receive-message", handleMessage);
+    };
+  }, [socket]);
+
+  const sendMessage = () => {
+    if (!socket || !userId) return;
+
+    setChat((prevChat) => [
+      ...prevChat,
+      {
+        senderId: userId,
+        message: inputValue,
+        username: username,
+        timestamp: new Date().toISOString(),
+      },
+    ]);
+    socket.emit("send-message", {
+      docId,
+      senderId: userId,
+      message: inputValue,
+      username,
+      timestamp: new Date().toISOString(),
+    });
   };
 
   return (
@@ -69,11 +111,12 @@ const ChatBox: React.FC<ChatBoxProps> = ({ isChatBox, setIsChatBox }) => {
 
           {/* Messages Container */}
           <div className="flex-grow overflow-y-auto px-4 py-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-rounded-md">
-            {messages.map((message, index) => (
+            {chat.map((message, index) => (
               <MessageBox
                 key={index}
                 message={message.message}
-                sender={message.sender}
+                sender={message.username}
+                username={username}
               />
             ))}
             <div ref={messagesEndRef} />
@@ -119,11 +162,11 @@ const ChatBox: React.FC<ChatBoxProps> = ({ isChatBox, setIsChatBox }) => {
 
 type MessageBoxProps = {
   message: string;
-  sender: string;
+  sender: string | undefined;
+  username: string | undefined;
 };
 
-const MessageBox = ({ message, sender }: MessageBoxProps) => {
-  const username = "Alice";
+const MessageBox = ({ message, sender, username }: MessageBoxProps) => {
   return (
     <div className="flex my-5">
       <div className="">

@@ -45,7 +45,7 @@ const Home = () => {
 
   const { user, setUser } = context;
   const username = user?.username;
-  console.log(username);
+
   return (
     <main className="flex overflow-hidden flex-col bg-[#f9fbfd]">
       <ToastContainer />

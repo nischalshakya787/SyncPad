@@ -36,7 +36,7 @@ const Profile = () => {
     if (user) {
       fetchUser();
     }
-  }, [user]);
+  }, [user, userData]);
 
   return (
     <div className="bg-gray-100 min-h-screen p-6 flex justify-center">
@@ -387,6 +387,7 @@ const PersonaEdit = ({
         }
       );
       const data = await response.json();
+      console.log(data);
       setUserData(data.user);
       setIsPersonaOpen(false);
     } catch (error) {

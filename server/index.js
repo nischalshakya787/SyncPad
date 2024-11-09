@@ -58,6 +58,7 @@ const startServer = async () => {
       socket.on("leaveDocument", (docId) => {
         socket.leave(docId);
       });
+      //To save the documents
       socket.on("save-document", async (docId, value) => {
         try {
           await DocumentModel.findByIdAndUpdate(docId, { value });
@@ -69,15 +70,33 @@ const startServer = async () => {
       //For group chat in document
       socket.on(
         "send-message",
-        ({ docId, senderId, message, username, timestamp }) => {
-          socket
-            .to(docId)
-            .emit("receive-message", {
+        async ({ docId, senderId, message, username, timestamp }) => {
+          try {
+            let chat = await ChatModel.findOne({ docId }); //To check if the chat is unique or not
+            const newMessage = {
+              senderId,
+              message,
+              timestamp,
+            };
+            if (chat) {
+              //If chat exists
+              chat.message.push(newMessage);
+              await chat.save();
+            } else {
+              //If chat doesnot exists creating a new one
+              chat = await ChatModel.create({ docId, message: [newMessage] });
+            }
+
+            //Sending the message back to the client side
+            socket.to(docId).emit("receive-message", {
               senderId,
               message,
               username,
               timestamp,
             });
+          } catch (error) {
+            console.error("Error saving Message:", error);
+          }
         }
       );
 

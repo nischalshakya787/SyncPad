@@ -4,6 +4,11 @@ import { IoSend } from "react-icons/io5";
 import profile from "../assets/image/profile.jpg";
 import { socket } from "../socket";
 
+type UserListProps = {
+  _id: string;
+  username: string;
+  persona: string;
+};
 type ChatBoxProps = {
   isChatBox: boolean;
   setIsChatBox: React.Dispatch<React.SetStateAction<boolean>>;
@@ -12,6 +17,7 @@ type ChatBoxProps = {
   persona: string | undefined;
 
   username: string | undefined;
+  userList: [UserListProps];
 };
 type Chat = Array<{
   senderId: string;
@@ -28,10 +34,12 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   userId,
   username,
   persona,
+  userList,
 }) => {
   const [chat, setChat] = useState<Chat>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState<string>("");
+  const [isMentionBox, setIsMentionBox] = useState<boolean>(false); //To open and close mention box
   const maxHeight = 150;
 
   useEffect(() => {
@@ -68,6 +76,9 @@ const ChatBox: React.FC<ChatBoxProps> = ({
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputValue(event.target.value);
+    if (event.target.value[inputValue.length] === "@") {
+      setIsMentionBox(true);
+    }
     adjustTextareaHeight(event.target);
   };
 
@@ -124,7 +135,6 @@ const ChatBox: React.FC<ChatBoxProps> = ({
       timestamp: new Date().toISOString(),
     });
   };
-  console.log(chat);
   return (
     <div className="fixed bottom-5 flex items-end space-x-4">
       {isChatBox && (

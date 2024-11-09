@@ -12,6 +12,11 @@ import { NotFound, Loader, ChatBox } from "../components";
 import type { Document } from "../types/Document";
 import profile from "../assets/image/profile.jpg";
 
+type UserListProps = {
+  _id: string;
+  username: string;
+  persona: string;
+};
 const DocumentPage = () => {
   const [value, setValue] = useState<string>("");
   const [document, setDocument] = useState<any>({});
@@ -24,6 +29,7 @@ const DocumentPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const typingTimeoutRef = useRef<null | number>(null);
+  const [userList, setUserList] = useState<UserListProps[]>([]);
 
   const context = useContext(UserContext); //to get the logged in user
   if (!context) {
@@ -74,6 +80,18 @@ const DocumentPage = () => {
           } else {
             setIsAuthenticated(true);
             setDocument(data);
+            setUserList([
+              {
+                _id: data.creator._id,
+                username: data.creator.username,
+                persona: data.creator.persona,
+              },
+              ...data.collab.map((user: any) => ({
+                _id: user._id,
+                username: user.username,
+                persona: user.persona,
+              })),
+            ]);
             setValue(data.value);
           }
         } catch (error) {
@@ -236,6 +254,7 @@ const DocumentPage = () => {
         userId={user?.id}
         username={user?.username}
         persona={user?.persona}
+        userList={userList}
       />
       {isModalOpen && (
         <AddCollabModal

@@ -78,7 +78,7 @@ export const fetchDocument = async (req, res) => {
   const { docId } = req.query;
   try {
     const document = await DocumentModel.findById(docId).populate({
-      path: "collab",
+      path: "collab creator",
       select: "username persona",
     });
     console.log(document);

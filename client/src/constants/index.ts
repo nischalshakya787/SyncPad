@@ -38,3 +38,22 @@ export const formats = [
   "image",
   "video",
 ];
+
+export const personaBots = [
+  "Kimberly",
+  "Avery",
+  "Brooklynn",
+  "Leo",
+  "Christian",
+  "Leah",
+  "Sawyer",
+  "Vivian",
+  "Nolan",
+  "Wyatt",
+  "Kingston",
+  "Oliver",
+  "Chase",
+  "Valentina",
+  "Eliza",
+  "Sara",
+];

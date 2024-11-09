@@ -77,7 +77,10 @@ export const fetchAllDocuments = async (req, res) => {
 export const fetchDocument = async (req, res) => {
   const { docId } = req.query;
   try {
-    const document = await DocumentModel.findById(docId);
+    const document = await DocumentModel.findById(docId).populate({
+      path: "collab",
+      select: "username",
+    });
 
     res.status(200).json(document);
   } catch (error) {

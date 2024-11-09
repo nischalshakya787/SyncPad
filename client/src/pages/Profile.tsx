@@ -7,11 +7,14 @@ import { useFormik } from "formik";
 import { passwordSchema, profileSchema } from "../schema";
 import { InputField } from "../components";
 import { toast, ToastContainer } from "react-toastify";
+import { personaBots } from "../constants";
+import { FaPencilAlt } from "react-icons/fa";
 
 const Profile = () => {
   // Placeholder user data
   const [userData, setUserData] = useState<User>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isPersonaOpen, setIsPersonaOpen] = useState<boolean>(false);
 
   const userInfo = useContext(UserContext);
   if (!userInfo) {
@@ -41,11 +44,24 @@ const Profile = () => {
       <div className="bg-white shadow-md rounded-lg w-full max-w-3xl p-6">
         {/* Header Section */}
         <div className="flex items-center mb-6">
-          <img
-            src={profile}
-            alt="Profile"
-            className="w-24 h-24 rounded-full mr-6"
-          />
+          <div className="relative">
+            <img
+              src={profile}
+              alt="Profile"
+              className="w-24 h-24 rounded-full mr-6"
+            />
+
+            {/* Pencil Icon Button */}
+            <button
+              className="absolute bottom-11 right-9 p-[0.35rem] bg-blue-500 rounded-full text-white hover:bg-blue-600 text-[12px]"
+              style={{ transform: "translate(50%, -50%)" }} // Adjusts position to sit on the edge
+              onClick={() => {
+                setIsPersonaOpen(true);
+              }}
+            >
+              <FaPencilAlt />
+            </button>
+          </div>
           <div>
             <h1 className="text-2xl font-semibold text-gray-800">
               {userData?.username}
@@ -100,6 +116,9 @@ const Profile = () => {
           userData={userData}
           setUserData={setUserData}
         />
+      )}
+      {isPersonaOpen && (
+        <PersonaEdit setIsPersonaOpen={setIsPersonaOpen} userData={userData} />
       )}
     </div>
   );
@@ -329,6 +348,59 @@ const AccountSetting = ({
               {option === "profile" ? "Save Changes" : "Change Password"}
             </button>
           </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+type PersonaEditProps = {
+  setIsPersonaOpen: (value: boolean) => void;
+  userData: User | undefined;
+};
+const PersonaEdit = ({ setIsPersonaOpen, userData }: PersonaEditProps) => {
+  const [selectedPersona, setSelectedPersona] = useState(null);
+
+  const handleSelect = (name) => {
+    setSelectedPersona(name);
+  };
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center backdrop-blur-md">
+      <div className="w-1/2 bg-slate-100 p-6 rounded-md">
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-lg font-semibold">Select Your Persona</p>
+          <button
+            className="text-sm px-4 py-2 bg-slate-600 text-white rounded-md"
+            onClick={() => {
+              setIsPersonaOpen(false);
+            }}
+          >
+            Close
+          </button>
+        </div>
+        <div className="grid grid-cols-4 gap-4 p-4">
+          {personaBots.map((name) => (
+            <div
+              key={name}
+              onClick={() => handleSelect(name)}
+              className={`p-2 flex flex-col items-center cursor-pointer rounded-md border-2
+                      ${
+                        selectedPersona === name
+                          ? "border-blue-500"
+                          : "border-transparent"
+                      } 
+                      hover:shadow-lg transition-shadow duration-200`}
+            >
+              <img
+                src={`https://api.dicebear.com/9.x/bottts/svg?seed=${name}&backgroundColor=ffdfbf`}
+                alt={name}
+                className="w-16 h-16 rounded-full"
+              />
+              <span className="mt-2 text-center text-sm font-medium">
+                {name}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </div>

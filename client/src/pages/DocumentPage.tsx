@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "../styles.css";
-import { formats, modules } from "../constants";
+import { formats, modules, personaBots } from "../constants";
 import { socket } from "../socket";
 import { Delta } from "quill";
 import { UserContext } from "../UserContext";
@@ -12,6 +12,7 @@ import { NotFound, Loader, ChatBox } from "../components";
 import type { Document } from "../types/Document";
 
 const DocumentPage = () => {
+  console.log(personas.create);
   const [value, setValue] = useState<string>("");
   const [document, setDocument] = useState<any>({});
   const [isChatBox, setIsChatBox] = useState<boolean>(false);
@@ -151,25 +152,26 @@ const DocumentPage = () => {
 
   return (
     <div className="text-editor">
-      <div className="menu flex p-2 bg-[#f9fbfd]">
-        <div className="w-[80%] flex">
+      <div className="menu flex justify-between items-center p-2 bg-[#f9fbfd]">
+        {/* <!-- Left section (Logo and Menu) --> */}
+        <div className="flex items-center flex-grow">
           <div className="flex items-center justify-center">
-            <div className="w-[35px] h-[35px] bg-red-600 rounded-[100%]">
+            <div className="w-[35px] h-[35px] bg-red-600 rounded-full flex items-center justify-center">
               Logo
             </div>
           </div>
-          <div className="block ml-3">
+          <div className="ml-3">
             <div
               className="text-lg px-3"
               contentEditable
               suppressContentEditableWarning
               ref={divRef}
               onBlur={handleBlur}
-              onInput={() => null} // Prevents React from interfering with cursor position
+              onInput={() => null} //Prevents React from interfering with cursor position -->
             >
               {document.title}
             </div>
-            <div className="menu flex">
+            <div className="flex space-x-3">
               <MenuComponent name="File" />
               <MenuComponent name="Edit" />
               <MenuComponent name="View" />
@@ -179,7 +181,33 @@ const DocumentPage = () => {
             </div>
           </div>
         </div>
-        <div className="w-[20%] flex items-center justify-end pr-8 gap-3">
+
+        {/* <!-- Right section (Collaborators and Button) --> */}
+        <div className="flex items-center justify-end gap-3 mx-5">
+          <div className="relative flex">
+            {document.collab.map(
+              (user: { _id: string; username: string }, index: number) => (
+                <div
+                  key={user.username}
+                  className="relative group"
+                  style={{ marginLeft: index !== 0 ? "-10px" : "0" }} // slight offset for stacking
+                >
+                  <img
+                    src={`https://api.dicebear.com/9.x/bottts/svg?seed=${
+                      personaBots[
+                        Math.floor(Math.random() * personaBots.length)
+                      ]
+                    }&backgroundColor=ffdfbf`}
+                    alt={user.username}
+                    className="w-10 h-10 rounded-full border-2 border-white cursor-pointer transition-transform duration-200 hover:scale-105"
+                  />
+                  <div className="absolute mb-1 w-max px-2 py-1 text-sm text-white bg-black rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    {user.username}
+                  </div>
+                </div>
+              )
+            )}
+          </div>
           <button
             className="bg-blue-500 text-white rounded-md p-2"
             onClick={() => setIsModalOpen(true)}

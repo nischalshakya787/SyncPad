@@ -10,6 +10,7 @@ import docsRouter from "./routes/document.js";
 import notificationRouter from "./routes/notification.js";
 import DocumentModel from "./model/Document.js";
 import ChatModel from "./model/Chat.js";
+import chatRouter from "./routes/chat.js";
 
 dotenv.config();
 const app = express();
@@ -29,6 +30,7 @@ app.use(cookieParser()); //This allows us to interact with browser cookies
 app.use("/auth/", authRouter);
 app.use("/docs/", docsRouter);
 app.use("/notifications/", notificationRouter);
+app.use("/chat/", chatRouter);
 const PORT = 3000;
 
 const startServer = async () => {

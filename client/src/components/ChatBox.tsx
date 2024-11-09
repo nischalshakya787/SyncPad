@@ -31,6 +31,21 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   const maxHeight = 150;
 
   useEffect(() => {
+    const fetchChat = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/chat/${docId}`);
+        if (!response.ok) {
+          throw Error("Error fetching Chats");
+        }
+        const data = await response.json();
+        setChat(data.chat);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchChat();
+  }, []);
+  useEffect(() => {
     if (isChatBox && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }

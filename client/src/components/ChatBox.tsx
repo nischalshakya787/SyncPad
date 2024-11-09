@@ -41,7 +41,9 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   const [inputValue, setInputValue] = useState<string>("");
   const [isMentionBox, setIsMentionBox] = useState<boolean>(false); //To open and close mention box
   const [mention, setMention] = useState<string | null>(null);
+  const [filteredUsers, setFilteredUsers] = useState<UserListProps[]>(userList);
   const maxHeight = 150;
+  console.log(filteredUsers);
 
   useEffect(() => {
     const fetchChat = async () => {
@@ -76,13 +78,39 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInputValue(event.target.value);
-    if (!event.target.value.includes("@")) {
+    const value = event.target.value;
+    setInputValue(value);
+
+    // Check if @ is present in the input
+    if (!value.includes("@")) {
       setIsMentionBox(false);
+      setMention(null);
+      setFilteredUsers([]); // No filtering when @ is absent
     }
-    if (event.target.value[inputValue.length] === "@") {
+
+    // If @ is at the end of the text, show the mention box
+    if (value[value.length - 1] === "@") {
       setIsMentionBox(true);
     }
+
+    // Match text after the @ symbol
+    const mentionMatch = value.match(/@(\S*)$/);
+
+    if (mentionMatch && mentionMatch[1]) {
+      const searchTerm = mentionMatch[1].toLowerCase();
+
+      // If there's text after @, filter users based on the search term
+      const filtered = userList.filter((user) =>
+        user.username.toLowerCase().includes(searchTerm)
+      );
+      setFilteredUsers(filtered);
+    } else if (mentionMatch && mentionMatch[1] === "") {
+      // If @ is followed by nothing, show all users
+      setFilteredUsers(userList);
+    } else {
+      setFilteredUsers([]);
+    }
+
     adjustTextareaHeight(event.target);
   };
 
@@ -139,6 +167,16 @@ const ChatBox: React.FC<ChatBoxProps> = ({
       timestamp: new Date().toISOString(),
     });
   };
+
+  const handleUserSelection = (user) => {
+    setInputValue(
+      inputValue.replace(
+        /@(\S*)/g, //Regex to replace username after clicking the selection
+        `@${user.username}`
+      )
+    );
+    setMention(user._id);
+  };
   return (
     <div className="fixed bottom-5 flex items-end space-x-4">
       {isChatBox && (
@@ -169,14 +207,11 @@ const ChatBox: React.FC<ChatBoxProps> = ({
               <div className="relative w-full">
                 {isMentionBox && (
                   <div className="flex-grow w-[150px] p-2 absolute bottom-14 bg-red-500 rounded mx-5">
-                    {userList.map((user) => (
+                    {filteredUsers.map((user) => (
                       <button
                         className="w-full text-left"
                         onClick={() => {
-                          setInputValue(
-                            inputValue.replace(/@(\S*)/g, `@${user.username}`)
-                          );
-                          setMention(user._id);
+                          handleUserSelection(user);
                         }}
                       >
                         {user.username}

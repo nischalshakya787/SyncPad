@@ -49,7 +49,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     if (isChatBox && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [isChatBox]);
+  }, [isChatBox, messagesEndRef, chat]);
 
   //To make textarea grow when the length of message increases
   const adjustTextareaHeight = (element: HTMLTextAreaElement) => {
@@ -96,7 +96,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
 
   const sendMessage = () => {
     if (!socket || !userId) return;
-
+    setInputValue("");
     setChat((prevChat) => [
       ...prevChat,
       {

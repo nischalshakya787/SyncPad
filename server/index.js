@@ -72,7 +72,7 @@ const startServer = async () => {
       //For group chat in document
       socket.on(
         "send-message",
-        async ({ docId, senderId, message, username, timestamp }) => {
+        async ({ docId, senderId, message, username, persona, timestamp }) => {
           try {
             let chat = await ChatModel.findOne({ docId }); //To check if the chat is unique or not
             const newMessage = {
@@ -94,6 +94,7 @@ const startServer = async () => {
               senderId,
               message,
               username,
+              persona,
               timestamp,
             });
           } catch (error) {

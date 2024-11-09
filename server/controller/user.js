@@ -112,7 +112,7 @@ const login = async (req, res) => {
     if (passOK) {
       //Creating a jwtToken
       const jwtToken = jwt.sign(
-        { username, id: user._id },
+        { username, id: user._id, persona: user.persona },
         process.env.JWT_SECRET
       );
       res.cookie("token", jwtToken, { maxAge: 24 * 60 * 60 * 1000 }); //initializing the token in frontend side

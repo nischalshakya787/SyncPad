@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "../styles.css";
-import { formats, modules, personaBots } from "../constants";
+import { formats, modules } from "../constants";
 import { socket } from "../socket";
 import { Delta } from "quill";
 import { UserContext } from "../UserContext";
@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import { User, UserProps } from "../types/User";
 import { NotFound, Loader, ChatBox } from "../components";
 import type { Document } from "../types/Document";
+import profile from "../assets/image/profile.jpg";
 
 const DocumentPage = () => {
   const [value, setValue] = useState<string>("");
@@ -185,18 +186,21 @@ const DocumentPage = () => {
         <div className="flex items-center justify-end gap-3 mx-5">
           <div className="relative flex">
             {document.collab.map(
-              (user: { _id: string; username: string }, index: number) => (
+              (
+                user: { _id: string; username: string; persona: string },
+                index: number
+              ) => (
                 <div
                   key={user.username}
                   className="relative group"
                   style={{ marginLeft: index !== 0 ? "-10px" : "0" }} // slight offset for stacking
                 >
                   <img
-                    src={`https://api.dicebear.com/9.x/bottts/svg?seed=${
-                      personaBots[
-                        Math.floor(Math.random() * personaBots.length)
-                      ]
-                    }&backgroundColor=ffdfbf`}
+                    src={`${
+                      user.persona.length === 0
+                        ? profile
+                        : `https://api.dicebear.com/9.x/bottts/svg?seed=${user.persona}&backgroundColor=ffdfbf`
+                    }`}
                     alt={user.username}
                     className="w-10 h-10 rounded-full border-2 border-white cursor-pointer transition-transform duration-200 hover:scale-105"
                   />
@@ -231,6 +235,7 @@ const DocumentPage = () => {
         docId={docId}
         userId={user?.id}
         username={user?.username}
+        persona={user?.persona}
       />
       {isModalOpen && (
         <AddCollabModal

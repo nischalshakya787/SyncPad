@@ -6,7 +6,7 @@ export const fetchChat = async (req, res) => {
     // Find the chat document and populate the username for each sender in the message array
     const chat = await ChatModel.findOne({ docId }).populate({
       path: "message.senderId",
-      select: "username", // Only include the username field from the User model
+      select: "username persona", // Only include the username field from the User model
     });
 
     if (!chat) {
@@ -19,6 +19,7 @@ export const fetchChat = async (req, res) => {
       senderId: msg.senderId._id,
       username: msg.senderId.username, // Access the populated username
       message: msg.message,
+      persona: msg.senderId.persona,
       timestamp: msg.timestamp,
     }));
 

@@ -1,6 +1,7 @@
 export interface UserProps {
   iat: number;
   id: string;
+  persona: string;
   username: string;
 }
 

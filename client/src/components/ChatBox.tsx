@@ -9,12 +9,15 @@ type ChatBoxProps = {
   setIsChatBox: React.Dispatch<React.SetStateAction<boolean>>;
   docId: string | undefined;
   userId: string | undefined;
+  persona: string | undefined;
+
   username: string | undefined;
 };
 type Chat = Array<{
   senderId: string;
   message: string;
   username: string | undefined;
+  persona: string | undefined;
   timestamp: string;
 }>;
 
@@ -24,6 +27,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   docId,
   userId,
   username,
+  persona,
 }) => {
   const [chat, setChat] = useState<Chat>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -67,6 +71,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     adjustTextareaHeight(event.target);
   };
 
+  //To recieve message
   useEffect(() => {
     if (!socket) return;
 
@@ -74,6 +79,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
       senderId: string;
       message: string;
       username: string;
+      persona: string;
       timestamp: string;
     }) => {
       setChat((prevChat) => [
@@ -82,6 +88,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
           senderId: chat.senderId,
           message: chat.message,
           username: chat.username,
+          persona: chat.persona,
           timestamp: chat.timestamp,
         },
       ]);
@@ -94,6 +101,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     };
   }, [socket]);
 
+  //To send the message
   const sendMessage = () => {
     if (!socket || !userId) return;
     setInputValue("");
@@ -103,6 +111,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
         senderId: userId,
         message: inputValue,
         username: username,
+        persona: persona,
         timestamp: new Date().toISOString(),
       },
     ]);
@@ -111,10 +120,11 @@ const ChatBox: React.FC<ChatBoxProps> = ({
       senderId: userId,
       message: inputValue,
       username,
+      persona,
       timestamp: new Date().toISOString(),
     });
   };
-
+  console.log(chat);
   return (
     <div className="fixed bottom-5 flex items-end space-x-4">
       {isChatBox && (
@@ -132,6 +142,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
                 message={message.message}
                 sender={message.username}
                 username={username}
+                persona={message.persona}
               />
             ))}
             <div ref={messagesEndRef} />
@@ -179,15 +190,25 @@ type MessageBoxProps = {
   message: string;
   sender: string | undefined;
   username: string | undefined;
+  persona: string | undefined;
 };
 
-const MessageBox = ({ message, sender, username }: MessageBoxProps) => {
+const MessageBox = ({
+  message,
+  sender,
+  username,
+  persona,
+}: MessageBoxProps) => {
   return (
     <div className="flex my-5">
       <div className="">
         <div className="role-image rounded-full w-8 h-8 bg-green-600 flex items-center justify-center">
           <img
-            src={profile}
+            src={`${
+              persona?.length === 0
+                ? profile
+                : `https://api.dicebear.com/9.x/bottts/svg?seed=${persona}&backgroundColor=ffdfbf`
+            }`}
             alt=""
             className="w-full h-full rounded-full object-cover"
             style={{ imageRendering: "auto" }}

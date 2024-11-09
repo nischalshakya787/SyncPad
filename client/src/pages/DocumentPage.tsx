@@ -7,16 +7,11 @@ import { socket } from "../socket";
 import { Delta } from "quill";
 import { UserContext } from "../UserContext";
 import { useParams } from "react-router-dom";
-import { User, UserProps } from "../types/User";
+import { User, UserListProps, UserProps } from "../types/User";
 import { NotFound, Loader, ChatBox } from "../components";
 import type { Document } from "../types/Document";
 import profile from "../assets/image/profile.jpg";
 
-type UserListProps = {
-  _id: string;
-  username: string;
-  persona: string;
-};
 const DocumentPage = () => {
   const [value, setValue] = useState<string>("");
   const [document, setDocument] = useState<any>({});

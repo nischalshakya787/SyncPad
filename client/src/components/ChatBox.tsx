@@ -3,29 +3,8 @@ import { MdOutlineMessage, MdClose } from "react-icons/md";
 import { IoSend } from "react-icons/io5";
 import profile from "../assets/image/profile.jpg";
 import { socket } from "../socket";
-
-type UserListProps = {
-  _id: string;
-  username: string;
-  persona: string;
-};
-type ChatBoxProps = {
-  isChatBox: boolean;
-  setIsChatBox: React.Dispatch<React.SetStateAction<boolean>>;
-  docId: string | undefined;
-  userId: string | undefined;
-  persona: string | undefined;
-
-  username: string | undefined;
-  userList: UserListProps[];
-};
-type Chat = Array<{
-  senderId: string;
-  message: string;
-  username: string | undefined;
-  persona: string | undefined;
-  timestamp: string;
-}>;
+import { UserListProps } from "../types/User";
+import { Chat, ChatBoxProps } from "../types/Chat";
 
 const ChatBox: React.FC<ChatBoxProps> = ({
   isChatBox,

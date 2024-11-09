@@ -16,3 +16,9 @@ export interface User {
   updatedAt: string; // Date string for when the user was last updated
   __v: number; // Version key (used by Mongoose)
 }
+
+export type UserListProps = {
+  _id: string;
+  username: string;
+  persona: string;
+};

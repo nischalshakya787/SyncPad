@@ -40,10 +40,14 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
   const [isMentionBox, setIsMentionBox] = useState<boolean>(false); //To open and close mention box
-  const [mention, setMention] = useState<string | null>(null);
+  const [mention, setMention] = useState<{
+    id: string;
+    sender: string | undefined;
+    senderId: string | undefined;
+    docId: string | undefined;
+  } | null>(null);
   const [filteredUsers, setFilteredUsers] = useState<UserListProps[]>(userList);
   const maxHeight = 150;
-  console.log(filteredUsers);
 
   useEffect(() => {
     const fetchChat = async () => {
@@ -158,6 +162,9 @@ const ChatBox: React.FC<ChatBoxProps> = ({
         timestamp: new Date().toISOString(),
       },
     ]);
+    if (mention) {
+      socket.emit("sendMentionNotification", mention);
+    }
     socket.emit("send-message", {
       docId,
       senderId: userId,
@@ -168,14 +175,23 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     });
   };
 
-  const handleUserSelection = (user) => {
+  const handleUserSelection = (
+    user: UserListProps,
+    username: string | undefined
+  ) => {
     setInputValue(
       inputValue.replace(
         /@(\S*)/g, //Regex to replace username after clicking the selection
         `@${user.username}`
       )
     );
-    setMention(user._id);
+    setMention({
+      id: user._id,
+      sender: username,
+      senderId: userId,
+      docId: docId,
+    });
+    setIsMentionBox(false);
   };
   return (
     <div className="fixed bottom-5 flex items-end space-x-4">
@@ -211,7 +227,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
                       <button
                         className="w-full text-left"
                         onClick={() => {
-                          handleUserSelection(user);
+                          handleUserSelection(user, username);
                         }}
                       >
                         {user.username}

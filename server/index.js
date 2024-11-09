@@ -129,6 +129,15 @@ const startServer = async () => {
           docId: document._id,
         });
       });
+      socket.on("sendMentionNotification", (message) => {
+        io.to(message.id).emit("collabNotification", {
+          type: "response",
+          message: `${message.sender} has mentioned you in Group Chat.'`,
+          senderId: message.senderId,
+          recieverId: message.id,
+          docId: message.docId,
+        });
+      });
     });
     server.listen(PORT, () => {
       console.log(`Server running on: http://localhost:${PORT}/`);

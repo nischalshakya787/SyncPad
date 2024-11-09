@@ -60,11 +60,8 @@ const Notifications: React.FC<NotificationsProps> = ({
     <>
       {notifications.length > 0 ? (
         notifications.map((notification, index) => (
-          <div className="flex">
-            <li
-              key={index}
-              className={`pl-5 py-2 text-sm text-gray-700 hover:bg-gray-100`}
-            >
+          <div className="flex" key={index}>
+            <li className={`pl-5 py-2 text-sm text-gray-700 hover:bg-gray-100`}>
               {notification.message}
             </li>
             <div className="flex items-center px-2">

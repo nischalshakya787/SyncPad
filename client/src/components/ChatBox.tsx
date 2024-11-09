@@ -17,7 +17,7 @@ type ChatBoxProps = {
   persona: string | undefined;
 
   username: string | undefined;
-  userList: [UserListProps];
+  userList: UserListProps[];
 };
 type Chat = Array<{
   senderId: string;
@@ -40,6 +40,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
   const [isMentionBox, setIsMentionBox] = useState<boolean>(false); //To open and close mention box
+  const [mention, setMention] = useState<string | null>(null);
   const maxHeight = 150;
 
   useEffect(() => {
@@ -76,6 +77,9 @@ const ChatBox: React.FC<ChatBoxProps> = ({
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputValue(event.target.value);
+    if (!event.target.value.includes("@")) {
+      setIsMentionBox(false);
+    }
     if (event.target.value[inputValue.length] === "@") {
       setIsMentionBox(true);
     }
@@ -159,9 +163,27 @@ const ChatBox: React.FC<ChatBoxProps> = ({
           </div>
 
           {/* Input Section */}
+
           <div className="flex items-center justify-between p-4 bg-gray-100 border-t border-gray-300 rounded-b-lg">
             <div className="w-full flex items-center relative">
               <div className="relative w-full">
+                {isMentionBox && (
+                  <div className="flex-grow w-[150px] p-2 absolute bottom-14 bg-red-500 rounded mx-5">
+                    {userList.map((user) => (
+                      <button
+                        className="w-full text-left"
+                        onClick={() => {
+                          setInputValue(
+                            inputValue.replace(/@(\S*)/g, `@${user.username}`)
+                          );
+                          setMention(user._id);
+                        }}
+                      >
+                        {user.username}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <textarea
                   id="text-box"
                   value={inputValue}

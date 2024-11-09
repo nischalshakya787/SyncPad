@@ -80,18 +80,31 @@ const DocumentPage = () => {
           } else {
             setIsAuthenticated(true);
             setDocument(data);
-            setUserList([
-              {
-                _id: data.creator._id,
-                username: data.creator.username,
-                persona: data.creator.persona,
-              },
-              ...data.collab.map((user: any) => ({
-                _id: user._id,
-                username: user.username,
-                persona: user.persona,
-              })),
-            ]);
+
+            // removing the user's object from the array
+            const user_list = [
+              // Exclude creator if the username matches
+              ...(data.creator.username !== user.username
+                ? [
+                    {
+                      _id: data.creator._id,
+                      username: data.creator.username,
+                      persona: data.creator.persona,
+                    },
+                  ]
+                : []),
+
+              // Exclude collabs with matching username
+              ...data.collab
+                .filter((users: any) => users.username !== user.username) // Exclude user with matching username
+                .map((user: any) => ({
+                  _id: user._id,
+                  username: user.username,
+                  persona: user.persona,
+                })),
+            ];
+            setUserList(user_list);
+
             setValue(data.value);
           }
         } catch (error) {

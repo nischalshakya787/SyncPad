@@ -222,17 +222,21 @@ const ChatBox: React.FC<ChatBoxProps> = ({
             <div className="w-full flex items-center relative">
               <div className="relative w-full">
                 {isMentionBox && (
-                  <div className="flex-grow w-[150px] p-2 absolute bottom-14 bg-red-500 rounded mx-5">
-                    {filteredUsers.map((user) => (
-                      <button
-                        className="w-full text-left"
-                        onClick={() => {
-                          handleUserSelection(user, username);
-                        }}
-                      >
-                        {user.username}
-                      </button>
-                    ))}
+                  <div className="absolute bottom-16 left-24 transform -translate-x-1/2 w-[200px] max-h-[200px] overflow-y-auto p-2 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                    <div className="space-y-1">
+                      {filteredUsers.map((user) => (
+                        <button
+                          key={user._id} // Add a key to improve rendering performance
+                          className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-200 focus:outline-none"
+                          onClick={() => {
+                            handleUserSelection(user, username);
+                          }}
+                          aria-label={`Mention ${user.username}`}
+                        >
+                          {user.username}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
                 <textarea

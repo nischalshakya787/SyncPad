@@ -17,6 +17,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    persona: {
+      type: String,
+      default: "",
+    },
     description: {
       type: String,
       default: "",

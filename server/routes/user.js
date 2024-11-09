@@ -10,6 +10,7 @@ import {
   verifyEmail,
   forgotPassword,
   resetPassword,
+  changePersona,
 } from "../controller/user.js";
 
 const authRouter = express.Router();
@@ -21,6 +22,7 @@ authRouter.route("/forgot-password").post(forgotPassword);
 authRouter.route("/reset-password/:token").put(resetPassword);
 authRouter.route("/update-profile/:id").put(updateProfile);
 authRouter.route("/change-password/:id").put(changePassword);
+authRouter.route("/persona/:id").put(changePersona);
 authRouter.route("/verify-email").get(verifyEmail);
 authRouter.route("/profile").get(profile);
 authRouter.route("/user").get(getUser);

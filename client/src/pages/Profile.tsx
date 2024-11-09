@@ -46,7 +46,11 @@ const Profile = () => {
         <div className="flex items-center mb-6">
           <div className="relative">
             <img
-              src={profile}
+              src={`${
+                userData?.persona.length === 0
+                  ? profile
+                  : `https://api.dicebear.com/9.x/bottts/svg?seed=${userData?.persona}&backgroundColor=ffdfbf`
+              }`}
               alt="Profile"
               className="w-24 h-24 rounded-full mr-6"
             />
@@ -118,7 +122,11 @@ const Profile = () => {
         />
       )}
       {isPersonaOpen && (
-        <PersonaEdit setIsPersonaOpen={setIsPersonaOpen} userData={userData} />
+        <PersonaEdit
+          setIsPersonaOpen={setIsPersonaOpen}
+          userData={userData}
+          setUserData={setUserData}
+        />
       )}
     </div>
   );
@@ -357,11 +365,35 @@ const AccountSetting = ({
 type PersonaEditProps = {
   setIsPersonaOpen: (value: boolean) => void;
   userData: User | undefined;
+  setUserData: (value: User) => void;
 };
-const PersonaEdit = ({ setIsPersonaOpen, userData }: PersonaEditProps) => {
-  const [selectedPersona, setSelectedPersona] = useState(null);
+const PersonaEdit = ({
+  setIsPersonaOpen,
+  userData,
+  setUserData,
+}: PersonaEditProps) => {
+  const [selectedPersona, setSelectedPersona] = useState<string>("");
 
-  const handleSelect = (name) => {
+  const confirmPersona = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/auth/persona/${userData?._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json", // Set the content type to JSON
+          },
+          body: JSON.stringify({ persona: selectedPersona }),
+        }
+      );
+      const data = await response.json();
+      setUserData(data.user);
+      setIsPersonaOpen(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleSelect = (name: string) => {
     setSelectedPersona(name);
   };
   return (
@@ -401,6 +433,14 @@ const PersonaEdit = ({ setIsPersonaOpen, userData }: PersonaEditProps) => {
               </span>
             </div>
           ))}
+        </div>
+        <div className="button flex justify-center items-center">
+          <button
+            className="text-sm px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            onClick={confirmPersona}
+          >
+            Confirm
+          </button>
         </div>
       </div>
     </div>

@@ -12,7 +12,6 @@ import { NotFound, Loader, ChatBox } from "../components";
 import type { Document } from "../types/Document";
 
 const DocumentPage = () => {
-  console.log(personas.create);
   const [value, setValue] = useState<string>("");
   const [document, setDocument] = useState<any>({});
   const [isChatBox, setIsChatBox] = useState<boolean>(false);

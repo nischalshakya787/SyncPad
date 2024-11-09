@@ -8,6 +8,7 @@ export interface User {
   _id: string; // MongoDB ObjectId as a string
   username: string; // Username of the user
   email: string; // User's email address
+  persona: string;
   description: string;
   password: string; // Hashed password
   createdAt: string; // Date string for when the user was created

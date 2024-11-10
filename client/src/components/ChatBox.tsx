@@ -279,7 +279,7 @@ const MessageBox = ({
     <div className="flex my-5">
       <div className="">
         <div className="role-image rounded-full w-8 h-8 bg-green-600 flex items-center justify-center">
-          //Profile persona
+          {/* Profile persona */}
           <img
             src={`${
               persona?.length === 0

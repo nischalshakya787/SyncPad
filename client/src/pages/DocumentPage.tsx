@@ -24,6 +24,12 @@ const DocumentPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const typingTimeoutRef = useRef<null | number>(null);
   const [userList, setUserList] = useState<UserListProps[]>([]);
+  const [selectionRange, setSelectionRange] = useState({
+    startOffset: 0,
+    endOffset: 0,
+  });
+  const [selectedText, setSelectedText] = useState("");
+  const [isComment, setIsComment] = useState(false); //To add the comment box for text selection
 
   const context = useContext(UserContext); //to get the logged in user
   if (!context) {
@@ -167,6 +173,32 @@ const DocumentPage = () => {
       }
     }
   };
+
+  const handleMouseUp = () => {
+    if (quillRef.current) {
+      // Check if quillRef.current is not null
+      const editor = quillRef.current.getEditor(); // Get the Quill editor instance
+      const selection = editor.getSelection(); // Get the selection range from Quill
+
+      if (selection && selection.length > 0) {
+        const selectedContent = editor.getText(
+          selection.index,
+          selection.length
+        );
+        setSelectedText(selectedContent);
+        setSelectionRange({
+          startOffset: selection.index,
+          endOffset: selection.index + selection.length,
+        });
+      } else {
+        setSelectedText("");
+        setSelectionRange({ startOffset: 0, endOffset: 0 });
+      }
+    }
+  };
+  console.log(selectedText);
+  console.log(selectionRange);
+
   if (isLoading) {
     return <Loader />;
   }
@@ -244,7 +276,7 @@ const DocumentPage = () => {
           </button>
         </div>
       </div>
-      <div className="editor bg-[#f9fbfd]">
+      <div className="editor bg-[#f9fbfd]" onMouseUp={handleMouseUp}>
         <ReactQuill
           ref={quillRef}
           theme="snow"

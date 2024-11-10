@@ -8,3 +8,4 @@ export { default as Notifications } from "./Notifications";
 export { default as Loader } from "./Loader";
 export { default as NotFound } from "./NotFound";
 export { default as ChatBox } from "./ChatBox";
+export { default as AddCollabModal } from "./AddCollabModal";

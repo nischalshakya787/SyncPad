@@ -1,5 +1,26 @@
 import mongoose from "mongoose";
 
+const commentSchema = new mongoose.Schema({
+  comment: {
+    type: String,
+    required: true,
+  },
+  selectionRange: {
+    startOffset: {
+      type: Number,
+      required: true,
+    },
+    endOffset: {
+      type: Number,
+      required: true,
+    },
+  },
+  isRessolved: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 const DocumentSchema = new mongoose.Schema(
   {
     title: {
@@ -13,6 +34,10 @@ const DocumentSchema = new mongoose.Schema(
     creator: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User", // Assuming UserModel is defined properly as mongoose.model("User", UserSchema)
+    },
+    comment: {
+      type: [commentSchema],
+      default: [],
     },
     collab: {
       type: [

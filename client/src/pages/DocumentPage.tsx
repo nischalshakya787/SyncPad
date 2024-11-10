@@ -9,6 +9,7 @@ import { UserContext } from "../UserContext";
 import { useParams } from "react-router-dom";
 import { UserListProps } from "../types/User";
 import { NotFound, Loader, ChatBox, AddCollabModal } from "../components";
+import { MdOutlineAddComment } from "react-icons/md";
 import profile from "../assets/image/profile.jpg";
 
 const DocumentPage = () => {
@@ -28,6 +29,10 @@ const DocumentPage = () => {
     startOffset: 0,
     endOffset: 0,
   });
+  const [commentBoxPosition, setCommentBoxPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
   const [selectedText, setSelectedText] = useState("");
   const [isComment, setIsComment] = useState(false); //To add the comment box for text selection
 
@@ -176,9 +181,8 @@ const DocumentPage = () => {
 
   const handleMouseUp = () => {
     if (quillRef.current) {
-      // Check if quillRef.current is not null
-      const editor = quillRef.current.getEditor(); // Get the Quill editor instance
-      const selection = editor.getSelection(); // Get the selection range from Quill
+      const editor = quillRef.current.getEditor();
+      const selection = editor.getSelection();
 
       if (selection && selection.length > 0) {
         const selectedContent = editor.getText(
@@ -186,18 +190,21 @@ const DocumentPage = () => {
           selection.length
         );
         setSelectedText(selectedContent);
-        setSelectionRange({
-          startOffset: selection.index,
-          endOffset: selection.index + selection.length,
-        });
+
+        const range = window.getSelection()?.getRangeAt(0);
+        if (range) {
+          const rect = range.getBoundingClientRect();
+          setCommentBoxPosition({
+            top: rect.top + window.scrollY - 120, // Adjust for page scroll
+            left: rect.left + window.scrollX, // Adjust for page scroll
+          });
+        }
       } else {
         setSelectedText("");
-        setSelectionRange({ startOffset: 0, endOffset: 0 });
+        setCommentBoxPosition(null); // Hide comment box if no text is selected
       }
     }
   };
-  console.log(selectedText);
-  console.log(selectionRange);
 
   if (isLoading) {
     return <Loader />;
@@ -276,7 +283,27 @@ const DocumentPage = () => {
           </button>
         </div>
       </div>
-      <div className="editor bg-[#f9fbfd]" onMouseUp={handleMouseUp}>
+      <div className="editor bg-[#f9fbfd] relative" onMouseUp={handleMouseUp}>
+        {commentBoxPosition && (
+          <div
+            style={{
+              position: "absolute",
+              top: commentBoxPosition.top,
+              left: commentBoxPosition.left,
+              zIndex: 3,
+            }}
+            className="cursor-pointer"
+          >
+            <button
+              className="bg-blue-500 p-2 rounded-lg text-white hover:bg-blue-600 text-2xl"
+              onClick={() => {
+                setIsComment(true);
+              }}
+            >
+              <MdOutlineAddComment />
+            </button>
+          </div>
+        )}
         <ReactQuill
           ref={quillRef}
           theme="snow"

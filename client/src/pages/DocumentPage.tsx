@@ -371,7 +371,16 @@ const CommentBox = ({
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState(commentBoxPosition);
   const [comment, setComment] = useState("");
+  useEffect(() => {
+    if (commentBoxPosition) {
+      setPosition({
+        top: commentBoxPosition.top + 90,
+        left: commentBoxPosition.left - 100,
+      }); // Update position to match commentBoxPosition
+    }
+  }, [isComment]); // Depend on commentBoxPosition
 
+  console.log(position); // Check position
   const handleDragStart = () => {
     setIsDragging(true);
   };

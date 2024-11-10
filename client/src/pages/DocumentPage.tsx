@@ -190,6 +190,14 @@ const DocumentPage = () => {
           selection.length
         );
         setSelectedText(selectedContent);
+        // Capture the start and end offset of the selection
+        const startOffset = selection.index;
+        const endOffset = selection.index + selection.length;
+
+        setSelectionRange({
+          startOffset,
+          endOffset,
+        });
 
         const range = window.getSelection()?.getRangeAt(0);
         if (range) {
@@ -202,6 +210,10 @@ const DocumentPage = () => {
       } else {
         setSelectedText("");
         setCommentBoxPosition(null); // Hide comment box if no text is selected
+        setSelectionRange({
+          startOffset: 0,
+          endOffset: 0,
+        }); // Reset selection range when no text is selected
       }
     }
   };
@@ -297,13 +309,19 @@ const DocumentPage = () => {
             <button
               className="bg-blue-500 p-2 rounded-lg text-white hover:bg-blue-600 text-2xl"
               onClick={() => {
-                setIsComment(true);
+                setIsComment(!isComment);
               }}
             >
               <MdOutlineAddComment />
             </button>
           </div>
         )}
+        <CommentBox
+          isComment={isComment}
+          commentBoxPosition={commentBoxPosition}
+          selectionRange={selectionRange}
+          selectionText={selectedText}
+        />
         <ReactQuill
           ref={quillRef}
           theme="snow"
@@ -336,6 +354,110 @@ const DocumentPage = () => {
 const MenuComponent: React.FC<{ name: String }> = ({ name }) => {
   return (
     <div className="buttons px-3 cursor-pointer hover:bg-gray-100">{name}</div>
+  );
+};
+
+type CommentBoxProps = {
+  isComment: boolean;
+  commentBoxPosition: { top: number; left: number } | null;
+  selectionRange: { startOffset: number; endOffset: number };
+  selectionText: string;
+};
+const CommentBox = ({
+  isComment,
+  commentBoxPosition,
+  selectionRange,
+}: CommentBoxProps) => {
+  const [isDragging, setIsDragging] = useState(false);
+  const [position, setPosition] = useState(commentBoxPosition);
+  const [comment, setComment] = useState("");
+
+  const handleDragStart = () => {
+    setIsDragging(true);
+  };
+
+  const handleDrag = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isDragging) {
+      setPosition({
+        top: e.clientY - 100, // Adjust for header offset
+        left: e.clientX - 100, // Adjust for header offset
+      });
+    }
+  };
+  const handleCommentSubmit = () => {
+    if (comment.trim()) {
+      console.log("Comment submitted:", comment);
+      setComment(""); // Clear the input after submission
+    }
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: position?.top,
+        left: position?.left,
+        zIndex: 3,
+        width: "300px",
+        backgroundColor: "#f9f9f9",
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+      }}
+      className={`${isComment ? "block" : "hidden"}`}
+      onMouseDown={handleDragStart}
+      onMouseMove={handleDrag}
+      onMouseUp={handleDragEnd}
+    >
+      {/* Header section for dragging */}
+      <div
+        style={{
+          padding: "8px",
+          backgroundColor: "#3b82f6",
+          color: "#fff",
+          borderTopLeftRadius: "8px",
+          borderTopRightRadius: "8px",
+          cursor: "move",
+          userSelect: "none",
+        }}
+      >
+        Add Comment
+      </div>
+
+      {/* Content section */}
+      <div style={{ padding: "12px" }}>
+        <input
+          type="text"
+          placeholder="Add your comment..."
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "8px",
+            marginBottom: "8px",
+            border: "1px solid #ddd",
+            borderRadius: "4px",
+          }}
+        />
+        <button
+          onClick={handleCommentSubmit}
+          style={{
+            width: "100%",
+            padding: "8px",
+            backgroundColor: "#3b82f6",
+            color: "#fff",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Submit
+        </button>
+      </div>
+    </div>
   );
 };
 

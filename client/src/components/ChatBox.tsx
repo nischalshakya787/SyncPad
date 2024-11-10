@@ -16,7 +16,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   userList,
 }) => {
   const [chat, setChat] = useState<Chat>([]);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null); //This ref is used to auto scroll the window if new chats are added
   const [inputValue, setInputValue] = useState<string>("");
   const [isMentionBox, setIsMentionBox] = useState<boolean>(false); //To open and close mention box
   const [mention, setMention] = useState<{
@@ -25,9 +25,12 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     senderId: string | undefined;
     docId: string | undefined;
   } | null>(null);
+
+  //Initially this state will contain object of all the collabs and owners, later this state will be filtered according to the mentions
   const [filteredUsers, setFilteredUsers] = useState<UserListProps[]>(userList);
   const maxHeight = 150;
 
+  //To fetch chat in intial load
   useEffect(() => {
     const fetchChat = async () => {
       try {
@@ -43,6 +46,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     };
     fetchChat();
   }, []);
+
+  //To achieve auto scroll behaviour when new chats appear
   useEffect(() => {
     if (isChatBox && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -109,6 +114,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
       timestamp: string;
     }) => {
       setChat((prevChat) => [
+        //Updating the states if new message is recieved
         ...prevChat,
         {
           senderId: chat.senderId,
@@ -141,9 +147,11 @@ const ChatBox: React.FC<ChatBoxProps> = ({
         timestamp: new Date().toISOString(),
       },
     ]);
+    //To send mention notification to the user
     if (mention) {
       socket.emit("sendMentionNotification", mention);
     }
+    //Sending message to the group chat
     socket.emit("send-message", {
       docId,
       senderId: userId,
@@ -154,6 +162,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     });
   };
 
+  //To handle the mention selection
   const handleUserSelection = (
     user: UserListProps,
     username: string | undefined
@@ -172,6 +181,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     });
     setIsMentionBox(false);
   };
+
   return (
     <div className="fixed bottom-5 flex items-end space-x-4">
       {isChatBox && (
@@ -269,6 +279,7 @@ const MessageBox = ({
     <div className="flex my-5">
       <div className="">
         <div className="role-image rounded-full w-8 h-8 bg-green-600 flex items-center justify-center">
+          //Profile persona
           <img
             src={`${
               persona?.length === 0

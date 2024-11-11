@@ -81,7 +81,6 @@ export const fetchDocument = async (req, res) => {
       path: "collab creator",
       select: "username persona",
     });
-    console.log(document);
 
     res.status(200).json(document);
   } catch (error) {
@@ -91,7 +90,7 @@ export const fetchDocument = async (req, res) => {
 
 export const updateName = async (req, res) => {
   const { id, title } = req.body;
-  console.log(req.body);
+
   try {
     const document = await DocumentModel.findByIdAndUpdate(id, { title });
 
@@ -192,9 +191,25 @@ export const getUserDocument = async (req, res) => {
 };
 
 export const addComment = async (req, res) => {
+  const docId = req.params.id;
   const { comment } = req.body;
-  console.log(comment);
   try {
+    const updatedDocument = await DocumentModel.findByIdAndUpdate(
+      docId,
+      {
+        $push: { comments: comment },
+      },
+      { new: true }
+    );
+
+    if (!updatedDocument) {
+      return res.status(400).json({ message: "Document not Found" });
+    }
+
+    res.status(200).json({
+      message: "Comment added successfully",
+      document: updatedDocument,
+    });
   } catch (error) {
     res.status(500).json({
       message: "An error occurred while adding comment",

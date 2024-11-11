@@ -399,19 +399,19 @@ const CommentBox = ({
           selectionRange,
         };
         console.log(comment);
-        // const response = await fetch(
-        //   `http://localhost:3000/docs/comment/${docId}`,
-        //   {
-        //     method: "PUT",
-        //     headers: { "Content-Type": "application/json" },
-        //     body: JSON.stringify({ comment }),
-        //   }
-        // );
-        // if (!response.ok) {
-        //   throw Error("Failed to add comment");
-        // }
-        // const data = await response.json();
-        // console.log(data);
+        const response = await fetch(
+          `http://localhost:3000/docs/comment/${docId}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ comment }),
+          }
+        );
+        if (!response.ok) {
+          throw Error("Failed to add comment");
+        }
+        const data = await response.json();
+        console.log(data.document);
       } catch (error) {
         console.log(error);
       }

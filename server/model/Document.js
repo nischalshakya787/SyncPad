@@ -35,7 +35,7 @@ const DocumentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User", // Assuming UserModel is defined properly as mongoose.model("User", UserSchema)
     },
-    comment: {
+    comments: {
       type: [commentSchema],
       default: [],
     },

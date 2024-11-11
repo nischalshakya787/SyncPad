@@ -67,6 +67,51 @@ const DocumentPage = () => {
     };
   }, [isTyping, socket]);
 
+  function wrapSelectedRange(
+    htmlString: string,
+    selectionRange: { startOffset: number; endOffset: number }
+  ) {
+    const { startOffset, endOffset } = selectionRange;
+
+    // Find where the selected text appears in the HTML string (accounting for tags)
+    let position = 0;
+    let foundStart = -1;
+    let foundEnd = -1;
+
+    for (let i = 0; i < htmlString.length; i++) {
+      // Skip HTML tags
+      if (htmlString[i] === "<") {
+        while (htmlString[i] !== ">" && i < htmlString.length) i++;
+        continue;
+      }
+
+      // Check if this position is the start of the selected range
+      if (position === startOffset) foundStart = i;
+
+      // Check if this position is the end of the selected range
+      if (position === endOffset) {
+        foundEnd = i;
+        break;
+      }
+
+      position++;
+    }
+
+    // Wrap the selected text in <div> if foundStart and foundEnd are valid
+    if (foundStart !== -1 && foundEnd !== -1) {
+      return (
+        htmlString.slice(0, foundStart) +
+        `<span style="background-color: rgb(230, 0, 0);">` + // Add custom styles here
+        htmlString.slice(foundStart, foundEnd) +
+        `</span>` +
+        htmlString.slice(foundEnd)
+      );
+    }
+
+    // If range is invalid, return original string
+    return htmlString;
+  }
+
   //To reload the saved value of a document
   useEffect(() => {
     const fetchDocument = async () => {
@@ -84,6 +129,7 @@ const DocumentPage = () => {
             setIsAuthenticated(false);
           } else {
             setIsAuthenticated(true);
+
             setDocument(data);
 
             // removing the user's object from the array
@@ -110,7 +156,16 @@ const DocumentPage = () => {
             ];
             setUserList(user_list);
 
-            setValue(data.value);
+            if (data.comments.length !== 0) {
+              const result = wrapSelectedRange(
+                data.value,
+                data.comments[0].selectionRange
+              );
+              console.log(result);
+              setValue(result);
+            } else {
+              setValue(data.value);
+            }
           }
         } catch (error) {
           console.log(error);
@@ -122,7 +177,7 @@ const DocumentPage = () => {
 
     fetchDocument();
   }, [user, docId]); // Add user and docId as dependencies
-
+  console.log(value);
   //When we type in the canvas this function will execute and emits the updated value to the server and server will emit the changes to the collabs
   const handleChange = (
     content: string,

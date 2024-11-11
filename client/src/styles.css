@@ -38,9 +38,32 @@
   border: none;
   /* box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5); */
 }
-.comment {
-  background: red;
+
+.tooltip {
+  visibility: hidden;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 5px 8px;
+  border-radius: 5px;
+
+  /* Positioning */
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Adjust position as needed */
+  left: 50%;
+  transform: translateX(-50%);
+
+  /* Fade-in effect */
+  opacity: 0;
+  transition: opacity 0.3s;
 }
+
+span:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
 @page {
   margin: 1in;
 }

@@ -67,10 +67,11 @@ const DocumentPage = () => {
     };
   }, [isTyping, socket]);
 
-  function wrapSelectedRange(
+  //This function highlights the commented
+  const wrapSelectedRange = (
     htmlString: string,
     selectionRange: { startOffset: number; endOffset: number }
-  ) {
+  ) => {
     const { startOffset, endOffset } = selectionRange;
 
     // Find where the selected text appears in the HTML string (accounting for tags)
@@ -110,7 +111,7 @@ const DocumentPage = () => {
 
     // If range is invalid, return original string
     return htmlString;
-  }
+  };
 
   //To reload the saved value of a document
   useEffect(() => {

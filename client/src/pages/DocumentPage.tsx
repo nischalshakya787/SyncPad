@@ -210,10 +210,6 @@ const DocumentPage = () => {
       } else {
         setSelectedText("");
         setCommentBoxPosition(null); // Hide comment box if no text is selected
-        setSelectionRange({
-          startOffset: 0,
-          endOffset: 0,
-        }); // Reset selection range when no text is selected
       }
     }
   };
@@ -321,6 +317,7 @@ const DocumentPage = () => {
           commentBoxPosition={commentBoxPosition}
           selectionRange={selectionRange}
           selectionText={selectedText}
+          docId={docId}
         />
         <ReactQuill
           ref={quillRef}
@@ -362,15 +359,17 @@ type CommentBoxProps = {
   commentBoxPosition: { top: number; left: number } | null;
   selectionRange: { startOffset: number; endOffset: number };
   selectionText: string;
+  docId: string | undefined;
 };
 const CommentBox = ({
   isComment,
   commentBoxPosition,
   selectionRange,
+  docId,
 }: CommentBoxProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState(commentBoxPosition);
-  const [comment, setComment] = useState("");
+  const [message, setMessage] = useState("");
   useEffect(() => {
     if (commentBoxPosition) {
       setPosition({
@@ -380,7 +379,6 @@ const CommentBox = ({
     }
   }, [isComment]); // Depend on commentBoxPosition
 
-  console.log(position); // Check position
   const handleDragStart = () => {
     setIsDragging(true);
   };
@@ -393,10 +391,30 @@ const CommentBox = ({
       });
     }
   };
-  const handleCommentSubmit = () => {
-    if (comment.trim()) {
-      console.log("Comment submitted:", comment);
-      setComment(""); // Clear the input after submission
+  const handleCommentSubmit = async () => {
+    if (message.trim()) {
+      try {
+        const comment = {
+          message,
+          selectionRange,
+        };
+        console.log(comment);
+        // const response = await fetch(
+        //   `http://localhost:3000/docs/comment/${docId}`,
+        //   {
+        //     method: "PUT",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify({ comment }),
+        //   }
+        // );
+        // if (!response.ok) {
+        //   throw Error("Failed to add comment");
+        // }
+        // const data = await response.json();
+        // console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -442,8 +460,8 @@ const CommentBox = ({
         <input
           type="text"
           placeholder="Add your comment..."
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           style={{
             width: "100%",
             padding: "8px",

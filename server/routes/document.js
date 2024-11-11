@@ -8,6 +8,7 @@ import {
   getUserDocument,
   saveDocument,
   updateName,
+  addComment,
 } from "../controller/document.js";
 
 const docsRouter = express.Router();
@@ -18,7 +19,8 @@ docsRouter
   .get(checkDocument, fetchDocument);
 docsRouter.route("/document/update-name").post(updateName); // Renamed route for clarity
 docsRouter.route("/document/add-collab").post(addCollab);
-docsRouter.route("/document/:id").post(saveDocument);
+docsRouter.route("/document/:id").put(saveDocument);
+docsRouter.route("/comment/:id").put(addComment);
 docsRouter.route("/document/fetch").get(fetchAllDocuments);
 docsRouter.route("/user").get(getUserDocument);
 

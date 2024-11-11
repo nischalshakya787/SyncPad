@@ -190,3 +190,15 @@ export const getUserDocument = async (req, res) => {
     console.log(error);
   }
 };
+
+export const addComment = async (req, res) => {
+  const { comment } = req.body;
+  console.log(comment);
+  try {
+  } catch (error) {
+    res.status(500).json({
+      message: "An error occurred while adding comment",
+      error: error.message,
+    });
+  }
+};

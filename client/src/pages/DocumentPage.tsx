@@ -306,6 +306,7 @@ const DocumentPage = () => {
                 isCommentBox={isCommentBox}
                 setIsCommentBox={setIsCommentBox}
                 comments={document.comments}
+                docId={docId}
               />
             </div>
             {document.collab.map(

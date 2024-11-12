@@ -5,18 +5,22 @@ import type { CommentProps } from "../types/Comment";
 type CommentsProps = {
   isCommentBox: boolean;
   setIsCommentBox: (isCommentBox: boolean) => void;
-  comments: [CommentProps];
+  comments: CommentProps[]; // Fixed the type definition here
+  docId: string | undefined;
 };
 
 const Comment: React.FC<CommentsProps> = ({
   isCommentBox,
   setIsCommentBox,
   comments,
+  docId,
 }) => {
   const [isCommentBoxOpen, setIsCommentBoxOpen] = useState<boolean>(false);
   const [selectedComment, setSelectedComment] = useState<CommentProps | null>(
     null
   );
+  const [updatedComments, setUpdatedComments] =
+    useState<CommentProps[]>(comments);
 
   const handleCommentClick = () => {
     setIsCommentBoxOpen(!isCommentBoxOpen);
@@ -27,32 +31,38 @@ const Comment: React.FC<CommentsProps> = ({
     setSelectedComment(comment);
   };
 
-  const handleRessolve = async () => {
+  // Function to handle marking the comment as resolved using fetch
+  const handleRessolve = async (commentId: string) => {
     try {
-      const comment = {
-        message,
-        selectionRange,
-      };
-      console.log(comment);
+      // Send the PUT request to the backend to mark the comment as resolved
       const response = await fetch(
-        `http://localhost:3000/docs/comment/${docId}`,
+        `http://localhost:3000/docs/comment/ressolve-comment/${docId}`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ comment }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ commentId }),
         }
       );
-      if (!response.ok) {
-        throw Error("Failed to add comment");
+
+      if (response.ok) {
+        // Update the local state of comments to reflect the change
+        setUpdatedComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment._id === commentId
+              ? { ...comment, isRessolved: true } // Mark the comment as resolved
+              : comment
+          )
+        );
+      } else {
+        console.error("Failed to resolve comment");
       }
-      const data = await response.json();
-      setIsComment(false);
-      setDocument(data.document);
-      setValue(data.document.value);
     } catch (error) {
-      console.log(error);
+      console.error("Error marking comment as resolved:", error);
     }
   };
+
   return (
     <div className="relative">
       {/* Comment Icon */}
@@ -68,7 +78,7 @@ const Comment: React.FC<CommentsProps> = ({
             {/* Comment Section Title */}
             <h4 className="font-semibold text-xl text-gray-800">Comments</h4>
             <ul className="space-y-2">
-              {comments.map((comment) => (
+              {updatedComments.map((comment) => (
                 <li
                   key={comment._id}
                   className="flex justify-between items-center p-3 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 transition-all duration-200"
@@ -89,7 +99,7 @@ const Comment: React.FC<CommentsProps> = ({
                         : "bg-blue-500 text-white hover:bg-blue-600"
                     }`}
                     disabled={comment.isRessolved}
-                    onClick={handleRessolve}
+                    onClick={() => handleRessolve(comment._id)} // Pass the comment ID here
                   >
                     {comment.isRessolved ? "Resolved" : "Mark as Resolved"}
                   </button>

@@ -219,8 +219,8 @@ export const addComment = async (req, res) => {
 };
 
 export const updateRessolve = async (req, res) => {
-  const { documentId, commentId } = req.params; // Assuming you pass the documentId and commentId in the URL params
-
+  const documentId = req.params.id; // Assuming you pass the documentId and commentId in the URL params
+  const { commentId } = req.body;
   try {
     // Find the document by its ID
     const document = await DocumentModel.findById(documentId);

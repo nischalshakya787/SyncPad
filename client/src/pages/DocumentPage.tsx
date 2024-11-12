@@ -244,15 +244,6 @@ const DocumentPage = () => {
       }
     }
   };
-  const handleHover = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    // Check if the hovered target is a 'highlighted-text' element
-    if (
-      event.target instanceof HTMLElement &&
-      event.target.classList.contains("highlighted-text")
-    ) {
-      console.log("Hovered over highlighted text");
-    }
-  };
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (
@@ -342,7 +333,6 @@ const DocumentPage = () => {
         className="editor bg-[#f9fbfd] relative"
         onMouseUp={handleMouseUp}
         onClick={handleClick}
-        onMouseEnter={handleHover} // This is now listening for hover events in the editor
       >
         {commentBoxPosition && (
           <div

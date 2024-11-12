@@ -1,16 +1,19 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import ReactQuill from "react-quill";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "../styles.css";
 import { formats, modules } from "../constants";
 import { socket } from "../socket";
 import { Delta } from "quill";
+// import Quill from "quill";
 import { UserContext } from "../UserContext";
 import { useParams } from "react-router-dom";
 import { UserListProps } from "../types/User";
 import { NotFound, Loader, ChatBox, AddCollabModal } from "../components";
 import { MdOutlineAddComment } from "react-icons/md";
 import profile from "../assets/image/profile.jpg";
+import Highlight from "./Highlight";
+Quill.register(Highlight);
 
 const DocumentPage = () => {
   const [value, setValue] = useState<string>("");
@@ -102,7 +105,7 @@ const DocumentPage = () => {
     if (foundStart !== -1 && foundEnd !== -1) {
       return (
         htmlString.slice(0, foundStart) +
-        `<span style="background-color: rgb(230, 0, 0);">` + // Add custom styles here
+        `<span class="highlighted-text">` + // Add custom styles here
         htmlString.slice(foundStart, foundEnd) +
         `</span>` +
         htmlString.slice(foundEnd)
@@ -113,6 +116,33 @@ const DocumentPage = () => {
     return htmlString;
   };
 
+  const handleClick = (event) => {
+    if (event.target.classList.contains("highlighted-text")) {
+      console.log("Hello");
+    }
+  };
+  const applyHighlights = (content, comments) => {
+    if (quillRef.current) {
+      const quill = quillRef.current.getEditor();
+
+      // Using Quill's clipboard to insert content but retain the HTML structure
+      quill.clipboard.dangerouslyPasteHTML(content);
+      console.log(content);
+
+      comments.forEach((comment) => {
+        const { startOffset, endOffset } = comment.selectionRange;
+
+        // Apply the highlight to the selection range
+        quill.formatText(
+          startOffset,
+          endOffset - startOffset,
+          "highlight",
+          true
+        );
+      });
+    }
+  };
+  console.log(value);
   //To reload the saved value of a document
   useEffect(() => {
     const fetchDocument = async () => {
@@ -158,12 +188,7 @@ const DocumentPage = () => {
             setUserList(user_list);
 
             if (data.comments.length !== 0) {
-              const result = wrapSelectedRange(
-                data.value,
-                data.comments[0].selectionRange
-              );
-              console.log(result);
-              setValue(result);
+              setTimeout(() => applyHighlights(data.value, data.comments), 0);
             } else {
               setValue(data.value);
             }
@@ -178,7 +203,7 @@ const DocumentPage = () => {
 
     fetchDocument();
   }, [user, docId]); // Add user and docId as dependencies
-  console.log(value);
+
   //When we type in the canvas this function will execute and emits the updated value to the server and server will emit the changes to the collabs
   const handleChange = (
     content: string,
@@ -277,7 +302,6 @@ const DocumentPage = () => {
     //If user is not a creator or not a collabarator of a document it will redirect to this page
     return <NotFound />;
   }
-
   return (
     <div className="text-editor">
       <div className="menu flex justify-between items-center p-2 bg-[#f9fbfd]">
@@ -375,6 +399,7 @@ const DocumentPage = () => {
           selectionText={selectedText}
           docId={docId}
         />
+
         <ReactQuill
           ref={quillRef}
           theme="snow"

@@ -1,3 +1,24 @@
+export const formats = [
+  "highlight",
+  "header",
+  "font",
+  "size",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "color",
+  "background",
+  "script",
+  "blockquote",
+  "list",
+  "bullet",
+  "indent",
+  "link",
+  "image",
+  "video",
+];
+
 export const modules = {
   toolbar: [
     [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -14,30 +35,10 @@ export const modules = {
     [{ script: "sub" }],
     [{ script: "super" }],
     [{ align: [] }],
-    ["link", "image", "code-block", "blackquote"],
+    ["link", "image", "code-block"],
     ["clean"],
   ],
 };
-
-export const formats = [
-  "header",
-  "font",
-  "size", // Include 'font' here
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "color",
-  "background",
-  "script",
-  "blockquote",
-  "list",
-  "bullet",
-  "indent",
-  "link",
-  "image",
-  "video",
-];
 
 export const personaBots = [
   "Kimberly",

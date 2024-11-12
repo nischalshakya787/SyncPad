@@ -58,7 +58,10 @@
   opacity: 0;
   transition: opacity 0.3s;
 }
-
+.highlighted-text {
+  background-color: blue;
+  cursor: pointer;
+}
 span:hover .tooltip {
   visibility: visible;
   opacity: 1;

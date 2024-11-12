@@ -13,7 +13,9 @@ import { NotFound, Loader, ChatBox, AddCollabModal } from "../components";
 import { MdOutlineAddComment } from "react-icons/md";
 import profile from "../assets/image/profile.jpg";
 import Highlight from "./Highlight";
-Quill.register(Highlight);
+import { CommentProps } from "../types/Comment";
+
+Quill.register(Highlight); //Registering a custom class for Quill
 
 const DocumentPage = () => {
   const [value, setValue] = useState<string>("");
@@ -70,58 +72,17 @@ const DocumentPage = () => {
     };
   }, [isTyping, socket]);
 
-  //This function highlights the commented
-  const wrapSelectedRange = (
-    htmlString: string,
-    selectionRange: { startOffset: number; endOffset: number }
-  ) => {
-    const { startOffset, endOffset } = selectionRange;
-
-    // Find where the selected text appears in the HTML string (accounting for tags)
-    let position = 0;
-    let foundStart = -1;
-    let foundEnd = -1;
-
-    for (let i = 0; i < htmlString.length; i++) {
-      // Skip HTML tags
-      if (htmlString[i] === "<") {
-        while (htmlString[i] !== ">" && i < htmlString.length) i++;
-        continue;
-      }
-
-      // Check if this position is the start of the selected range
-      if (position === startOffset) foundStart = i;
-
-      // Check if this position is the end of the selected range
-      if (position === endOffset) {
-        foundEnd = i;
-        break;
-      }
-
-      position++;
-    }
-
-    // Wrap the selected text in <div> if foundStart and foundEnd are valid
-    if (foundStart !== -1 && foundEnd !== -1) {
-      return (
-        htmlString.slice(0, foundStart) +
-        `<span class="highlighted-text">` + // Add custom styles here
-        htmlString.slice(foundStart, foundEnd) +
-        `</span>` +
-        htmlString.slice(foundEnd)
-      );
-    }
-
-    // If range is invalid, return original string
-    return htmlString;
-  };
-
-  const handleClick = (event) => {
-    if (event.target.classList.contains("highlighted-text")) {
+  const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (
+      event.target instanceof HTMLElement &&
+      event.target.classList.contains("highlighted-text")
+    ) {
       console.log("Hello");
     }
   };
-  const applyHighlights = (content, comments) => {
+
+  //This will highlight the comment portion by adding a custom class
+  const applyHighlights = (content: string, comments: [CommentProps]) => {
     if (quillRef.current) {
       const quill = quillRef.current.getEditor();
 
@@ -134,15 +95,15 @@ const DocumentPage = () => {
 
         // Apply the highlight to the selection range
         quill.formatText(
-          startOffset,
-          endOffset - startOffset,
-          "highlight",
+          startOffset, //start
+          endOffset - startOffset, //length
+          "highlight", //custom-class
           true
         );
       });
     }
   };
-  console.log(value);
+
   //To reload the saved value of a document
   useEffect(() => {
     const fetchDocument = async () => {
@@ -188,7 +149,7 @@ const DocumentPage = () => {
             setUserList(user_list);
 
             if (data.comments.length !== 0) {
-              setTimeout(() => applyHighlights(data.value, data.comments), 0);
+              applyHighlights(data.value, data.comments); //if comment exsits then applies hhighlight to the commented portion
             } else {
               setValue(data.value);
             }

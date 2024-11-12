@@ -5,7 +5,7 @@ import "../styles.css";
 import { formats, modules } from "../constants";
 import { socket } from "../socket";
 import { Delta } from "quill";
-// import Quill from "quill";
+import { FaRegComment } from "react-icons/fa";
 import { UserContext } from "../UserContext";
 import { useParams } from "react-router-dom";
 import { UserListProps } from "../types/User";
@@ -71,38 +71,6 @@ const DocumentPage = () => {
       socket.off("document");
     };
   }, [isTyping, socket]);
-
-  const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (
-      event.target instanceof HTMLElement &&
-      event.target.classList.contains("highlighted-text")
-    ) {
-      console.log("Hello");
-    }
-  };
-
-  //This will highlight the comment portion by adding a custom class
-  const applyHighlights = (content: string, comments: [CommentProps]) => {
-    if (quillRef.current) {
-      const quill = quillRef.current.getEditor();
-
-      // Using Quill's clipboard to insert content but retain the HTML structure
-      quill.clipboard.dangerouslyPasteHTML(content);
-      console.log(content);
-
-      comments.forEach((comment) => {
-        const { startOffset, endOffset } = comment.selectionRange;
-
-        // Apply the highlight to the selection range
-        quill.formatText(
-          startOffset, //start
-          endOffset - startOffset, //length
-          "highlight", //custom-class
-          true
-        );
-      });
-    }
-  };
 
   //To reload the saved value of a document
   useEffect(() => {
@@ -173,7 +141,6 @@ const DocumentPage = () => {
     editor: any
   ) => {
     if (source === "user") {
-      console.log(content);
       socket.emit("document", docId, content); //emitting the typed content to the server
     }
     setValue(content);
@@ -221,6 +188,28 @@ const DocumentPage = () => {
     }
   };
 
+  //This will highlight the comment portion by adding a custom class
+  const applyHighlights = (content: string, comments: [CommentProps]) => {
+    if (quillRef.current) {
+      const quill = quillRef.current.getEditor();
+
+      // Using Quill's clipboard to insert content but retain the HTML structure
+      quill.clipboard.dangerouslyPasteHTML(content);
+
+      comments.forEach((comment) => {
+        const { startOffset, endOffset } = comment.selectionRange;
+
+        // Apply the highlight to the selection range
+        quill.formatText(
+          startOffset, //start
+          endOffset - startOffset, //length
+          "highlight", //custom-class
+          true
+        );
+      });
+    }
+  };
+
   const handleMouseUp = () => {
     if (quillRef.current) {
       const editor = quillRef.current.getEditor();
@@ -255,7 +244,24 @@ const DocumentPage = () => {
       }
     }
   };
+  const handleHover = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    // Check if the hovered target is a 'highlighted-text' element
+    if (
+      event.target instanceof HTMLElement &&
+      event.target.classList.contains("highlighted-text")
+    ) {
+      console.log("Hovered over highlighted text");
+    }
+  };
 
+  const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (
+      event.target instanceof HTMLElement &&
+      event.target.classList.contains("highlighted-text")
+    ) {
+      console.log("Hello");
+    }
+  };
   if (isLoading) {
     return <Loader />;
   }
@@ -332,7 +338,12 @@ const DocumentPage = () => {
           </button>
         </div>
       </div>
-      <div className="editor bg-[#f9fbfd] relative" onMouseUp={handleMouseUp}>
+      <div
+        className="editor bg-[#f9fbfd] relative"
+        onMouseUp={handleMouseUp}
+        onClick={handleClick}
+        onMouseEnter={handleHover} // This is now listening for hover events in the editor
+      >
         {commentBoxPosition && (
           <div
             style={{
@@ -359,6 +370,9 @@ const DocumentPage = () => {
           selectionRange={selectionRange}
           selectionText={selectedText}
           docId={docId}
+          setDocument={setDocument}
+          setValue={setValue}
+          setIsComment={setIsComment}
         />
 
         <ReactQuill
@@ -402,12 +416,19 @@ type CommentBoxProps = {
   selectionRange: { startOffset: number; endOffset: number };
   selectionText: string;
   docId: string | undefined;
+  setDocument: (document: any) => void; // Function to set the document state (use a more specific type if possible)
+  setValue: (value: string) => void; // Function to update the document content value
+  setIsComment: (isComment: boolean) => void; // Function to toggle the state of the comment box visibility
 };
+
 const CommentBox = ({
   isComment,
   commentBoxPosition,
   selectionRange,
   docId,
+  setDocument,
+  setValue,
+  setIsComment,
 }: CommentBoxProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState(commentBoxPosition);
@@ -453,7 +474,8 @@ const CommentBox = ({
           throw Error("Failed to add comment");
         }
         const data = await response.json();
-        console.log(data.document);
+        setIsComment(false);
+        setDocument(data.document);
       } catch (error) {
         console.log(error);
       }

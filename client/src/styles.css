@@ -59,7 +59,17 @@
   transition: opacity 0.3s;
 }
 .highlighted-text {
-  background-color: blue;
+  background-color: #fdf39b; /* Light Yellow */
+  cursor: pointer;
+  position: relative;
+}
+/* Comment icon displayed on hover */
+.highlighted-text:hover::after {
+  content: "\1F4AC"; /* Unicode for a comment bubble icon */
+  font-size: 20px;
+  position: absolute;
+  top: -32px; /* Adjust this as needed to position the icon above text */
+  right: 0;
   cursor: pointer;
 }
 span:hover .tooltip {

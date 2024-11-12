@@ -1,9 +1,11 @@
 import { FaComment } from "react-icons/fa";
 import { useState } from "react";
+import type { CommentProps } from "../types/Comment";
 
-type CommentProps = {
+type CommentsProps = {
   isCommentBox: boolean;
   setIsCommentBox: (isCommentBox: boolean) => void;
+  comments: [CommentProps];
 };
 
 interface CommentType {
@@ -12,7 +14,10 @@ interface CommentType {
   approved: boolean;
 }
 
-const Comment: React.FC<CommentProps> = ({ isCommentBox, setIsCommentBox }) => {
+const Comment: React.FC<CommentsProps> = ({
+  isCommentBox,
+  setIsCommentBox,
+}) => {
   const [isCommentBoxOpen, setIsCommentBoxOpen] = useState<boolean>(false);
   const [comments, setComments] = useState<CommentType[]>([]); // Array of comments
   const [newComment, setNewComment] = useState<string>(""); // Current new comment text

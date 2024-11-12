@@ -217,3 +217,38 @@ export const addComment = async (req, res) => {
     });
   }
 };
+
+export const updateRessolve = async (req, res) => {
+  const { documentId, commentId } = req.params; // Assuming you pass the documentId and commentId in the URL params
+
+  try {
+    // Find the document by its ID
+    const document = await DocumentModel.findById(documentId);
+
+    if (!document) {
+      return res.status(404).json({ message: "Document not found" });
+    }
+
+    // Find the comment in the comments array by its ID
+    const comment = document.comments.id(commentId);
+
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    // Update the isRessolved field of the comment to true
+    comment.isRessolved = true;
+
+    // Save the updated document
+    await document.save();
+
+    // Respond with the updated document
+    res.status(200).json({
+      message: "Comment marked as resolved",
+      updatedComment: comment,
+    });
+  } catch (error) {
+    console.error("Error updating resolve status:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

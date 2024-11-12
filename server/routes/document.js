@@ -9,6 +9,7 @@ import {
   saveDocument,
   updateName,
   addComment,
+  updateRessolve,
 } from "../controller/document.js";
 
 const docsRouter = express.Router();
@@ -21,6 +22,7 @@ docsRouter.route("/document/update-name").post(updateName); // Renamed route for
 docsRouter.route("/document/add-collab").post(addCollab);
 docsRouter.route("/document/:id").put(saveDocument);
 docsRouter.route("/comment/:id").put(addComment);
+docsRouter.route("/ressolve-comment/:id").put(updateRessolve);
 docsRouter.route("/document/fetch").get(fetchAllDocuments);
 docsRouter.route("/user").get(getUserDocument);
 

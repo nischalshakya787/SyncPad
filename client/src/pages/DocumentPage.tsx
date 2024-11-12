@@ -479,6 +479,7 @@ const CommentBox = ({
         const data = await response.json();
         setIsComment(false);
         setDocument(data.document);
+        setValue(data.document.value);
       } catch (error) {
         console.log(error);
       }

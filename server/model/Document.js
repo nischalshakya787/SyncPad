@@ -15,6 +15,9 @@ const commentSchema = new mongoose.Schema({
       required: true,
     },
   },
+  description: {
+    type: String,
+  },
   isRessolved: {
     type: Boolean,
     default: false,

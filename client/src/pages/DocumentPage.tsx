@@ -5,11 +5,16 @@ import "../styles.css";
 import { formats, modules } from "../constants";
 import { socket } from "../socket";
 import { Delta } from "quill";
-import { FaRegComment } from "react-icons/fa";
 import { UserContext } from "../UserContext";
 import { useParams } from "react-router-dom";
 import { UserListProps } from "../types/User";
-import { NotFound, Loader, ChatBox, AddCollabModal } from "../components";
+import {
+  NotFound,
+  Loader,
+  ChatBox,
+  AddCollabModal,
+  Comment,
+} from "../components";
 import { MdOutlineAddComment } from "react-icons/md";
 import profile from "../assets/image/profile.jpg";
 import Highlight from "./Highlight";
@@ -34,6 +39,7 @@ const DocumentPage = () => {
     startOffset: 0,
     endOffset: 0,
   });
+  const [isCommentBox, setIsCommentBox] = useState<boolean>(false);
   const [commentBoxPosition, setCommentBoxPosition] = useState<{
     top: number;
     left: number;
@@ -250,7 +256,7 @@ const DocumentPage = () => {
       event.target instanceof HTMLElement &&
       event.target.classList.contains("highlighted-text")
     ) {
-      console.log("Hello");
+      setIsCommentBox(true);
     }
   };
   if (isLoading) {
@@ -295,6 +301,12 @@ const DocumentPage = () => {
         {/* <!-- Right section (Collaborators and Button) --> */}
         <div className="flex items-center justify-end gap-3 mx-5">
           <div className="relative flex">
+            <div className="flex items-center mx-5">
+              <Comment
+                isCommentBox={isCommentBox}
+                setIsCommentBox={setIsCommentBox}
+              />
+            </div>
             {document.collab.map(
               (
                 user: { _id: string; username: string; persona: string },

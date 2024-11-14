@@ -206,12 +206,21 @@ const DocumentPage = () => {
         const { startOffset, endOffset } = comment.selectionRange;
 
         // Apply the highlight to the selection range
-        quill.formatText(
-          startOffset, //start
-          endOffset - startOffset, //length
-          "highlight", //custom-class
-          true
-        );
+        if (!comment.isRessolved) {
+          quill.formatText(
+            startOffset, //start
+            endOffset - startOffset, //length
+            "highlight", //custom-class
+            true
+          );
+        } else {
+          quill.formatText(
+            startOffset, //start
+            endOffset - startOffset, //length
+            "highlight", //custom-class
+            false
+          );
+        }
       });
     }
   };

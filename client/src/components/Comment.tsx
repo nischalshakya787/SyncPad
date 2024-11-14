@@ -36,7 +36,7 @@ const Comment: React.FC<CommentsProps> = ({
     try {
       // Send the PUT request to the backend to mark the comment as resolved
       const response = await fetch(
-        `http://localhost:3000/docs/comment/ressolve-comment/${docId}`,
+        `http://localhost:3000/docs/ressolve-comment/${docId}`,
         {
           method: "PUT",
           headers: {

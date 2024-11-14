@@ -40,13 +40,14 @@ const DocumentPage = () => {
     endOffset: 0,
   });
   const [isCommentBox, setIsCommentBox] = useState<boolean>(false);
+  console.log(false);
   const [commentBoxPosition, setCommentBoxPosition] = useState<{
     top: number;
     left: number;
   } | null>(null);
   const [selectedText, setSelectedText] = useState("");
   const [isComment, setIsComment] = useState(false); //To add the comment box for text selection
-
+  const commentRef = useRef(null);
   const context = useContext(UserContext); //to get the logged in user
   if (!context) {
     throw new Error("Header must be used within a UserContextProvider");
@@ -58,6 +59,23 @@ const DocumentPage = () => {
     socket.emit("save-document", docId, content);
   };
 
+  //To close the comment-section if user clicks outside of the comment section
+  useEffect(() => {
+    function handleClickOutside(event) {
+      // Check if the click is outside the comment box
+      if (commentRef.current && !commentRef.current.contains(event.target)) {
+        setIsCommentBox(false);
+      }
+    }
+
+    // Attach the event listener to the document
+    window.addEventListener("mousedown", handleClickOutside);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setIsCommentBox]);
   useEffect(() => {
     socket.emit("joinDocument", docId); //Add the document to the room
 
@@ -310,7 +328,7 @@ const DocumentPage = () => {
         {/* <!-- Right section (Collaborators and Button) --> */}
         <div className="flex items-center justify-end gap-3 mx-5">
           <div className="relative flex">
-            <div className="flex items-center mx-5">
+            <div className="flex items-center mx-5" ref={commentRef}>
               <Comment
                 isCommentBox={isCommentBox}
                 setIsCommentBox={setIsCommentBox}

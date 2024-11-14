@@ -18,7 +18,6 @@ const Comment: React.FC<CommentsProps> = ({
   docId,
   quillRef,
 }) => {
-  const [isCommentBoxOpen, setIsCommentBoxOpen] = useState<boolean>(false);
   const [selectedComment, setSelectedComment] = useState<CommentProps | null>(
     null
   );
@@ -26,7 +25,6 @@ const Comment: React.FC<CommentsProps> = ({
     useState<CommentProps[]>(comments);
 
   const handleCommentClick = () => {
-    setIsCommentBoxOpen(!isCommentBoxOpen);
     setIsCommentBox(!isCommentBox);
   };
 
@@ -94,7 +92,7 @@ const Comment: React.FC<CommentsProps> = ({
       />
 
       {/* Comment Box */}
-      {isCommentBoxOpen && (
+      {isCommentBox && (
         <div className="mt-4 p-6 border-2 border-gray-200 rounded-lg bg-white shadow-lg absolute w-[380px] right-1">
           <div className="space-y-4">
             {/* Comment Section Title */}

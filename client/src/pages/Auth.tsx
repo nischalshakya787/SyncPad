@@ -120,7 +120,7 @@ const Auth = () => {
   return (
     <>
       <ToastContainer />
-      <main className="flex overflow-hidden flex-col justify-center items-center px-20 py-24 text-xl font-semibold bg-gray-100 max-md:px-5">
+      <main className="flex overflow-hidden flex-col justify-center items-center px-20 py-16 text-xl font-semibold bg-gray-100 max-md:px-5">
         <section className="flex flex-col items-center py-20 max-w-full bg-white rounded-lg border-2 border-solid border-black border-opacity-30 w-[900px]">
           <div className="flex flex-col items-start self-stretch px-20 w-full text-gray-800 max-md:px-5 max-md:max-w-full">
             <h1 className="text-4xl font-extrabold max-md:max-w-full">
@@ -131,20 +131,7 @@ const Auth = () => {
                 ? "Welcome back! Please enter your details"
                 : "join us today and be part of our community"}
             </p>
-            {location.pathname !== "/login" && (
-              <div className="mt-5 ">
-                <p>Sign up with Google</p>
-                <button className="flex gap-5 px-4 py-2 mt-5 max-w-full whitespace-nowrap bg-white rounded-md border border-solid border-black border-opacity-30 text-stone-500 w-[140px]">
-                  <img
-                    loading="lazy"
-                    src={key}
-                    alt=""
-                    className="object-contain shrink-0 w-6 aspect-square"
-                  />
-                  <span>Google</span>
-                </button>
-              </div>
-            )}
+
             <form className="w-full" onSubmit={handleSubmit}>
               {isLogin ? (
                 <InputField
@@ -216,16 +203,6 @@ const Auth = () => {
           </div>
           {isLogin && (
             <>
-              <p className="mt-8 text-base text-stone-500">Or Sign in with</p>
-              <button className="flex gap-5 px-4 py-2 mt-5 max-w-full whitespace-nowrap bg-white rounded-md border border-solid border-black border-opacity-30 text-stone-500 w-[140px]">
-                <img
-                  loading="lazy"
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/23ccafae1aa7dbd2cc177e58cc25202ef4cd374c85b512558b62d76b1285bbe9?placeholderIfAbsent=true&apiKey=b5e41414aacf42a3bef6031063a6b7ae"
-                  alt=""
-                  className="object-contain shrink-0 w-6 aspect-square"
-                />
-                <span>Google</span>
-              </button>
               <p className="mt-12 text-lg text-black max-md:mt-10">
                 Don't have account?{" "}
                 <a href="/signup" className="underline">

@@ -35,9 +35,6 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     const fetchChat = async () => {
       try {
         const response = await fetch(`http://localhost:3000/chat/${docId}`);
-        if (!response.ok) {
-          throw Error("Error fetching Chats");
-        }
         const data = await response.json();
         setChat(data.chat);
       } catch (error) {
@@ -46,6 +43,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     };
     fetchChat();
   }, []);
+  console.log(chat);
 
   //To achieve auto scroll behaviour when new chats appear
   useEffect(() => {
@@ -192,16 +190,25 @@ const ChatBox: React.FC<ChatBoxProps> = ({
           </div>
 
           {/* Messages Container */}
+
           <div className="flex-grow overflow-y-auto px-4 py-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-rounded-md">
-            {chat.map((message, index) => (
-              <MessageBox
-                key={index}
-                message={message.message}
-                sender={message.username}
-                username={username}
-                persona={message.persona}
-              />
-            ))}
+            {chat ? (
+              <>
+                {chat.map((message, index) => (
+                  <MessageBox
+                    key={index}
+                    message={message.message}
+                    sender={message.username}
+                    username={username}
+                    persona={message.persona}
+                  />
+                ))}
+              </>
+            ) : (
+              <p className="text-center mt-5 font-semibold text-xl">
+                No chats yet
+              </p>
+            )}
             <div ref={messagesEndRef} />
           </div>
 

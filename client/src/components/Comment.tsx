@@ -108,8 +108,14 @@ const Comment: React.FC<CommentsProps> = ({
                   <div
                     className={`text-gray-700 ${
                       comment.isRessolved ? "text-green-500" : ""
-                    } cursor-pointer`}
-                    onClick={() => handleCommentSelection(comment)} // Display the selected comment details
+                    } cursor-pointer truncate`}
+                    style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      maxWidth: "200px", // adjust max-width as needed
+                    }}
+                    onClick={() => handleCommentSelection(comment)}
                   >
                     {comment.message}
                   </div>
@@ -132,7 +138,7 @@ const Comment: React.FC<CommentsProps> = ({
             {selectedComment && (
               <div className="mt-4 p-4 bg-gray-100 rounded-md">
                 <h5 className="font-semibold text-lg text-gray-700">Details</h5>
-                <p className="text-gray-600">{selectedComment._id}</p>
+                <p className="text-gray-600">{selectedComment.message}</p>
               </div>
             )}
           </div>

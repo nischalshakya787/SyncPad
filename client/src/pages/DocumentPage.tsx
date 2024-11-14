@@ -218,7 +218,7 @@ const DocumentPage = () => {
             startOffset, //start
             endOffset - startOffset, //length
             "highlight", //custom-class
-            false
+            false //Removes the class
           );
         }
       });
@@ -316,6 +316,7 @@ const DocumentPage = () => {
                 setIsCommentBox={setIsCommentBox}
                 comments={document.comments}
                 docId={docId}
+                quillRef={quillRef}
               />
             </div>
             {document.collab.map(

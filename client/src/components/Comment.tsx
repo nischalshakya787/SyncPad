@@ -1,12 +1,14 @@
 import { MdOutlineComment } from "react-icons/md";
-import { useState } from "react";
+import { RefObject, useState } from "react";
 import type { CommentProps } from "../types/Comment";
+import ReactQuill from "react-quill";
 
 type CommentsProps = {
   isCommentBox: boolean;
   setIsCommentBox: (isCommentBox: boolean) => void;
   comments: CommentProps[]; // Fixed the type definition here
   docId: string | undefined;
+  quillRef: RefObject<ReactQuill>;
 };
 
 const Comment: React.FC<CommentsProps> = ({
@@ -14,6 +16,7 @@ const Comment: React.FC<CommentsProps> = ({
   setIsCommentBox,
   comments,
   docId,
+  quillRef,
 }) => {
   const [isCommentBoxOpen, setIsCommentBoxOpen] = useState<boolean>(false);
   const [selectedComment, setSelectedComment] = useState<CommentProps | null>(
@@ -28,6 +31,25 @@ const Comment: React.FC<CommentsProps> = ({
   };
 
   const handleCommentSelection = (comment: CommentProps) => {
+    if (quillRef.current) {
+      const quill = quillRef.current.getEditor();
+      const { startOffset, endOffset } = comment.selectionRange;
+
+      // Check if the current text has a background color applied
+      const currentFormat = quill.getFormat(
+        startOffset,
+        endOffset - startOffset
+      );
+      const isHighlighted = currentFormat.background === "yellow";
+
+      // Toggle background color
+      quill.formatText(
+        startOffset,
+        endOffset - startOffset,
+        "background",
+        isHighlighted ? false : "yellow"
+      );
+    }
     setSelectedComment(comment);
   };
 

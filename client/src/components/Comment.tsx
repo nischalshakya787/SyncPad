@@ -23,6 +23,7 @@ const Comment: React.FC<CommentsProps> = ({
   );
   const [updatedComments, setUpdatedComments] =
     useState<CommentProps[]>(comments);
+  const [selectComment, setSelectComment] = useState(null);
 
   const handleCommentClick = () => {
     setIsCommentBox(!isCommentBox);

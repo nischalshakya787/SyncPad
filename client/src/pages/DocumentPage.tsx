@@ -40,7 +40,6 @@ const DocumentPage = () => {
     endOffset: 0,
   });
   const [isCommentBox, setIsCommentBox] = useState<boolean>(false);
-  console.log(false);
   const [commentBoxPosition, setCommentBoxPosition] = useState<{
     top: number;
     left: number;
@@ -61,12 +60,14 @@ const DocumentPage = () => {
 
   //To close the comment-section if user clicks outside of the comment section
   useEffect(() => {
-    function handleClickOutside(event) {
-      // Check if the click is outside the comment box
-      if (commentRef.current && !commentRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        commentRef.current &&
+        !commentRef.current.contains(event.target as Node)
+      ) {
         setIsCommentBox(false);
       }
-    }
+    };
 
     // Attach the event listener to the document
     window.addEventListener("mousedown", handleClickOutside);

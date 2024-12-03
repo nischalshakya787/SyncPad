@@ -350,7 +350,7 @@ const DocumentPage = () => {
                 >
                   <img
                     src={`${
-                      user.persona.length === 0
+                      user.persona?.length === 0
                         ? profile
                         : `https://api.dicebear.com/9.x/bottts/svg?seed=${user.persona}&backgroundColor=ffdfbf`
                     }`}

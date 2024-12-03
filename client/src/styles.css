@@ -30,6 +30,7 @@
   margin: 0 20px;
   border-radius: 100px;
   display: flex;
+  flex-wrap: wrap; /* Allow wrapping of toolbar items */
   justify-content: center;
   position: sticky;
   top: 68px;

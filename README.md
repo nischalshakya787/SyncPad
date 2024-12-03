@@ -65,12 +65,14 @@ SyncPad is a real-time collaborative document editing platform, similar to Googl
 ![Demo Animation](./image/demo.gif)  ![Demo Animation](./image/collab.gif)
 
 ### Image
-   **Document**
-   <img src="./image/document.png" alt="Document" width="600"/>
-   **Group Chat**
-   <img src="./image/group-chat.png" alt="Chat" width="600"/>
-   **Notification**
-   <img src="./image/notification.png" alt="Notification" width="600"/>
+**Document**
+<img src="./image/document.png" alt="Document" width="600"/> <br>
+
+**Group Chat**
+<img src="./image/group-chat.png" alt="Chat" width="600"/> <br>
+
+**Notification**
+<img src="./image/notification.png" alt="Notification" width="600"/> <br>
 
 
    

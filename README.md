@@ -59,4 +59,14 @@ SyncPad is a real-time collaborative document editing platform, similar to Googl
 3. Create a new document or open an existing one.
 4. Share the document link with collaborators.
 5. Start editing and chatting in real-time!
+6. Comment on the document.
+
+### Demmo
+<video controls width="600">
+  <source src="./image/demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+
+
    

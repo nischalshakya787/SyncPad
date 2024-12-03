@@ -62,7 +62,8 @@ SyncPad is a real-time collaborative document editing platform, similar to Googl
 6. Comment on the document.
 
 ### Demo
-[![Demo Video](./image/demo.mp4)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
 
 
 

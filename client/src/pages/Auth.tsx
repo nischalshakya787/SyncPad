@@ -72,15 +72,11 @@ const Auth = () => {
       if (!data.status) {
         toast.error(data.message);
       }
-      if (data.user.isVerified) {
+      if (data.status) {
         fetchUserData();
-        if (data.status) {
-          navigate("/", {
-            state: { toastMessage: "Login successful!", from: "login" },
-          });
-        }
-      } else {
-        navigate("/verifyEmail");
+        navigate("/", {
+          state: { toastMessage: "Login successful!", from: "login" },
+        });
       }
     } catch (error) {
       console.log(error);

@@ -9,6 +9,7 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import { IoIosNotifications } from "react-icons/io";
 import { FaUser } from "react-icons/fa";
+import logo from "../assets/logo.svg";
 
 const Home = () => {
   const location = useLocation();
@@ -49,10 +50,22 @@ const Home = () => {
   return (
     <main className="flex overflow-hidden flex-col bg-[#f9fbfd]">
       <ToastContainer />
-      <header className="flex flex-wrap gap-5 justify-between px-8 py-3.5 w-full bg-[#f9fbfd] shadow-sm max-md:px-5 max-md:max-w-full">
-        <div className="px-2 text-xs text-black whitespace-nowrap rounded-full bg-zinc-300 h-[50px] w-[50px] flex items-center justify-center">
-          LOGO
+      <header className="flex flex-wrap gap-5 justify-between px-8 py-3.5 w-full bg-[#f9fbfd] shadow-sm max-md:px-5 max-md:max-w-full border-b-2">
+        <div className="flex  items-center rounded-full h-[45px] w-[45px] mx-5 cursor-pointer">
+          <img
+            loading="lazy"
+            src={logo}
+            alt="logo"
+            className="object-contain aspect-square"
+          />
+          <span
+            style={{ fontWeight: "500" }}
+            className="mx-4 text-[20px] text-center text-bold text-ellipsis text-gray-800"
+          >
+            SyncPad
+          </span>
         </div>
+
         {username ? (
           <div className="relative flex items-center">
             <div

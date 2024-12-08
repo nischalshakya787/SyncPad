@@ -4,8 +4,8 @@ import { DocumentCardProps } from "../types/Document";
 const DocumentCard: React.FC<DocumentCardProps> = ({ title, date }) => {
   return (
     <div className="flex flex-col self-stretch my-auto rounded-none min-w-[240px] w-[254px]">
-      <div className="flex flex-col pt-64 w-full bg-white rounded-xl border border-solid border-black border-opacity-20 max-md:pt-24">
-        <div className="flex px-5 py-3.5 bg-white rounded-none border border-solid border-black border-opacity-20">
+      <div className="flex flex-col pt-64 w-full bg-white rounded-xl border border-solid border-black border-opacity-20 max-md:pt-24 create">
+        <div className="flex px-5 py-3.5 bg-white rounded-none border-t border-solid border-black border-opacity-20">
           <div className="flex flex-col">
             <h4 className="text-sm text-gray-800">{title}</h4>
             <div className="flex gap-2 self-start mt-5 text-xs text-stone-500">

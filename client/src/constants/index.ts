@@ -2,7 +2,7 @@ export const formats = [
   "highlight",
   "header",
   "font",
-  "size",
+  "size", // Added size
   "bold",
   "italic",
   "underline",
@@ -23,6 +23,7 @@ export const modules = {
   toolbar: [
     [{ header: [1, 2, 3, 4, 5, 6, false] }],
     [{ font: [] }],
+    [{ size: ["small", false, "large", "huge"] }], // Added font size options
     ["bold", "italic", "underline", "strike", "blockquote"],
     [
       { list: "ordered" },
@@ -135,4 +136,51 @@ export const resumeTemplate = `
   <li>[Interest #2, e.g., Open Source Contribution]</li>
   <li>[Interest #3, e.g., Playing Guitar]</li>
 </ul>
+`;
+
+export const letterTemplate = `
+<p style="text-align: right; margin-bottom: 20px; font-family: 'Arial', sans-serif; font-size: 14px;">
+  [Your Address] <br />
+  [City, State, ZIP Code] <br />
+  [Date]
+</p>
+
+<p style="font-family: 'Arial', sans-serif; font-size: 14px; margin-bottom: 20px;">
+  [Recipient's Name] <br />
+  [Recipient's Title or Department] <br />
+  [Company/Organization Name] <br />
+  [Address Line 1] <br />
+  [City, State, ZIP Code]
+</p>
+
+<p style="font-family: 'Arial', sans-serif; font-size: 16px; font-weight: bold; margin-bottom: 15px;">
+  Dear [Recipient's Name/Title],
+</p>
+
+<p style="font-family: 'Arial', sans-serif; font-size: 14px; line-height: 1.6; margin-bottom: 15px;">
+  I am writing to [state the purpose of the letter]. [Briefly introduce yourself if the recipient may not be familiar with you, e.g., "As a recent graduate with a degree in Computer Engineering, I am reaching out to express my interest in your open Software Developer position."]
+</p>
+
+<p style="font-family: 'Arial', sans-serif; font-size: 14px; line-height: 1.6; margin-bottom: 15px;">
+  [Body Paragraph #1: Provide details about the purpose of the letter. If this is a cover letter, highlight your qualifications, achievements, or relevant experiences. Tailor the content to the recipient.]
+</p>
+
+<p style="font-family: 'Arial', sans-serif; font-size: 14px; line-height: 1.6; margin-bottom: 15px;">
+  [Body Paragraph #2: Expand on why you are writing. For a cover letter, explain why you are interested in the position and what makes you a strong fit for the role.]
+</p>
+
+<p style="font-family: 'Arial', sans-serif; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+  [Optional Closing Paragraph: Include a call-to-action or express gratitude. For example, "I would be thrilled to discuss how my skills align with your team's goals. Thank you for considering my application."]
+</p>
+
+<p style="font-family: 'Arial', sans-serif; font-size: 14px; font-weight: bold; margin-bottom: 10px;">
+  Sincerely,
+</p>
+
+<p style="font-family: 'Arial', sans-serif; font-size: 14px; line-height: 1.6;">
+  [Your Full Name] <br />
+  [Your Phone Number] <br />
+  [Your Email Address] <br />
+  [Optional: Your LinkedIn or Portfolio Link]
+</p>
 `;

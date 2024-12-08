@@ -1,9 +1,11 @@
 import React, { useContext } from "react";
 import CreateCard from "./CreateCard";
-import svg from "../assets/b923ade298c7cb4936eb03b412ee37e9722d8da445c224a5237c0a7660060b6e.svg";
+import plus from "../assets/plus.svg";
+import resume from "../assets/resume.svg";
+import letter from "../assets/letter.svg";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../UserContext";
-import { resumeTemplate } from "../constants";
+import { letterTemplate, resumeTemplate } from "../constants";
 
 const CreateSection: React.FC = () => {
   const navigate = useNavigate();
@@ -33,26 +35,30 @@ const CreateSection: React.FC = () => {
     } catch (error) {}
   };
   return (
-    <section className="flex flex-col items-center px-20 pt-10 pb-4 mt-3.5 w-full bg-[#f9fbfd] max-md:px-5 max-md:max-w-full">
+    <section className="flex flex-col items-center px-20 pt-10 pb-4 mt-3.5 w-full bg-[#f9fbfd] max-md:px-5 max-md:max-w-full ">
       <div className="flex flex-col w-full max-w-[1218px] max-md:max-w-full">
         <h2 className="self-start text-xl font-medium text-gray-800">
           Start Creating
         </h2>
         <div className="flex flex-wrap gap-10 items-center mt-6 max-md:max-w-full">
           <CreateCard
-            imageSrc={svg}
+            imageSrc={plus}
             title="Blank Document"
             handleClick={() => createDocument(undefined)}
           />
 
           <CreateCard
-            imageSrc={svg}
+            imageSrc={resume}
             title="Resume"
             handleClick={() => createDocument(resumeTemplate)}
           />
-          <CreateCard imageSrc={svg} title="Create New Document" />
-          <CreateCard imageSrc={svg} title="Create New Document" />
-          <CreateCard imageSrc={svg} title="Create New Document" />
+          <CreateCard
+            imageSrc={letter}
+            title="Letter"
+            handleClick={() => createDocument(letterTemplate)}
+          />
+          {/* <CreateCard imageSrc={svg} title="Create New Document" />
+          <CreateCard imageSrc={svg} title="Create New Document" /> */}
         </div>
       </div>
     </section>

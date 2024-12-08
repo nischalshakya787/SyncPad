@@ -13,7 +13,7 @@ const CreateCard: React.FC<CreateCardProps> = ({
 }) => {
   return (
     <div
-      className="flex flex-col self-stretch my-auto rounded-none w-[202px]"
+      className="flex flex-col self-stretch my-auto rounded-none w-[202px]  cursor-pointer"
       onClick={handleClick}
     >
       <div className="flex flex-col justify-center items-center px-5 py-20 bg-white rounded-xl border border-solid border-black border-opacity-20 max-md:px-5 max-md:mr-2">

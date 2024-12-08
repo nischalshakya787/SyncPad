@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import ReactQuill, { Quill } from "react-quill";
+import logo from "../assets/logo.svg";
 import "react-quill/dist/quill.snow.css";
 import "../styles.css";
 import { formats, modules } from "../constants";
 import { socket } from "../socket";
 import { Delta } from "quill";
 import { UserContext } from "../UserContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { UserListProps } from "../types/User";
 import {
   NotFound,
@@ -23,6 +24,7 @@ import { CommentProps } from "../types/Comment";
 Quill.register(Highlight); //Registering a custom class for Quill
 
 const DocumentPage = () => {
+  const navigate = useNavigate();
   const [value, setValue] = useState<string>("");
   const [document, setDocument] = useState<any>({});
   const [isChatBox, setIsChatBox] = useState<boolean>(false);
@@ -300,8 +302,16 @@ const DocumentPage = () => {
         {/* <!-- Left section (Logo and Menu) --> */}
         <div className="flex items-center flex-grow">
           <div className="flex items-center justify-center">
-            <div className="w-[35px] h-[35px] bg-red-600 rounded-full flex items-center justify-center">
-              Logo
+            <div
+              className="flex  items-center rounded-full h-[45px] w-[45px] ml-5 cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              <img
+                loading="lazy"
+                src={logo}
+                alt="logo"
+                className="object-contain aspect-square"
+              />
             </div>
           </div>
           <div className="ml-3">

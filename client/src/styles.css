@@ -78,6 +78,10 @@ span:hover .tooltip {
   opacity: 1;
 }
 
+.create:hover {
+  border: 2px solid #3b82f6;
+}
+
 @page {
   margin: 1in;
 }

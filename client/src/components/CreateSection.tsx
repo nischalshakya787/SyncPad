@@ -38,11 +38,11 @@ const CreateSection: React.FC = () => {
         <div className="flex flex-wrap gap-10 items-center mt-6 max-md:max-w-full">
           <CreateCard
             imageSrc={svg}
-            title="Create New Document"
+            title="Blank Document"
             handleClick={createDocument}
           />
 
-          <CreateCard imageSrc={svg} title="Create New Document" />
+          <CreateCard imageSrc={svg} title="Resume" />
           <CreateCard imageSrc={svg} title="Create New Document" />
           <CreateCard imageSrc={svg} title="Create New Document" />
           <CreateCard imageSrc={svg} title="Create New Document" />

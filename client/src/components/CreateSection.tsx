@@ -3,6 +3,8 @@ import CreateCard from "./CreateCard";
 import plus from "../assets/plus.svg";
 import resume from "../assets/resume.svg";
 import letter from "../assets/letter.svg";
+import notes from "../assets/notes.svg";
+import journal from "../assets/journal.svg";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import { letterTemplate, resumeTemplate } from "../constants";
@@ -55,8 +57,8 @@ const CreateSection: React.FC = () => {
             title="Letter"
             handleClick={() => createDocument(letterTemplate)}
           />
-          <CreateCard imageSrc={letter} title="Create New Document" />
-          <CreateCard imageSrc={letter} title="Create New Document" />
+          <CreateCard imageSrc={journal} title="Personal Journal" />
+          <CreateCard imageSrc={notes} title="Notes" />
         </div>
       </div>
     </section>

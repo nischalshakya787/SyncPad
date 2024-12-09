@@ -3,6 +3,8 @@ import CreateCard from "./CreateCard";
 import plus from "../assets/plus.svg";
 import resume from "../assets/resume.svg";
 import letter from "../assets/letter.svg";
+import notes from "../assets/notes.svg";
+import journal from "../assets/journal.svg";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import { letterTemplate, resumeTemplate } from "../constants";
@@ -17,12 +19,12 @@ const CreateSection: React.FC = () => {
   const { user } = context;
 
   //Creating a new Document
-  const createDocument = async (template: string | undefined) => {
+  const createDocument = async (template: string | undefined, type: string) => {
     try {
       const response = await fetch("http://localhost:3000/docs/document", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: user?.username, template }),
+        body: JSON.stringify({ username: user?.username, template, type }),
       });
 
       if (!response.ok) {
@@ -32,33 +34,33 @@ const CreateSection: React.FC = () => {
       const data = await response.json();
 
       navigate(`/document/${data.docsId}`);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
-    <section className="flex flex-col items-center px-20 pt-10 pb-4 mt-3.5 w-full bg-[#f9fbfd] max-md:px-5 max-md:max-w-full ">
+    <section className="flex flex-col items-center px-20 pt-10 pb-4 mt-20 w-full bg-[#f9fbfd] max-md:px-5 max-md:max-w-full ">
       <div className="flex flex-col w-full max-w-[1218px] max-md:max-w-full">
-        <h2 className="self-start text-xl font-medium text-gray-800">
-          Start Creating
-        </h2>
+        <h2 className=" text-xl font-normal text-gray-800">Start Creating</h2>
         <div className="flex flex-wrap gap-10 items-center mt-6 max-md:max-w-full">
           <CreateCard
             imageSrc={plus}
             title="Blank Document"
-            handleClick={() => createDocument(undefined)}
+            handleClick={() => createDocument(undefined, "blank")}
           />
 
           <CreateCard
             imageSrc={resume}
             title="Resume"
-            handleClick={() => createDocument(resumeTemplate)}
+            handleClick={() => createDocument(resumeTemplate, "Resume")}
           />
           <CreateCard
             imageSrc={letter}
             title="Letter"
-            handleClick={() => createDocument(letterTemplate)}
+            handleClick={() => createDocument(letterTemplate, "Letter")}
           />
-          {/* <CreateCard imageSrc={svg} title="Create New Document" />
-          <CreateCard imageSrc={svg} title="Create New Document" /> */}
+          <CreateCard imageSrc={journal} title="Personal Journal" />
+          <CreateCard imageSrc={notes} title="Notes" />
         </div>
       </div>
     </section>

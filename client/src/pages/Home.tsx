@@ -8,8 +8,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import { IoIosNotifications } from "react-icons/io";
-import { FaUser } from "react-icons/fa";
 import logo from "../assets/logo.svg";
+import profile from "../assets/image/profile.jpg";
 
 const Home = () => {
   const location = useLocation();
@@ -50,39 +50,44 @@ const Home = () => {
   return (
     <main className="flex overflow-hidden flex-col bg-[#f9fbfd]">
       <ToastContainer />
-      <header className="flex flex-wrap gap-5 justify-between px-8 py-3.5 w-full bg-[#f9fbfd] shadow-sm max-md:px-5 max-md:max-w-full border-b-2">
-        <div className="flex  items-center rounded-full h-[45px] w-[45px] mx-5 cursor-pointer">
-          <img
-            loading="lazy"
-            src={logo}
-            alt="logo"
-            className="object-contain aspect-square"
-          />
+      <header className=" fixed top-0 left-0 z-50 flex items-center justify-between px-8 py-4 w-full bg-[#f9fbfd] shadow-sm border-b max-md:px-5">
+        {/* Logo Section */}
+        <div className="flex items-center gap-3 cursor-pointer">
+          <div className="h-[45px] w-[45px]">
+            <img
+              loading="lazy"
+              src={logo}
+              alt="logo"
+              className="object-contain aspect-square rounded-full"
+            />
+          </div>
           <span
-            style={{ fontWeight: "500" }}
-            className="mx-4 text-[20px] text-center text-bold text-ellipsis text-gray-800"
+            className="text-[18px] text-gray-700"
+            style={{ fontWeight: 600 }}
           >
             SyncPad
           </span>
         </div>
 
+        {/* User Interaction Section */}
         {username ? (
-          <div className="relative flex items-center">
+          <div className="relative flex items-center gap-4">
+            {/* Notifications Icon */}
             <div
-              className="relative message text-[30px] mx-2 cursor-pointer rounded-full p-1 hover:bg-gray-200"
+              className="relative text-[26px] cursor-pointer rounded-full p-2 hover:bg-gray-200 transition"
               onClick={() => setShowNotification(!showNotification)}
             >
               <IoIosNotifications />
-
-              {/* Notification count badge */}
-              <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                {notifications.length}
-              </span>
+              {notifications.length > 0 && (
+                <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {notifications.length}
+                </span>
+              )}
             </div>
 
-            {/* Notification dropdown menu */}
+            {/* Notification Dropdown */}
             {showNotification && (
-              <div className="absolute right-0 top-[55px] w-[400px] bg-white border border-gray-200 rounded-lg shadow-lg transform translate-y-0">
+              <div className="absolute right-0 top-[55px] w-[350px] bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                 <div className="p-4 text-lg font-bold border-b">
                   Notifications
                 </div>
@@ -95,29 +100,48 @@ const Home = () => {
               </div>
             )}
 
-            <Link to="/profile">
-              <div className="profile mx-4">
-                <FaUser size={25} />
+            {/* Profile Link */}
+            {/* <div className="h-[45px] w-[45px] cursor-pointer"> */}
+            <Link to="/profile" className="flex items-center">
+              <div key={user.username} className="relative group">
+                <img
+                  src={`${
+                    user.persona?.length === 0
+                      ? profile
+                      : `https://api.dicebear.com/9.x/bottts/svg?seed=${user.persona}&backgroundColor=ffdfbf`
+                  }`}
+                  alt={user.username}
+                  className="w-11 h-11 rounded-full border-2 border-white cursor-pointer transition-transform duration-200 hover:scale-105"
+                />
+                <div className="absolute mb-1 w-max px-2 py-1 text-sm text-white bg-black rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  {user.username}
+                </div>
               </div>
+              {/* </div> */}
             </Link>
+
+            {/* Log Out Button */}
             <button
-              className="px-6 py-4 text-base font-bold text-white bg-red-500 rounded-lg max-md:px-5"
+              style={{ backgroundColor: "#ff5555" }}
+              className="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:bg-red-600 transition max-md:px-3 max-md:py-1"
               onClick={handleLogOut}
             >
               Log out
             </button>
           </div>
         ) : (
+          /* Sign In Button */
           <button
-            className="px-6 py-4 text-base font-bold text-white bg-blue-500 rounded-lg max-md:px-5"
+            className="px-4 py-2 text-sm font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition max-md:px-3 max-md:py-1"
             onClick={() => {
               navigate("/login");
             }}
           >
-            Sign in
+            Sign In
           </button>
         )}
       </header>
+
       <CreateSection />
       <RecentDocumentsSection user={user} />
     </main>

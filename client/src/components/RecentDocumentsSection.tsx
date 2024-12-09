@@ -22,7 +22,7 @@ const RecentDocumentsSection: React.FC<RecentDocsProps> = ({ user }) => {
       <div className="flex flex-col w-full max-w-[1226px] max-md:max-w-full">
         {user ? (
           <>
-            <h2 className="self-start text-xl font-medium text-gray-800">
+            <h2 className="text-xl font-normal text-gray-800">
               Recent Documents
             </h2>
             <div className="flex flex-wrap gap-10 items-center mt-6 max-md:max-w-full">

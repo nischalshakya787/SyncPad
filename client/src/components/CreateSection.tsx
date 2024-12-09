@@ -57,8 +57,8 @@ const CreateSection: React.FC = () => {
             title="Letter"
             handleClick={() => createDocument(letterTemplate)}
           />
-          {/* <CreateCard imageSrc={svg} title="Create New Document" />
-          <CreateCard imageSrc={svg} title="Create New Document" /> */}
+          <CreateCard imageSrc={letter} title="Create New Document" />
+          <CreateCard imageSrc={letter} title="Create New Document" />
         </div>
       </div>
     </section>

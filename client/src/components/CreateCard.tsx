@@ -11,15 +11,15 @@ const CreateCard: React.FC<CreateCardProps> = ({
 }) => {
   return (
     <div
-      className="flex flex-col self-stretch my-auto rounded-none w-[202px] cursor-pointer "
+      className=" flex flex-col self-stretch my-auto rounded-none w-[202px] cursor-pointer "
       onClick={handleClick}
     >
-      <div className="flex flex-col justify-center items-center px-5 py-20 bg-white rounded-xl border border-solid border-black create border-opacity-20 max-md:px-5 max-md:mr-2">
+      <div className=" card flex flex-col justify-center items-center hover:shadow-lg px-5 py-20 bg-white rounded-xl border-2 border-solid border-black create border-opacity-20 max-md:px-5 max-md:mr-2">
         <img
           loading="lazy"
           src={imageSrc}
           alt={title}
-          className="object-contain aspect-square w-[84px]"
+          className="object-contain aspect-square w-[60px]"
         />
       </div>
       <h3 className="mt-5 text-lg font-medium text-gray-800 text-center">

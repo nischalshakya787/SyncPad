@@ -35,11 +35,9 @@ const CreateSection: React.FC = () => {
     } catch (error) {}
   };
   return (
-    <section className="flex flex-col items-center px-20 pt-10 pb-4 mt-3.5 w-full bg-[#f9fbfd] max-md:px-5 max-md:max-w-full ">
+    <section className="flex flex-col items-center px-20 pt-10 pb-4 mt-20 w-full bg-[#f9fbfd] max-md:px-5 max-md:max-w-full ">
       <div className="flex flex-col w-full max-w-[1218px] max-md:max-w-full">
-        <h2 className="self-start text-xl font-medium text-gray-800">
-          Start Creating
-        </h2>
+        <h2 className=" text-xl font-normal text-gray-800">Start Creating</h2>
         <div className="flex flex-wrap gap-10 items-center mt-6 max-md:max-w-full">
           <CreateCard
             imageSrc={plus}

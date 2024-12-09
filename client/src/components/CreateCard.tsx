@@ -19,7 +19,7 @@ const CreateCard: React.FC<CreateCardProps> = ({
           loading="lazy"
           src={imageSrc}
           alt={title}
-          className="object-contain aspect-square w-[60px]"
+          className="object-contain aspect-square w-[55px]"
         />
       </div>
       <h3 className="mt-5 text-lg font-medium text-gray-800 text-center">

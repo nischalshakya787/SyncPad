@@ -51,7 +51,7 @@ const Home = () => {
   return (
     <main className="flex overflow-hidden flex-col bg-[#f9fbfd]">
       <ToastContainer />
-      <header className="flex items-center justify-between px-8 py-4 w-full bg-[#f9fbfd] shadow-sm border-b max-md:px-5">
+      <header className=" fixed top-0 left-0 z-50 flex items-center justify-between px-8 py-4 w-full bg-[#f9fbfd] shadow-sm border-b max-md:px-5">
         {/* Logo Section */}
         <div className="flex items-center gap-3 cursor-pointer">
           <div className="h-[45px] w-[45px]">
@@ -62,7 +62,10 @@ const Home = () => {
               className="object-contain aspect-square rounded-full"
             />
           </div>
-          <span className="text-[18px] font-semibold text-gray-700">
+          <span
+            className="text-[18px] text-gray-700"
+            style={{ fontWeight: 600 }}
+          >
             SyncPad
           </span>
         </div>
@@ -120,10 +123,11 @@ const Home = () => {
 
             {/* Log Out Button */}
             <button
-              className="px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-lg hover:bg-red-600 transition max-md:px-3 max-md:py-1"
+              style={{ backgroundColor: "#ff5555" }}
+              className="px-4 py-2 text-sm font-semibold text-white rounded-lg hover:bg-red-600 transition max-md:px-3 max-md:py-1"
               onClick={handleLogOut}
             >
-              Log Out
+              Log out
             </button>
           </div>
         ) : (

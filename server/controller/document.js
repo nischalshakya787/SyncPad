@@ -4,7 +4,7 @@ import UserModel from "../model/User.js";
 
 //Creating a new Document
 export const createDocument = async (req, res) => {
-  const { username, template } = req.body;
+  const { username, template, type } = req.body;
 
   try {
     const user = await UserModel.findOne({ username });
@@ -13,6 +13,7 @@ export const createDocument = async (req, res) => {
       const Document = await DocumentModel.create({
         creator: user,
         value: template ? template : "", //If template exist it will save the template if not blank document
+        title: type != "blank" ? type : "Untitled Document",
       });
 
       res

@@ -19,12 +19,12 @@ const CreateSection: React.FC = () => {
   const { user } = context;
 
   //Creating a new Document
-  const createDocument = async (template: string | undefined) => {
+  const createDocument = async (template: string | undefined, type: string) => {
     try {
       const response = await fetch("http://localhost:3000/docs/document", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: user?.username, template }),
+        body: JSON.stringify({ username: user?.username, template, type }),
       });
 
       if (!response.ok) {
@@ -34,7 +34,9 @@ const CreateSection: React.FC = () => {
       const data = await response.json();
 
       navigate(`/document/${data.docsId}`);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <section className="flex flex-col items-center px-20 pt-10 pb-4 mt-20 w-full bg-[#f9fbfd] max-md:px-5 max-md:max-w-full ">
@@ -44,18 +46,18 @@ const CreateSection: React.FC = () => {
           <CreateCard
             imageSrc={plus}
             title="Blank Document"
-            handleClick={() => createDocument(undefined)}
+            handleClick={() => createDocument(undefined, "blank")}
           />
 
           <CreateCard
             imageSrc={resume}
             title="Resume"
-            handleClick={() => createDocument(resumeTemplate)}
+            handleClick={() => createDocument(resumeTemplate, "Resume")}
           />
           <CreateCard
             imageSrc={letter}
             title="Letter"
-            handleClick={() => createDocument(letterTemplate)}
+            handleClick={() => createDocument(letterTemplate, "Letter")}
           />
           <CreateCard imageSrc={journal} title="Personal Journal" />
           <CreateCard imageSrc={notes} title="Notes" />

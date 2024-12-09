@@ -22,7 +22,7 @@ const CreateCard: React.FC<CreateCardProps> = ({
           className="object-contain aspect-square w-[55px]"
         />
       </div>
-      <h3 className="mt-5 text-lg font-normal text-gray-900 text-center">
+      <h3 className="mt-5 text-md font-normal text-gray-900 text-center">
         {title}
       </h3>
     </div>

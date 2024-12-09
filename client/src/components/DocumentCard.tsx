@@ -3,8 +3,8 @@ import { DocumentCardProps } from "../types/Document";
 import document from "../assets/document.svg";
 const DocumentCard: React.FC<DocumentCardProps> = ({ title, date }) => {
   return (
-    <div className="flex flex-col self-stretch my-auto rounded-none min-w-[240px] w-[254px] ">
-      <div className="flex flex-col bg-white rounded-xl border border-solid border-black border-opacity-20 create">
+    <div className="min-w-[240px] w-[254px] rounded-xl border-2 border-solid border-black border-opacity-20 create">
+      <div className="bg-white rounded-xl">
         {/* Image Section */}
         <div className="flex items-center justify-center h-[250px]">
           <img
@@ -15,7 +15,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ title, date }) => {
           />
         </div>
         {/* Content Section */}
-        <div className="flex flex-col px-5 py-4 bg-white border-t border-solid border-black border-opacity-20">
+        <div className="flex flex-col px-5 py-4 mb-1 bg-white border-t border-solid border-black border-opacity-20">
           <h4 className="text-sm font-medium text-gray-800">{title}</h4>
           <div className="flex items-center gap-2 mt-2 text-xs text-stone-500">
             <img
@@ -26,9 +26,11 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ title, date }) => {
             />
             <time>{date}</time>
           </div>
-          <button className="mt-4 text-xs text-blue-500 hover:underline ">
-            View Collaborators
-          </button>
+          <div className="div">
+            <button className="mt-4 text-xs text-blue-500 hover:underline ">
+              View Collaborators
+            </button>
+          </div>
         </div>
       </div>
     </div>

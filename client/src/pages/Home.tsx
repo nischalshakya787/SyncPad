@@ -8,7 +8,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import { IoIosNotifications } from "react-icons/io";
-import { FaUser } from "react-icons/fa";
 import logo from "../assets/logo.svg";
 import profile from "../assets/image/profile.jpg";
 

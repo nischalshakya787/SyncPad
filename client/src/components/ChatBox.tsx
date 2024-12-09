@@ -43,7 +43,6 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     };
     fetchChat();
   }, []);
-  console.log(chat);
 
   //To achieve auto scroll behaviour when new chats appear
   useEffect(() => {
@@ -111,8 +110,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({
       persona: string;
       timestamp: string;
     }) => {
-      setChat((prevChat) => [
-        //Updating the states if new message is recieved
+      setChat((prevChat = []) => [
+        // Updating the states if a new message is received
         ...prevChat,
         {
           senderId: chat.senderId,
@@ -135,7 +134,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   const sendMessage = () => {
     if (!socket || !userId) return;
     setInputValue("");
-    setChat((prevChat) => [
+    setChat((prevChat = []) => [
       ...prevChat,
       {
         senderId: userId,
